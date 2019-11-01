@@ -56,9 +56,10 @@ connection.connect(function (err) {
 
 /**     REQUEST HANDLERS        */
 
+
 //GET /
 app.get('/', (req, res) => {
-  res.status(200).send('Go to localhost:3000/setupdb first.');
+  res.status(200).send('This is the landing page. Go to localhost:3000/setupdb first.');
 });
 
 
