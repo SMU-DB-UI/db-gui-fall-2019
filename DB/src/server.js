@@ -68,13 +68,6 @@ app.get('/', (req, res) => {
   res.status(200).send('Go to localhost:3000/setupdb first.');
 });
 
-
-//GET /setupdb
-app.get('/setupdb', (req, res) => {
-  func.setupDB(connection, logger);
-  res.status(200).send(H1 + 'Database Created!' + H1end);
-});
-
 // Returns a list of all employees
 app.get('/employees', (req, res) => {
   connPool.getConnection(function (err, connection) {
