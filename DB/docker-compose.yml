@@ -20,7 +20,8 @@ services:
     volumes:
       # We will use a volume to persist the data between starts and stops
       # of the containers. 
-      - db_vol:/var/lib/mysql
+      #- db_vol:/var/lib/mysql
+      - ./src/setup:/docker-entrypoint-initdb.d
     networks:
       - backend
 

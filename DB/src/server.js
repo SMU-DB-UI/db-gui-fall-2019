@@ -18,10 +18,17 @@ const H1nl = '<h1 style=\'white-space: pre-line\'>';
 const H1end = '</h1>';
 
 
+const dbConfig = {
+  host: 'db',
+  port: '3306',
+  user: 'user',
+  password: 'password',
+  database: 'db'
+}
+
 //create the mysql connection object.  
-var connection = mysql.createConnection({
-  //db is the host and that name is assigned based on the 
-  //container name given in the docker-compose file
+var connPool = mysql.createPool({
+  connectionLimit: 100,
   host: 'db',
   port: '3306',
   user: 'user',
@@ -47,19 +54,18 @@ app.use(cors());
 app.use(ExpressAPILogMiddleware(logger, { request: true }));
 app.use(session({secret: 'secretstuff'}));
 
-//Attempting to connect to the database.
-connection.connect(function (err) {
-  if (err)
-    logger.error("Cannot connect to DB!");
-  logger.info("Connected to the DB!");
-});
+// //Attempting to connect to the database.
+// connection.connect(function (err) {
+//   if (err)
+//     logger.error("Cannot connect to DB!");
+//   logger.info("Connected to the DB!");
+// });
 
 /**     REQUEST HANDLERS        */
 
-
 //GET /
 app.get('/', (req, res) => {
-  res.status(200).send('This is the landing page. Go to localhost:3000/setupdb first.');
+  res.status(200).send('Go to localhost:3000/setupdb first.');
 });
 
 
@@ -71,24 +77,23 @@ app.get('/setupdb', (req, res) => {
 
 // Returns a list of all employees
 app.get('/employees', (req, res) => {
-  func.getEmployees(connection, logger, function(err, data) {
-    res.type('text/html');
+  connPool.getConnection(function (err, connection) {
     if (err) {
-      res.status(500);
-      res.send(H1 + 'Employee Access Error' + H1end);
+			connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
     }
-    else {
-      res.type('text/html');
-      logger.info(data[0]);
-      resp = H1nl;
-      for (i in data) {
-        resp = resp + data[i].fname + ' ' + data[i].lname + '\n';
+
+    func.getEmployees(connection, logger, function(err, data) {
+      if (err) {
+        res.status(500);
+        res.send(H1 + 'Employee Access Error' + H1end);
       }
-      resp += H1end;
-      res.status(200);
-      res.send(resp);
-    }
-  })
+      else {
+        sendResp(res, 200, data);
+      }
+    })
+  });
 });
 
 app.get('/employees/:empId', (req, res) => {
@@ -96,24 +101,17 @@ app.get('/employees/:empId', (req, res) => {
     notLoggedIn(res);
     return;
   }
-  func.getEmployee(connection, logger, req.params.empId, function (profile) {
-    sendResp(res, 200, `Name: ${profile.fname} ${profile.lname}`);
-  });
-});
+  connPool.getConnection(function (err, connection) {
+    if (err) {
+			connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
+    }
 
-// Returns a specific row
-app.get('/rows/:rowId', (req, res) => {
-  connection.query(`select * from data2 where id = ?`, [req.params.rowId], function (err, rows, fields) {
-    if (err)
-      logger.error('Error while executing query');
-    
-    logger.info(req.params.rowId);
-    logger.info(rows[0].name + ' ' + rows[0].id);
+    func.getEmployee(connection, logger, req.params.empId, function (profile) {
+      sendResp(res, 200, JSON.stringify(profile));
 
-    res.type('text/html');
-    res.status(200);
-    resp = '<h1>' + rows[0].id + ' ' + rows[0].name + '</h1>';
-    res.send(resp);
+    });
   });
 });
 
@@ -123,25 +121,24 @@ app.get('/login', (req, res) => {
   res.end('done');
 });
 
-app.get('/test', (req, res) => {
-  if (req.session.active) {
-    sendResp(res, 200, 'Hello!');
-  }
-  else {
-    sendResp(res, 403, 'Access Denied!');
-  }
-});
-
 // Remove employee from database
 app.delete('/employees/:empId', (req, res) => {
   if (req.session.active) {
-    func.removeEmployee(connection, logger, req.params.empId, function (succeed) {
-      if (succeed) {
-        sendResp(res, 200, `Successfully removed employee! (ID: ${req.params.empId})`);
+    connPool.getConnection(function (err, connection) {
+      if (err) {
+        connection.release();
+        logger.error(' Error getting mysql_pool connection: ' + err);
+        throw err;
       }
-      else {
-        sendResp(res, 500, `Problem removing employee ${req.params.empId}.`);
-      }
+
+      func.removeEmployee(connection, logger, req.params.empId, function (succeed) {
+        if (succeed) {
+          sendResp(res, 200, `Successfully removed employee! (ID: ${req.params.empId})`);
+        }
+        else {
+          sendResp(res, 500, `Problem removing employee ${req.params.empId}.`);
+        }
+      });
     });
   }
   else {
@@ -150,13 +147,21 @@ app.delete('/employees/:empId', (req, res) => {
 });
 
 app.put('/reports/:repId/close', (req, res) => {
-  closeReport(connection, logger, req.params.repId, function (succeed) {
-    if (succeed) {
-      sendResp(res, 200, `Successfully closed report! (ID: ${req.params.repId})`);
+  connPool.getConnection(function (err, connection) {
+    if (err) {
+			connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
     }
-    else {
-      sendResp(res, 500, `Problem closing report (ID: ${req.params.repId})`);
-    }
+
+    closeReport(connection, logger, req.params.repId, function (succeed) {
+      if (succeed) {
+        sendResp(res, 200, `Successfully closed report! (ID: ${req.params.repId})`);
+      }
+      else {
+        sendResp(res, 500, `Problem closing report (ID: ${req.params.repId})`);
+      }
+    });
   });
 });
 
@@ -168,6 +173,7 @@ app.listen(config.port, config.host, (e) => {
   logger.info(`${config.name} running on ${config.host}:${config.port}`);
 });
 
+
 function notLoggedIn(res) {
   res.type('text/html');
   res.status(403);
@@ -175,7 +181,7 @@ function notLoggedIn(res) {
 }
 
 function sendResp(res, status, message) {
-  res.type('text/html');
+  res.type('json');
   res.status(status);
-  res.send(H1 + message + H1end);
+  res.send(message);
 }
