@@ -89,6 +89,7 @@ app.get('/employees', (req, res) => {
   });
 });
 
+
 app.get('/employees/:empId', (req, res) => {
   if (!req.session.active) {
     notLoggedIn(res);
@@ -108,16 +109,26 @@ app.get('/employees/:empId', (req, res) => {
   });
 });
 
-app.get('/employees/:empId', (req, res) => {
-  func.addStrike(connection, logger, req.params.empId, function(succeed){
-    if (succeed) {
-      sendResp(res, 200, `Successfully added strike to (ID: ${req.params.empId})`);
+
+app.post('/employees/:empId', (req, res) => {
+  connPool.getConnection(function (err, connection) {
+    if (err) {
+			connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
     }
-    else {
-      sendResp(res, 500, `Problem adding strike to (ID: ${req.params.empId})`);
-    }
-  })
-})
+  
+
+    func.addStrike(connection, logger, req.params.empId, function(succeed){
+      if (succeed) {
+        logger.info(`Successfully added strike to (ID: ${req.params.empId})`);
+      }
+      else {
+        logger.info(`Problem adding strike to (ID: ${req.params.empId})`);
+      }
+    });
+  });
+});
 
 app.get('/login', (req, res) => {
   var sess = req.session;
