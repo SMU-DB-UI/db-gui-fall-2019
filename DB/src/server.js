@@ -108,6 +108,17 @@ app.get('/employees/:empId', (req, res) => {
   });
 });
 
+app.get('/employees/:empId', (req, res) => {
+  func.addStrike(connection, logger, req.params.empId, function(succeed){
+    if (succeed) {
+      sendResp(res, 200, `Successfully added strike to (ID: ${req.params.empId})`);
+    }
+    else {
+      sendResp(res, 500, `Problem adding strike to (ID: ${req.params.empId})`);
+    }
+  })
+})
+
 app.get('/login', (req, res) => {
   var sess = req.session;
   sess.active = true;

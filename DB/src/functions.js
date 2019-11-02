@@ -52,5 +52,11 @@ module.exports = {
 		connection.query(`update reports set status = 'closed' where id = ?`, [rep], function (err, rows, fields) {
 			callback(!err);
 		});
+	},
+
+	addStrike: function(connection, logger, employeeID, callback){
+		connection.query(`UPDATE employees SET strikes = strikes +1 WHERE id = ?`, [employeeID], function(err, rows, fields){
+			callback(err);
+		});
 	}
 }
