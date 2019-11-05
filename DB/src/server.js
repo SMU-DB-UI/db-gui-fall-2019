@@ -125,7 +125,7 @@ app.get('/login', (req, res) => {
 
 app.get('/test', (req, res) => {
   if (req.session.active) {
-    sendResp(res, 200, 'Hello!');
+    sendResp(res, 200, 'hi!');
   }
   else {
     sendResp(res, 403, 'Access Denied!');
@@ -158,6 +158,16 @@ app.put('/reports/:repId/close', (req, res) => {
       sendResp(res, 500, `Problem closing report (ID: ${req.params.repId})`);
     }
   });
+});
+
+app.get('/reports/:repId', (req,res) =>{
+  if (!req.session.active) {
+    notLoggedIn(res);
+    return; 
+  }
+    func.getReport(connection, logger, req.params.repId, function(profile){
+      sendResp(res, 200, `Report Id: ${profile.id} , Creation Employee ID: ${profile.by_emp_id}, Incident Employee ID: ${profile.for_emp_id}, Report Contents: ${profile.report}, creation date: ${profile.creation_date}, Status: ${profile.status}, Status: ${profile.severity}`);
+    });
 });
 
 //connecting the express object to listen on a particular port as defined in the config object. 
