@@ -17,15 +17,6 @@ const H1 = '<h1>';
 const H1nl = '<h1 style=\'white-space: pre-line\'>';
 const H1end = '</h1>';
 
-
-const dbConfig = {
-  host: 'db',
-  port: '3306',
-  user: 'user',
-  password: 'password',
-  database: 'db'
-}
-
 //create the mysql connection object.  
 var connPool = mysql.createPool({
   connectionLimit: 100,
@@ -50,6 +41,9 @@ const app = express();
 const logger = log({ console: true, file: false, label: config.name });
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded( {
+  extended: true
+}));
 app.use(cors());
 app.use(ExpressAPILogMiddleware(logger, { request: true }));
 app.use(session({secret: 'secretstuff'}));
@@ -108,6 +102,47 @@ app.get('/employees/:empId', (req, res) => {
   });
 });
 
+//Returns contact info of a given employee- does not need perms to get this
+app.get('/employees/:empId/profile', (req, res) => {
+  
+  connPool.getConnection(function (err, connection) {
+    if (err) {
+      connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
+    }
+
+    func.getContactInfo(connection, logger, req.params.empId, function(contactinfo) {
+      sendResp(res, 200, JSON.stringify(contactinfo));
+
+    });
+  });
+});
+
+//Allows updating contact info of a given employee- must be logged in to do this
+app.put('/employees/:empId/profile', (req, res) => {
+  if (!req.session.active) {
+    notLoggedIn(res);
+    return;
+  }
+  
+  connPool.getConnection(function (err, connection) {
+    // if (err) {
+    //   connection.release();
+    //   logger.error(' Error getting mysql_pool connection: ' + err);
+    //   throw err;
+    // }
+
+    
+
+    func.updateContactInfo(connection, logger, req.params.empId, req.body, function(operationSuccess) {
+      sendResp(res, operationSuccess);
+
+    });
+  });
+});
+
+// login
 app.get('/login', (req, res) => {
   var sess = req.session;
   sess.active = true;
