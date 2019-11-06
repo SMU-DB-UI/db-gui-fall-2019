@@ -149,7 +149,7 @@ app.put('/reports/:repId/close', (req, res) => {
   });
 });
 
-// Updates the 
+// Updates the manager of an employee
 app.put('/employees/:empId/profile/manager', (req, res) => {
   if (!req.session.active) {
     notLoggedIn(res);
