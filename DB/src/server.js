@@ -127,11 +127,11 @@ app.put('/employees/:empId/profile', (req, res) => {
   }
   
   connPool.getConnection(function (err, connection) {
-    // if (err) {
-    //   connection.release();
-    //   logger.error(' Error getting mysql_pool connection: ' + err);
-    //   throw err;
-    // }
+    if (err) {
+      connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
+    }
 
     
 
