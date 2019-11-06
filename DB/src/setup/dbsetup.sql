@@ -61,3 +61,6 @@ INSERT INTO departments VALUES(1, 'Computer Science');
 INSERT INTO employees VALUES
     (1, 'mark', 'fontenot', 1, 'prof', null, 'address', 214, 5, 0),
     (2, 'Marcus', 'Sykora', 1, 'Student', '1', 'address', 214, 5, 0);
+
+INSERT INTO reports VALUES
+    (1, 1, 2, 'Test report text', '11/5/2019', 'open', 0);

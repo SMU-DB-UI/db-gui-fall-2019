@@ -48,8 +48,14 @@ module.exports = {
 		});
 	},
 
-	closeReport: function(connection, logger, rep, callback) {
-		connection.query(`update reports set status = 'closed' where id = ?`, [rep], function (err, rows, fields) {
+	closeReport: function(connection, logger, rep, reason, callback) {
+		connection.query(`update reports set status = 'closed: ${reason}' where id = ?`, [rep], function (err, rows, fields) {
+			callback(!err);
+		});
+	},
+
+	setManager: function(connection, emp, managerId, callback) {
+		connection.query(`update employees set manager = ${managerId} where id = ?`, [emp], function (err, rows) {
 			callback(!err);
 		});
 	}

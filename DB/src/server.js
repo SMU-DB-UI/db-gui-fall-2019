@@ -17,15 +17,6 @@ const H1 = '<h1>';
 const H1nl = '<h1 style=\'white-space: pre-line\'>';
 const H1end = '</h1>';
 
-
-const dbConfig = {
-  host: 'db',
-  port: '3306',
-  user: 'user',
-  password: 'password',
-  database: 'db'
-}
-
 //create the mysql connection object.  
 var connPool = mysql.createPool({
   connectionLimit: 100,
@@ -50,16 +41,12 @@ const app = express();
 const logger = log({ console: true, file: false, label: config.name });
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded( {
+  extended: true
+}));
 app.use(cors());
 app.use(ExpressAPILogMiddleware(logger, { request: true }));
 app.use(session({secret: 'secretstuff'}));
-
-// //Attempting to connect to the database.
-// connection.connect(function (err) {
-//   if (err)
-//     logger.error("Cannot connect to DB!");
-//   logger.info("Connected to the DB!");
-// });
 
 /**     REQUEST HANDLERS        */
 
@@ -116,30 +103,33 @@ app.get('/login', (req, res) => {
 
 // Remove employee from database
 app.delete('/employees/:empId', (req, res) => {
-  if (req.session.active) {
-    connPool.getConnection(function (err, connection) {
-      if (err) {
-        connection.release();
-        logger.error(' Error getting mysql_pool connection: ' + err);
-        throw err;
-      }
-
-      func.removeEmployee(connection, logger, req.params.empId, function (succeed) {
-        if (succeed) {
-          sendResp(res, 200, `Successfully removed employee! (ID: ${req.params.empId})`);
-        }
-        else {
-          sendResp(res, 500, `Problem removing employee ${req.params.empId}.`);
-        }
-      });
-    });
-  }
-  else {
+  if (!req.session.active) {
     notLoggedIn(res);
+    return;
   }
+  connPool.getConnection(function (err, connection) {
+    if (err) {
+      connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
+    }
+
+    func.removeEmployee(connection, logger, req.params.empId, function (succeed) {
+      if (succeed) {
+        sendResp(res, 200, `Successfully removed employee! (ID: ${req.params.empId})`);
+      }
+      else {
+        sendResp(res, 500, `Problem removing employee ${req.params.empId}.`);
+      }
+    });
+  });
 });
 
 app.put('/reports/:repId/close', (req, res) => {
+  if (!req.session.active) {
+    notLoggedIn(res);
+    return;
+  }
   connPool.getConnection(function (err, connection) {
     if (err) {
 			connection.release();
@@ -147,7 +137,8 @@ app.put('/reports/:repId/close', (req, res) => {
       throw err;
     }
 
-    closeReport(connection, logger, req.params.repId, function (succeed) {
+    func.closeReport(connection, logger, req.params.repId, req.body.reason, function (succeed) {
+      logger.info(req.body.reason);
       if (succeed) {
         sendResp(res, 200, `Successfully closed report! (ID: ${req.params.repId})`);
       }
@@ -155,6 +146,30 @@ app.put('/reports/:repId/close', (req, res) => {
         sendResp(res, 500, `Problem closing report (ID: ${req.params.repId})`);
       }
     });
+  });
+});
+
+// Updates the 
+app.put('/employees/:empId/profile/manager', (req, res) => {
+  if (!req.session.active) {
+    notLoggedIn(res);
+    return;
+  }
+  connPool.getConnection(function (err, connection) {
+    if (err) {
+			connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
+    }
+
+    func.setManager(connection, req.params.empId, req.body.managerId, function (succeed) {
+      if (succeed) {
+        sendResp(res, 200, {status: true});
+      }
+      else {
+        sendResp(res, 500, {status: false});
+      }
+    })
   });
 });
 
