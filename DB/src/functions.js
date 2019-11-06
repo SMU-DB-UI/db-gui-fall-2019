@@ -45,9 +45,9 @@ module.exports = {
 	},
 
 	updateContactInfo: function(connection, logger, emp, body, callback) {
-		connection.query(`UPDATE employees SET fname = ${body.fname}, 
-		lname = ${body.lname}, addr = ${body.address}, 
-		phn_num = ${body.phn_num} WHERE id = ?`, [emp], function(err) {
+		connection.query(`UPDATE employees SET fname = '${body.fname}', 
+		lname = '${body.lname}', addr = '${body.address}', 
+		phn_num = '${body.phn_num}' WHERE id = ?`, [emp], function(err) {
 			if (err) {
 				logger.error(`Could not update this employee's contact info`);
 				callback('false');

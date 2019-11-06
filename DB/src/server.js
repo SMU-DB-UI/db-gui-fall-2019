@@ -136,7 +136,7 @@ app.put('/employees/:empId/profile', (req, res) => {
     
 
     func.updateContactInfo(connection, logger, req.params.empId, req.body, function(operationSuccess) {
-      sendResp(res, operationSuccess);
+      sendResp(res, 200, operationSuccess);
 
     });
   });
