@@ -21,9 +21,15 @@ CREATE TABLE employees(
     pos varchar(50) NOT null,
     manager int,
     addr varchar(100),
+    email varchar(100),
     phn_num varchar(50),
     rating int,
-    strikes int
+    strikes int,
+    username varchar(20),
+    password varchar(128),
+    salt varchar(32),
+    active varchar(10),
+    UNIQUE KEY(username)
 );
 
 CREATE TABLE reports(
@@ -53,11 +59,3 @@ CREATE TABLE perf_reviews(
     creation_date VARCHAR(50) not null,
     foreign key (emp_id) references employees(id)
 );
-
--- SAMPLE DATA INSERTION --
-
-INSERT INTO departments VALUES(1, 'Computer Science');
-
-INSERT INTO employees VALUES
-    (1, 'mark', 'fontenot', 1, 'prof', null, 'address', 214, 5, 0),
-    (2, 'Marcus', 'Sykora', 1, 'Student', '1', 'address', 214, 5, 0);

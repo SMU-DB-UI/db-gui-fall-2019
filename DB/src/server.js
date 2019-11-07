@@ -50,6 +50,9 @@ const app = express();
 const logger = log({ console: true, file: false, label: config.name });
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded( {
+  extended: true
+}));
 app.use(cors());
 app.use(ExpressAPILogMiddleware(logger, { request: true }));
 app.use(session({secret: 'secretstuff'}));
@@ -67,6 +70,57 @@ app.use(session({secret: 'secretstuff'}));
 app.get('/', (req, res) => {
   res.status(200).send('Go to localhost:3000/setupdb first.');
 });
+
+app.post('/register', (req, res) => {
+  connPool.getConnection(function (err, connection) {
+    if (err) {
+			connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
+    }
+
+    func.register(connection, logger, req.body, function (message) {
+      if (message.message == 'fail') {
+        res.status(400).json({message: "Something went wrong"});
+        return;
+      }
+      else if (message.message == 'account exists') {
+        res.json({message: 'This account already exists'});
+      }
+      else {
+        res.json(message);
+      }
+    });
+  });
+});
+
+app.get('/login', (req, res) => {
+  if (req.session.active) {
+    res.json({message: 'already logged in'});
+    return;
+  }
+  connPool.getConnection(function (err, connection) {
+    func.login(connection, logger, req.body, function (message) {
+      if (message.message == 'succeed') {
+        req.session.active = true;
+        res.json(message);
+      }
+      else {
+        res.status(400).json({message: 'Username or password is incorrect'});
+      }
+    });
+  });
+});
+
+app.get('/logout', (req, res) => {
+  if (req.session.active) {
+    req.session.destroy();
+    res.json({message: 'succeed'});
+  }
+  else {
+    res.json({message: 'Not logged in'});
+  }
+})
 
 // Returns a list of all employees
 app.get('/employees', (req, res) => {
@@ -106,12 +160,6 @@ app.get('/employees/:empId', (req, res) => {
 
     });
   });
-});
-
-app.get('/login', (req, res) => {
-  var sess = req.session;
-  sess.active = true;
-  res.end('done');
 });
 
 // Remove employee from database
