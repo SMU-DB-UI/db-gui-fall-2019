@@ -50,9 +50,9 @@ module.exports = {
 		phn_num = '${body.phn_num}' WHERE id = ?`, [emp], function(err) {
 			if (err) {
 				logger.error(`Could not update this employee's contact info`);
-				callback('false');
+				callback({status:'false'});
 			}
-			callback('true');
+			callback({status:'true'});
 		});
 	},
 	
