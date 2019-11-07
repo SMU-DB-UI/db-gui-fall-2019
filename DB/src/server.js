@@ -9,7 +9,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { log, ExpressAPILogMiddleware } = require('@rama41222/node-logger');
-const mysql = require('mysql');
+const mysql = require('mysql2/promise');
 const func = require('./functions');
 
 // Defined placeholders for easier HTML usage
@@ -57,120 +57,33 @@ app.get('/', (req, res) => {
 
 // Returns a list of all employees
 app.get('/employees', (req, res) => {
-  connPool.getConnection(function (err, connection) {
-    if (err) {
-			connection.release();
-      logger.error(' Error getting mysql_pool connection: ' + err);
-      throw err;
-    }
-
-    func.getEmployees(connection, logger, function(err, data) {
-      if (err) {
-        res.status(500);
-        res.send(H1 + 'Employee Access Error' + H1end);
-      }
-      else {
-        sendResp(res, 200, data);
-      }
-    })
-  });
+  getEmployees(req, res);
 });
 
 app.get('/employees/:empId', (req, res) => {
-  if (!req.session.active) {
-    notLoggedIn(res);
-    return;
-  }
-  connPool.getConnection(function (err, connection) {
-    if (err) {
-			connection.release();
-      logger.error(' Error getting mysql_pool connection: ' + err);
-      throw err;
-    }
-
-    func.getEmployee(connection, logger, req.params.empId, function (profile) {
-      sendResp(res, 200, JSON.stringify(profile));
-
-    });
-  });
+  getEmployee(req, res);
 });
 
 app.get('/login', (req, res) => {
-  var sess = req.session;
-  sess.active = true;
-  res.end('done');
+  login(req, res);
+});
+
+app.post('/register', (req, res) => {
+  register(req, res);
 });
 
 // Remove employee from database
 app.delete('/employees/:empId', (req, res) => {
-  if (!req.session.active) {
-    notLoggedIn(res);
-    return;
-  }
-  connPool.getConnection(function (err, connection) {
-    if (err) {
-      connection.release();
-      logger.error(' Error getting mysql_pool connection: ' + err);
-      throw err;
-    }
-
-    func.removeEmployee(connection, logger, req.params.empId, function (succeed) {
-      if (succeed) {
-        sendResp(res, 200, `Successfully removed employee! (ID: ${req.params.empId})`);
-      }
-      else {
-        sendResp(res, 500, `Problem removing employee ${req.params.empId}.`);
-      }
-    });
-  });
+  removeEmployee(req, res);
 });
 
 app.put('/reports/:repId/close', (req, res) => {
-  if (!req.session.active) {
-    notLoggedIn(res);
-    return;
-  }
-  connPool.getConnection(function (err, connection) {
-    if (err) {
-			connection.release();
-      logger.error(' Error getting mysql_pool connection: ' + err);
-      throw err;
-    }
-
-    func.closeReport(connection, logger, req.params.repId, req.body.reason, function (succeed) {
-      logger.info(req.body.reason);
-      if (succeed) {
-        sendResp(res, 200, `Successfully closed report! (ID: ${req.params.repId})`);
-      }
-      else {
-        sendResp(res, 500, `Problem closing report (ID: ${req.params.repId})`);
-      }
-    });
-  });
+  closeReport(req, res);
 });
 
 // Updates the manager of an employee
 app.put('/employees/:empId/profile/manager', (req, res) => {
-  if (!req.session.active) {
-    notLoggedIn(res);
-    return;
-  }
-  connPool.getConnection(function (err, connection) {
-    if (err) {
-			connection.release();
-      logger.error(' Error getting mysql_pool connection: ' + err);
-      throw err;
-    }
-
-    func.setManager(connection, req.params.empId, req.body.managerId, function (succeed) {
-      if (succeed) {
-        sendResp(res, 200, {status: true});
-      }
-      else {
-        sendResp(res, 500, {status: false});
-      }
-    })
-  });
+  updateManger(req, res);
 });
 
 //connecting the express object to listen on a particular port as defined in the config object. 
@@ -192,4 +105,158 @@ function sendResp(res, status, message) {
   res.type('json');
   res.status(status);
   res.send(message);
+}
+
+async function login(req, res) {
+  if (req.session.active) {
+    res.json({message: 'already logged in'});
+  }
+
+  let connection;
+  try {
+    connection = await connPool.getConnection();
+  }
+  catch (err) {
+    throw err;
+  }
+
+  func.login(connection, logger, req.body, function (user) {
+    if (user.message == 'succeed') {
+      req.session.active = true;
+    }
+    user ? res.json(user) : res.status(400).json({message: 'Username or password is incorrect'});
+  });
+}
+
+async function register(req, res) {
+  let connection;
+  try {
+    connection = await connPool.getConnection();
+  }
+  catch (err) {
+    throw err;
+  }
+
+  func.register(connection, logger, req.body, function (message) {
+    if (message.message == 'fail') {
+      res.status(400).json({message: "Something went wrong"});
+      return;
+    }
+    else if (message.message == 'account exists') {
+      res.json({message: 'This account already exists'});
+    }
+    res.json(message);
+  });
+}
+
+async function getEmployee(req, res) {
+  if (!req.session.active) {
+    notLoggedIn(res);
+    return;
+  }
+  let connection;
+  try {
+    connection = await connPool.getConnection();
+  }
+  catch (err) {
+    throw err;
+  }
+
+  func.getEmployee(connection, logger, req.params.empId, function (message, profile) {
+    if (message == 'fail') {
+      res.status(400).json(message);
+      return;
+    }
+    sendResp(res, 200, JSON.stringify(profile));
+  });
+}
+
+async function getEmployees(req, res) {
+  let connection;
+  try {
+    connection = await connPool.getConnection();
+  }
+  catch (err) {
+    throw err;
+  }
+
+  func.getEmployees(connection, logger, function(message, data) {
+    if (message.message == 'fail') {
+      res.status(500);
+      res.send(H1 + 'Employee Access Error' + H1end);
+    }
+    else {
+      sendResp(res, 200, data);
+    }
+  });
+}
+
+async function closeReport(req, res) {
+  if (!req.session.active) {
+    notLoggedIn(res);
+    return;
+  }
+  let connection;
+  try {
+    connection = await connPool.getConnection();
+  }
+  catch (err) {
+    throw err;
+  }
+
+  func.closeReport(connection, logger, req.params.repId, req.body.reason, function (succeed) {
+    logger.info(req.body.reason);
+    if (succeed) {
+      sendResp(res, 200, `Successfully closed report! (ID: ${req.params.repId})`);
+    }
+    else {
+      sendResp(res, 500, `Problem closing report (ID: ${req.params.repId})`);
+    }
+  });
+}
+
+async function updateManger(req, res) {
+  if (!req.session.active) {
+    notLoggedIn(res);
+    return;
+  }
+  let connection;
+  try {
+    connection = await connPool.getConnection();
+  }
+  catch (err) {
+    throw err;
+  }
+
+  func.setManager(connection, req.params.empId, req.body.managerId, function (succeed) {
+    if (succeed) {
+      sendResp(res, 200, {status: true});
+    }
+    else {
+      sendResp(res, 500, {status: false});
+    }
+  });
+}
+
+async function removeEmployee(req, res) {
+  if (!req.session.active) {
+    notLoggedIn(res);
+    return;
+  }
+  let connection;
+  try {
+    connection = await connPool.getConnection();
+  }
+  catch (err) {
+    throw err;
+  }
+
+  func.removeEmployee(connection, logger, req.params.empId, function (succeed) {
+    if (succeed) {
+      sendResp(res, 200, `Successfully removed employee! (ID: ${req.params.empId})`);
+    }
+    else {
+      sendResp(res, 500, `Problem removing employee ${req.params.empId}.`);
+    }
+  });
 }
