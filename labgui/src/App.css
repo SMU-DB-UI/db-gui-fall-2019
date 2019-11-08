@@ -1,10 +1,6 @@
-* {
-  box-sizing: border-box;
-}  
-
-/* .App {
+.App {
   text-align: center;
-} */
+}
 
 .App-logo {
   height: 40vmin;
@@ -24,50 +20,3 @@
 .App-link {
   color: #09d3ac;
 }
-
- 
-/*
-.acct-editor .App-header {
-  background-color: #282c34;
-  min-height: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 7vh;
-  color: white;
-}
-
-.acct-editor label {
-  background: #293d64;
-  color: white;
-  padding: .25em;
-  margin: .2em;
-  border-radius: 5em;
-
-}
-
-.acct-editor .form-group>input{
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  width: 35vw; 
-}
-
-.acct-editor label{
-  min-width:10vw;
-  text-align: center;
-}
-
-.acct-editor .removeButton {
-  background: red !important;
-  color: black !important;
-  border-color: red !important;
-}
-
-
-
-
- */
-
-
