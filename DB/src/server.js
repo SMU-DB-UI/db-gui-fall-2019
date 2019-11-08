@@ -268,6 +268,11 @@ app.get('/reports/:repId', (req,res) => {
 });
 
 app.get('/reports', (req, res) => {
+  if (!req.session.active) {
+    notLoggedIn(res);
+    return;
+  }
+
   connPool.getConnection(function (err, connection) {
     if (err) {
 			connection.release();
