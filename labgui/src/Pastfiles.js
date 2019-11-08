@@ -22,7 +22,7 @@ export default class PastFiles extends Component {
   constructor(props){
     super(props);
     this.state={
-      role:'student',
+      role:'employee',
       filesPreview:[],
       previousfilesList:[],
       filesToBePrinted:[]

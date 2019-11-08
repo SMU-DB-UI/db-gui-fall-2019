@@ -34,7 +34,7 @@ class UploadScreen extends Component {
   constructor(props){
     super(props);
     this.state={
-      role:'student',
+      role:'employee',
       filesPreview:[],
       filesToBeSent:[],
       draweropen:false,
@@ -48,10 +48,10 @@ class UploadScreen extends Component {
     var printcount;
     //set upload limit based on user role
     if(this.props.role){
-      if(this.props.role == 'student'){
+      if(this.props.role == 'employee'){
         printcount = 5;
       }
-      else if(this.props.role == 'teacher'){
+      else if(this.props.role == 'hr'){
         printcount =10;
       }
     }

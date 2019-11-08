@@ -17,12 +17,12 @@ class Loginscreen extends Component {
       <div key={"Login-Div"}>
       <MuiThemeProvider>
         <div>
-           <RaisedButton label={"Register an Employee"} primary={true} style={style} onClick={(event) => this.handleClick(event,'student')}/>
+           <RaisedButton label={"Register an Employee"} primary={true} style={style} onClick={(event) => this.handleClick(event,'employee')}/>
        </div>
        </MuiThemeProvider>
        <MuiThemeProvider>
        <div>
-          <RaisedButton label={"Register as HR"} primary={true} style={style} onClick={(event) => this.handleClick(event,'teacher')}/>
+          <RaisedButton label={"Register as HR"} primary={true} style={style} onClick={(event) => this.handleClick(event,'hr')}/>
       </div>
       </MuiThemeProvider>
       </div>
@@ -77,18 +77,18 @@ class Loginscreen extends Component {
         <div>
         <MuiThemeProvider>
           <div>
-             <RaisedButton label={"Register as an Employee"} primary={true} style={style} onClick={(event) => this.handleClick(event,'student')}/>
+             <RaisedButton label={"Register as an Employee"} primary={true} style={style} onClick={(event) => this.handleClick(event,'employee')}/>
          </div>
          </MuiThemeProvider>
          <MuiThemeProvider>
          <div>
-            <RaisedButton label={"Register as HR"} primary={true} style={style} onClick={(event) => this.handleClick(event,'teacher')}/>
+            <RaisedButton label={"Register as HR"} primary={true} style={style} onClick={(event) => this.handleClick(event,'hr')}/>
         </div>
         </MuiThemeProvider>
         </div>
       )
       loginscreen.push(<Login parentContext={this} appContext={this.props.appContext} role={userRole}/>);
-      loginmessage = "Not Registered yet.Go to registration";
+      loginmessage = "Not Registered yet. Go to registration";
       this.setState({
                      loginscreen:loginscreen,
                      loginmessage:loginmessage,

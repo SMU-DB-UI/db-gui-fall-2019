@@ -64,7 +64,7 @@ class Register extends Component {
     var userhintText,userLabel;
     if(this.props.role === "employee"){
       userhintText="Enter your Employee Id";
-      userLabel="Student Id";
+      userLabel="Employee Id";
     }
     else{
       userhintText="Enter your HR Id";
