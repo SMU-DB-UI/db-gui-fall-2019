@@ -67,6 +67,23 @@ module.exports = {
 			callback({status:'true'});
 		});
 	},
+
+	//Function that queries and returns a list of all reports
+	getReports: function (connection, logger, callback) {
+		connection.query('select * from reports', function (err, rows, fields) {
+			var repList = [];
+			if (err) {
+				callback(err, null);
+				return;
+			}
+			
+			for (var i in rows) {
+				repList.push({rep_id: rows[i].id, creation_date: rows[i].creation_date, 
+							severity: rows[i].severity, status: rows[i].status});
+			}
+			callback(err, repList);
+		});
+	},
 	
 	// Function that queries and returns a list of all employees
 	getEmployees: function (connection, logger, callback) {

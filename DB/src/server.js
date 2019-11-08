@@ -241,6 +241,7 @@ app.put('/reports/:repId/close', (req, res) => {
   });
 });
 
+//gets the content of a specific report by repId
 app.get('/reports/:repId', (req,res) => {
   if (!req.session.active) {
     notLoggedIn(res);
@@ -265,6 +266,33 @@ app.get('/reports/:repId', (req,res) => {
     });
   });
 });
+
+app.get('/reports', (req, res) => {
+  connPool.getConnection(function (err, connection) {
+    if (err) {
+			connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
+    }
+
+    func.getReports(connection, logger, function(err, data) {
+      if (err) {
+        res.status(500);
+        res.send(H1 + 'Report Access Error' + H1end);
+      }
+      else {
+        sendResp(res, 200, data);
+      }
+    })
+  });
+});
+
+
+
+
+
+
+
 
 // Updates the manager of an employee
 app.put('/employees/:empId/profile/manager', (req, res) => {
