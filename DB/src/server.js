@@ -241,13 +241,29 @@ app.put('/reports/:repId/close', (req, res) => {
   });
 });
 
-app.get('/reports/:repId', (req,res) =>{
+app.get('/reports/:repId', (req,res) => {
   if (!req.session.active) {
     notLoggedIn(res);
-    return; 
+    return;
   }
-    func.getReport(connection, logger, req.params.repId, function(profile){
-      sendResp(res, 200, {repId: profile.id, byEmpId: profile.by_emp_id, forEmpId: profile.for_emp_id, report: profile.report, creationDate: profile.creation_date, status: profile.status, severity: profile.severity});
+
+  connPool.getConnection(function (err, connection) {
+    if (err) {
+			connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
+    }
+
+    func.getReport(connection, logger, req.params.repId, function(profile) {
+      sendResp(res, 200, {repId: profile.id, 
+                          byEmpId: profile.by_emp_id, 
+                          forEmpId: profile.for_emp_id, 
+                          report: profile.report, 
+                          creationDate: profile.creation_date, 
+                          status: profile.status, 
+                          severity: profile.severity});
+    });
+  });
 });
 
 // Updates the manager of an employee

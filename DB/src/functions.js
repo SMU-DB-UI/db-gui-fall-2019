@@ -138,7 +138,7 @@ module.exports = {
 				logger.error(err);
 				return;
 			}
-			else if (!rows || !rows[0].salt || !rows[0].password) {
+			else if (rows[0] == undefined || rows[0].password == undefined) {
 				callback({message: 'fail'});
 				return;
 			}
