@@ -111,7 +111,7 @@ module.exports = {
 				return;
 			}
 
-			if (rows) {
+			if (rows[0] != undefined) {
 				callback({message: 'account exists'});
 				return;
 			}

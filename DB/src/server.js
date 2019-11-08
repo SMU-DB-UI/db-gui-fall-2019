@@ -177,8 +177,6 @@ app.put('/employees/:empId/profile', (req, res) => {
       throw err;
     }
 
-    
-
     func.updateContactInfo(connection, logger, req.params.empId, req.body, function(operationSuccess) {
       sendResp(res, 200, operationSuccess);
 
