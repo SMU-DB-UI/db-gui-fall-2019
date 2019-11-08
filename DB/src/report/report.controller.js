@@ -2,67 +2,44 @@
 
 var express = require('express');
 var model = require('./report.model');
+var conn = require('../helpers/connections');
+var logger = require('../helpers/logger');
 
 var router = express.Router();
 
-const mysql = require('mysql');
-
-//create the mysql connection object.  
-var connPool = mysql.createPool({
-  connectionLimit: 100,
-  host: 'db',
-  port: '3306',
-  user: 'user',
-  password: 'password',
-  database: 'db'
-});
-
-router.put('/reports/:repId/close', (req, res) => {
+function notLoggedIn(req, res) {
   if (!req.session.active) {
     res.json({message: 'not logged in'});
-    return;
+    return true;
   }
-  connPool.getConnection(function (err, connection) {
-    if (err) {
-      connection.release();
-      logger.error(' Error getting mysql_pool connection: ' + err);
-      throw err;
-    }
+  return false;
+}
 
-    model.closeReport(connection, logger, req.params.repId, req.body.reason, function (succeed) {
-      logger.info(req.body.reason);
-      if (succeed) {
-          res.json(`Successfully closed report! (ID: ${req.params.repId})`);
-      }
-      else {
-          res.json(`Problem closing report (ID: ${req.params.repId})`);
-      }
-    });
-  });
+router.put('/reports/:repId/close', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = model.closeReport(connection, req.params.repId, req.body.reason);
+  res.json(response);
 });
   
-router.get('/reports/:repId', (req,res) => {
-  if (!req.session.active) {
-    res.json({message: 'not logged in'});
-    return;
-  }
+router.get('/reports/:repId', async (req,res) => {
+  if (notLoggedIn(req, res)) return;
 
-  connPool.getConnection(function (err, connection) {
-    if (err) {
-            connection.release();
-      logger.error(' Error getting mysql_pool connection: ' + err);
-      throw err;
-    }
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
 
-    model.getReport(connection, logger, req.params.repId, function(profile) {
-      res.json({repId: profile.id, 
-                          byEmpId: profile.by_emp_id, 
-                          forEmpId: profile.for_emp_id, 
-                          report: profile.report, 
-                          creationDate: profile.creation_date, 
-                          status: profile.status, 
-                          severity: profile.severity});
-    });
+  let profile = model.getReport(connection, req.params.repId);
+  res.json({
+    repId:        profile.id, 
+    byEmpId:      profile.by_emp_id, 
+    forEmpId:     profile.for_emp_id, 
+    report:       profile.report, 
+    creationDate: profile.creation_date, 
+    status:       profile.status, 
+    severity:     profile.severity
   });
 });
 

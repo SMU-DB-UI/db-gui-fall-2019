@@ -9,21 +9,11 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { log, ExpressAPILogMiddleware } = require('@rama41222/node-logger');
-const mysql = require('mysql');
-
-//create the mysql connection object.  
-var connPool = mysql.createPool({
-  connectionLimit: 100,
-  host: 'db',
-  port: '3306',
-  user: 'user',
-  password: 'password',
-  database: 'db'
-});
+const mysql = require('mysql2/promise');
 
 //set up some configs for express. 
 const config = {
-  name: 'sample-express-app',
+  name: 'HR-express',
   port: 3000,
   host: '0.0.0.0',
 };
@@ -31,7 +21,6 @@ const config = {
 //create the express.js object
 const app = express();
 
-//create a logger object.  Using logger is preferable to simply writing to the console. 
 const logger = log({ console: true, file: false, label: config.name });
 
 app.use(bodyParser.json());

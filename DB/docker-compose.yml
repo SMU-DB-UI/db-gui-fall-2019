@@ -1,14 +1,14 @@
 version: "3.3"
 
 services:
-  db:
+  database:
     image: mysql:5.7
     restart: always
     environment:
       # MySQL database db will be created and user/password will be
       # granted all priviliges on that database. 
       # We are also setting the default root password for MySQL
-      MYSQL_DATABASE: 'db'
+      MYSQL_DATABASE: 'HR_Database'
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
@@ -26,14 +26,14 @@ services:
       - backend
 
 
-  api:
+  backend_server:
     image: node:11
     volumes:
       - ./src:/usr/src/app
       - /usr/src/app/node_modules
     working_dir: /usr/src/app
     depends_on:
-      - db
+      - database
     command: bash -c "npm install && npm run dev"
     ports: 
       - 3000:3000
