@@ -241,13 +241,26 @@ app.put('/reports/:repId/close', (req, res) => {
   });
 });
 
+//view a report by its id
 app.get('/reports/:repId', (req,res) =>{
   if (!req.session.active) {
     notLoggedIn(res);
     return; 
   }
-    func.getReport(connection, logger, req.params.repId, function(profile){
-      sendResp(res, 200, {repId: profile.id, byEmpId: profile.by_emp_id, forEmpId: profile.for_emp_id, report: profile.report, creationDate: profile.creation_date, status: profile.status, severity: profile.severity});
+  connPool.getConnection(function (err, connection) {
+    if (err) {
+      connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
+    }
+    func.getReport(connection, logger, req.params.repId, function(reportData){
+      if(succeed){
+        sendResp(res, 200, {repId: reportData.id, byEmpId: reportData.by_emp_id, forEmpId: reportData.for_emp_id, report: reportData.report, creationDate: reportData.creation_date, status: reportData.status, severity: reportData.severity});
+      }else {
+        sendResp(res, 500, `Problem finding and displaying report (ID: ${req.params.repId})`);
+      } 
+    })
+  })
 });
 
 // Updates the manager of an employee
