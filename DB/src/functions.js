@@ -25,6 +25,37 @@ module.exports = {
 		  });
 	},
 
+	getContactInfo: function(connection, logger, emp, callback) {
+		connection.query(`SELECT * FROM employees WHERE id = ?`, [emp], function(err, rows, fields) {
+			if (err) {
+				logger.error('Error retrieving contact info for this employee.')
+			}
+			
+			// Formatted as JSON
+			contactinfo = {'contactinfo': 
+			{
+				'fname':`${rows[0].fname}`,
+				'lname':`${rows[0].lname}`,
+				'address':`${rows[0].addr}`,
+				'phone':`${rows[0].phn_num}`,
+			}};
+
+			callback(contactinfo);
+		});
+	},
+
+	updateContactInfo: function(connection, logger, emp, body, callback) {
+		connection.query(`UPDATE employees SET fname = '${body.fname}', 
+		lname = '${body.lname}', addr = '${body.address}', 
+		phn_num = '${body.phn_num}' WHERE id = ?`, [emp], function(err) {
+			if (err) {
+				logger.error(`Could not update this employee's contact info`);
+				callback({status:'false'});
+			}
+			callback({status:'true'});
+		});
+	},
+	
 	// Function that queries and returns a list of all employees
 	getEmployees: function (connection, logger, callback) {
 		connection.query('select * from employees', function (err, rows, fields) {
