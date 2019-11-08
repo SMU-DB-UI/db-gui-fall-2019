@@ -77,4 +77,14 @@ router.put('/employees/:empId/profile/manager', async (req, res) => {
   res.json(response);
 });
 
+router.post('/employees/:empId', async (req, res) => {
+  //if (notLoggedIn(req, res)) return; //Not sure if this will actually be necessary for a post request.
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.addStrike(connection, req.params.empId);
+  res.json(response);
+});
+
 module.exports = router;

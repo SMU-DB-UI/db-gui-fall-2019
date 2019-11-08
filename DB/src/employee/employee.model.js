@@ -50,6 +50,18 @@ async function setManager(connection, empId, managerId) {
   return {message: 'succeed'};
 }
 
+async function addStrike(connection, employeeID) {
+  try {
+    await connection.query(`UPDATE employees SET strikes = strikes +1 WHERE id = ?`, [employeeID]);
+  }
+  catch (e) {
+    logger.error(e);
+    return {message: 'failed'};
+  }
+
+  return {message: 'succeed'};
+}
+
 async function getContactInfo(connection, empId) {
   let rows;
   try {
@@ -124,5 +136,6 @@ module.exports = {
   removeEmployee,
   getContactInfo,
   updateContactInfo,
-  setManager
+  setManager,
+  addStrike
 };
