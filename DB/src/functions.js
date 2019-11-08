@@ -102,6 +102,12 @@ module.exports = {
 		});
 	},
 
+	setSeverity: function(connection, logger, rep, rating, callback) {
+		connection.query(`update reports set severity = ${rating} where id = ?`, [rep], function (err, rows, fields){
+			callback(!err);
+		});
+	},
+
 	removeEmployee: function (connection, logger, emp, callback) {
 		connection.query('delete from employees where id = ?', [emp], function (err, rows, fields) {
 			callback(!err);

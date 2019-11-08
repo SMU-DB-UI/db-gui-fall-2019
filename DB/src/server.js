@@ -127,6 +127,7 @@ app.get('/employees', (req, res) => {
   });
 });
 
+//returns the profile of an employee 
 app.get('/employees/:empId', (req, res) => {
   if (!req.session.active) {
     notLoggedIn(res);
@@ -239,6 +240,36 @@ app.put('/reports/:repId/close', (req, res) => {
       }
     });
   });
+});
+
+//Allows the report filer to mark the severity of a report
+app.put('/reports/:repId/:rating', (req,res) => {
+  // if (!req.session.active) {
+  //   notLoggedIn(res);
+  //   return;
+  // }
+  connPool.getConnection(function (err, connection) {
+    if (err) {
+			connection.release();
+      logger.error(' Error getting mysql_pool connection: ' + err);
+      throw err;
+    }
+    //checks for invalid severity rating
+    if(req.params.rating < -1 || req.params.rating > 5){
+      logger.error('Invalid rating. Please rate the severity from 1 to 5.' + err);
+    }else{
+      func.setSeverity(connection, logger, req.params.repId, req.params.rating, function(succeed) { 
+        if(succeed){
+          sendResp(res,200,`Severity rating set for report (ID: ${req.params.repId}).`);
+        }else{
+          sendResp(res,400,`Problem assigning severity score to report (ID: ${req.params.repId})`);
+        }
+      });
+
+    }
+    
+  });
+
 });
 
 //gets the content of a specific report by repId
