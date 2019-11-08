@@ -244,10 +244,10 @@ app.put('/reports/:repId/close', (req, res) => {
 
 //Allows the report filer to mark the severity of a report
 app.put('/reports/:repId/:rating', (req,res) => {
-  // if (!req.session.active) {
-  //   notLoggedIn(res);
-  //   return;
-  // }
+  if (!req.session.active) {
+    notLoggedIn(res);
+    return;
+  }
   connPool.getConnection(function (err, connection) {
     if (err) {
 			connection.release();
