@@ -1,7 +1,7 @@
 var logger = require('../helpers/logger');
 
 
-async function postNewPerfRev(connection, empId, body); {
+async function postNewPerfRev(connection, empId, body) {
     try {
       await connection.query(`INSERT INTO perf_reviews (emp_id, review, score, creation_date) VALUES
       (${empId}, ${body.review}, ${body.score}, ${body.creation_date})`);
@@ -14,7 +14,7 @@ async function postNewPerfRev(connection, empId, body); {
     return {message: 'succeed'};
   }
 
-  
+
 module.exports = {
     //functions that will be used
     postNewPerfRev
