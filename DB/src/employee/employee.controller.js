@@ -77,6 +77,7 @@ router.put('/employees/:empId/profile/manager', async (req, res) => {
   res.json(response);
 });
 
+//Adds strikes to employee
 router.post('/employees/:empId', async (req, res) => {
   //if (notLoggedIn(req, res)) return; //Not sure if this will actually be necessary for a post request.
 
@@ -86,5 +87,17 @@ router.post('/employees/:empId', async (req, res) => {
   let response = await model.addStrike(connection, req.params.empId);
   res.json(response);
 });
+
+//Create a new report for an employee, by a manager
+router.put('/employees/:empId/profile/report-history', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+  let by_Employee = req.params.empId;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.createReport(connection, req.body, by_Employee);
+  res.json(response);
+})
 
 module.exports = router;
