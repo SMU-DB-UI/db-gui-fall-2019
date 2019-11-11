@@ -77,4 +77,14 @@ router.put('/employees/:empId/profile/manager', async (req, res) => {
   res.json(response);
 });
 
+router.get('/employees/:empId/profile/report-history', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.reportHistory(connection, req.params.empId);
+  res.json(response);
+});
+
 module.exports = router;

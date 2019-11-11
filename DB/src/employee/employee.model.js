@@ -118,11 +118,25 @@ async function getEmployee(connection, empId) {
  return {message: 'succeed', profile: profile};         
 }
 
+async function reportHistory(connection, empId) {
+  let rows;
+  try {
+    [rows] = await connection.query(`select * from reports where by_emp_id = ${empId} OR for_emp_id = ${empId}`);
+  }
+  catch (e) {
+    logger.error(e);
+    return {message: 'fail'};
+  }
+
+  return {message: 'succeed', reportHistory: rows};
+}
+
 module.exports = {
   getEmployees,
   getEmployee,
   removeEmployee,
   getContactInfo,
   updateContactInfo,
-  setManager
+  setManager,
+  reportHistory
 };

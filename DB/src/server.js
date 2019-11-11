@@ -1,7 +1,3 @@
-/**A simple node/express server that include communication with a 
- * mysql db instance. 
-*/
-
 //create main objects
 
 const express = require('express');
