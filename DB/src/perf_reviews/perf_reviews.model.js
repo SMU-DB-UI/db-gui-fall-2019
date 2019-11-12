@@ -16,19 +16,29 @@ async function postNewPerfRev(connection, empId, body) {
 
 async function seeAllPerfRevs(connection, empId) {
   try {
-    await connection.query(`SELECT * FROM perf_reviews WHERE emp_id = ?`, [empId]);
+    [rows] = await connection.query(`SELECT * FROM perf_reviews WHERE emp_id = ${empId}`);
   }
   catch (e) {
     logger.error(e);
     return {message: 'fail'};
   }
-
+  var revList = [];
+  
+  for (var i in rows) {
+    revList.push({
+      id:             rows[i].id, 
+      emp_id:         rows[i].emp_id, 
+      review:         rows[i].review,                   
+      score:          rows[i].score, 
+      creation_date:  rows[i].creation_date
+    });
+  }
   return {message: 'succeed'};
 }
 
 
 module.exports = {
     //functions that will be used
-    postNewPerfRev
+    postNewPerfRev,
     seeAllPerfRevs
   };
