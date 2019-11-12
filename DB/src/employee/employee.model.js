@@ -23,7 +23,7 @@ async function getEmployees(connection) {
       rating:   rows[i].rating
     });
   }
-  return {message: 'succeed', employees: empList};
+  return {message: 'succeed', employeeCount: empList.length, employees: empList};
 }
 
 async function removeEmployee(connection, empId) {
