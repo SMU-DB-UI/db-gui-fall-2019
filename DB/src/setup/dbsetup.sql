@@ -58,6 +58,7 @@ CREATE TABLE perf_reviews(
     review TEXT not null,
     score int not null,
     creation_date VARCHAR(50) not null,
+    active VARCHAR(10),
     primary key(id),
     foreign key (emp_id) references employees(id)
 );

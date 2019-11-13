@@ -31,14 +31,19 @@ router.get('/employees/:empId/profile/performance_reviews', async (req, res) => 
   if (message == 'fail') return;
 
   let perf_rev = await model.seeAllPerfRevs(connection, req.params.empId);
-  res.json({
-    id:           perf_rev.id, 
-    emp_id_refs:  perf_rev.emp_id,
-    text:         perf_rev.review,
-    score:        perf_rev.score,
-    date_created: perf_rev.creation_date
-  });
+  res.json(perf_rev);
 });
+
+router.delete('/employees/:empId/profile/performance_reviews/:perf_id', async (req, res) => {
+
+  if (notLoggedIn(req,res)) return;
+  
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.deletePerfRev(connection, req.params.empId, req.params.perf_id);
+  res.json(response);
+})
 
 
 module.exports = router;
