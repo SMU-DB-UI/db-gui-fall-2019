@@ -90,7 +90,7 @@ router.post('/employees/:empId', async (req, res) => {
 
 //Create a new report for an employee, by a manager
 router.put('/employees/:empId/profile/report-history', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+  //if (notLoggedIn(req, res)) return;
   let by_Employee = req.params.empId;
 
   let {connection, message} = await conn.getConnection(res);
