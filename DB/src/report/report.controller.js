@@ -43,13 +43,14 @@ router.get('/reports/:repId', async (req,res) => {
   });
 });
 
-router.put('/reports/:repId/severity/:score', async (req,res) => {
+router.put('/reports/:repId/severity_score/:empId', async (req,res) => {
+ 
   if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
-  let response = model.rateSeverity(connection, req.params.repId, req.params.score);
+  let response = model.rateSeverity(connection, req.params.repId, req.body.score, req.params.empId);
   res.json(response);
 
 });
