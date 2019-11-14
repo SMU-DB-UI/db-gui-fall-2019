@@ -30,10 +30,12 @@ app.use(session({secret: 'secretstuff'}));
 var employee  = require('./employee/employee.controller');
 var report    = require('./report/report.controller');
 var account   = require('./account/account.controller');
+var perfreviews = require('./perf_reviews/perf_reviews.controller');
 
 app.use(employee);
 app.use(report);
 app.use(account);
+app.use(perfreviews);
 
 /**     REQUEST HANDLERS        */
 
