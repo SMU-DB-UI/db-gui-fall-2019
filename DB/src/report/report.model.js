@@ -16,7 +16,7 @@ async function getReport(connection, repId){
 
 async function closeReport(connection, repId, reason) {
   try {
-    await connection.query(`update reports set status = 'closed: ${reason}' where id = ${repId}`);
+    await connection.query(`update reports set status = 'closed', close_reason = '${reason}' where id = ${repId}`);
   }
   catch (e) {
     logger.error(e);

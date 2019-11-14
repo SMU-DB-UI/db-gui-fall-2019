@@ -39,6 +39,7 @@ CREATE TABLE reports(
     report TEXT not null,
     creation_date VARCHAR(50) not null,
     status varchar(50) not null,
+    close_reason varchar(100),
     severity int not null,
     foreign key (by_emp_id) references employees(id),
     foreign key (for_emp_id) references employees(id)
