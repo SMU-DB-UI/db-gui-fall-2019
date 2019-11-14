@@ -50,9 +50,8 @@ router.put('/reports/:repId/severity_score/:empId', async (req,res) => {
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
-  let response = model.rateSeverity(connection, req.params.repId, req.body.score, req.params.empId);
+  let response = await model.rateSeverity(connection, req.params.repId, req.body.score, req.params.empId);
   res.json(response);
-
 });
 
 module.exports = router;

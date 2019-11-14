@@ -28,9 +28,8 @@ async function closeReport(connection, repId, reason) {
 
 async function rateSeverity(connection, repId, score, emp_id) {
 
-
   //finds the employee that the report was written by
-  let [_by_emp_id] = await connection.query(`SELECT by_emp_id FROM reports WHERE id = ?`, [rep_id]);
+  let [_by_emp_id] = await connection.query(`SELECT by_emp_id FROM reports WHERE id = ?`, [repId]);
 
   //find that employee's manager
   let [rows] = await connection.query(`SELECT manager FROM employees WHERE id = ?`, [_by_emp_id[0].by_emp_id] );
@@ -44,7 +43,7 @@ async function rateSeverity(connection, repId, score, emp_id) {
       logger.error(e);
       return {message: 'fail'};
     }
-    return {message: 'successfully assigned severity score'};
+    return {message: 'succeed'};
   }
 }
 

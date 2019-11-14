@@ -6,3 +6,4 @@ INSERT INTO employees VALUES
 
 INSERT INTO reports VALUES
     (1, 1, 2, 'Test report text', '11/5/2019', 'open', 0);
+    (2, 2, 1, 'Report text', '11/11/2019', 'open', null, 2);
