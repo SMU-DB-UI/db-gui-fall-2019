@@ -43,4 +43,15 @@ router.get('/reports/:repId', async (req,res) => {
   });
 });
 
+router.get('/severity/:repId/:score', async (req,res) => {
+  if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = model.rateSeverity(connection, req.params.repId, req.params.score);
+  res.json(response);
+
+});
+
 module.exports = router;

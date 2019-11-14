@@ -26,7 +26,20 @@ async function closeReport(connection, repId, reason) {
   return {message: 'succeed'};
 }
 
+async function rateSeverity(connection, repId, score) {
+  try {
+    await connection.query(`update reports set severity = ${score} where id = ${repId}`);
+  }
+  catch (e) {
+    logger.error(e);
+    return {message: 'fail'};
+  }
+  return {message: 'successfully assigned severity score'};
+}
+
 module.exports = {
   getReport,
-  closeReport
+  closeReport,
+  rateSeverity
 };
+
