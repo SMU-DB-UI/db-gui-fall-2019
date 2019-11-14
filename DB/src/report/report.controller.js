@@ -43,7 +43,7 @@ router.get('/reports/:repId', async (req,res) => {
   });
 });
 
-router.get('/severity/:repId/:score', async (req,res) => {
+router.put('/reports/:repId/severity/:score', async (req,res) => {
   if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
