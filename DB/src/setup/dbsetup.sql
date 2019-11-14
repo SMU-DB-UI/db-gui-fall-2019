@@ -33,14 +33,14 @@ CREATE TABLE employees(
 );
 
 CREATE TABLE reports(
-    id int auto_increment,
+    id int not null AUTO_INCREMENT,
     by_emp_id int not null,
     for_emp_id int not null,
     report TEXT not null,
     creation_date VARCHAR(50) not null,
     status varchar(50) not null,
     severity int not null,
-    primary key(id),
+    PRIMARY KEY (id),
     foreign key (by_emp_id) references employees(id),
     foreign key (for_emp_id) references employees(id)
 );
