@@ -164,6 +164,7 @@ async function createReport(connection, {_for_emp_id, _report, _severity}, by_Em
     logger.info("Cannot Create Report: Employee Not a Manager.");
     return {message: 'fail'};
   }
+}
 
 module.exports = {
   getEmployees,
