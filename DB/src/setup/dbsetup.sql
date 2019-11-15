@@ -39,6 +39,7 @@ CREATE TABLE reports(
     report TEXT not null,
     creation_date VARCHAR(50) not null,
     status varchar(50) not null,
+    close_reason varchar(100),
     severity int not null,
     PRIMARY KEY (id),
     foreign key (by_emp_id) references employees(id),
@@ -53,10 +54,12 @@ CREATE TABLE employee_history(
 );
 
 CREATE TABLE perf_reviews(
-    id int primary key,
+    id int auto_increment,
     emp_id int not null,
     review TEXT not null,
     score int not null,
     creation_date VARCHAR(50) not null,
+    active VARCHAR(10),
+    primary key(id),
     foreign key (emp_id) references employees(id)
 );

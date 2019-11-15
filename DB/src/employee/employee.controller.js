@@ -77,6 +77,16 @@ router.put('/employees/:empId/profile/manager', async (req, res) => {
   res.json(response);
 });
 
+router.get('/employees/:empId/profile/report-history', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+  
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+  
+  let response = await model.reportHistory(connection, req.params.empId);
+  res.json(response);
+});
+
 //Adds strikes to employee
 router.post('/employees/:empId', async (req, res) => {
   //if (notLoggedIn(req, res)) return; //Not sure if this will actually be necessary for a post request.

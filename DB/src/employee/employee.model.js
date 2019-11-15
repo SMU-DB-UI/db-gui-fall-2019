@@ -130,6 +130,19 @@ async function getEmployee(connection, empId) {
  return {message: 'succeed', profile: profile};         
 }
 
+async function reportHistory(connection, empId) {
+  let rows;
+  try {
+    [rows] = await connection.query(`select * from reports where by_emp_id = ${empId} OR for_emp_id = ${empId}`);
+  }
+  catch (e) {
+    logger.error(e);
+    return {message: 'fail'};
+  }
+
+  return {message: 'succeed', reportHistory: rows};
+}
+
 //Creates a report for an employee, by an employee who is a manager
 async function createReport(connection, {_for_emp_id, _report, _severity}, by_Employee) {
   let [rows] = await connection.query(`SELECT manager FROM employees WHERE id = ?`, [_for_emp_id]);
@@ -160,6 +173,7 @@ module.exports = {
   getContactInfo,
   updateContactInfo,
   setManager,
+  reportHistory,
   addStrike,
   createReport
 };
