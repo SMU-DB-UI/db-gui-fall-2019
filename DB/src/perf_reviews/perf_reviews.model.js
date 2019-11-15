@@ -16,7 +16,7 @@ async function postNewPerfRev(connection, empId, body) {
 
 async function seeAllPerfRevs(connection, empId) {
   try {
-    [rows] = await connection.query(`SELECT * FROM perf_reviews WHERE emp_id = ${empId}`);
+    [rows] = await connection.query(`SELECT * FROM perf_reviews WHERE (emp_id = ${empId} AND active = 'true') ORDER BY creation_date`);
   }
   catch (e) {
     logger.error(e);
@@ -31,7 +31,6 @@ async function seeAllPerfRevs(connection, empId) {
       review:         rows[i].review,                   
       score:          rows[i].score, 
       creation_date:  rows[i].creation_date,
-      active:         rows[i].active
     });
   }
   return {message: 'succeed', reviews: revList};
