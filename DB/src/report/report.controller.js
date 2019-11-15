@@ -1,5 +1,3 @@
-
-
 var express = require('express');
 var model = require('./report.model');
 var conn = require('../helpers/connections');

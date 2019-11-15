@@ -26,6 +26,8 @@ router.post('/employees/:empId/profile/performance_reviews', async (req, res) =>
 
 });
 
+
+//View an employee's performance reviews 
 router.get('/employees/:empId/profile/performance_reviews', async (req, res) => {
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
@@ -34,8 +36,18 @@ router.get('/employees/:empId/profile/performance_reviews', async (req, res) => 
   res.json(perf_rev);
 });
 
-router.delete('/employees/:empId/profile/performance_reviews/:perf_id', async (req, res) => {
+//View an employee's overall rating based on performance reviews
+router.get('/employees/:empId/profile/rating', async (req, res) => {
+  if (notLoggedIn(req,res)) return;
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
 
+  let perf_score = await model.getPerfScore(connection, req.params.empId);
+  res.json(perf_score);
+});
+
+//Delete a performance review
+router.delete('/employees/:empId/profile/performance_reviews/:perf_id', async (req, res) => {
   if (notLoggedIn(req,res)) return;
   
   let {connection, message} = await conn.getConnection(res);
