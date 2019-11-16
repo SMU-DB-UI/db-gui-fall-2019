@@ -21,17 +21,17 @@ router.put('/reports/:repId/close', async (req, res) => {
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
-  let response = model.closeReport(connection, req.params.repId, req.body.reason);
+  let response = await model.closeReport(connection, req.params.repId, req.body.reason);
   res.json(response);
 });
   
 router.get('/reports/:repId', async (req,res) => {
-  if (notLoggedIn(req, res)) return;
+  //if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
-  let profile = model.getReport(connection, req.params.repId);
+  let profile = await model.getReport(connection, req.params.repId);
   res.json({
     repId:        profile.id, 
     byEmpId:      profile.by_emp_id, 
@@ -52,6 +52,16 @@ router.put('/reports/:repId/severity_score/:empId', async (req,res) => {
 
   let response = await model.rateSeverity(connection, req.params.repId, req.body.score, req.params.empId);
   res.json(response);
+});
+
+router.get('/reports/:repId/comments', async (req,res) => {
+  //if(notLoggedIn(req, res)) return;
+
+  let{connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.getComments(connection, req.params.repId);
+  res.json({theComment: response.comments});
 });
 
 module.exports = router;

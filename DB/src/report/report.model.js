@@ -47,9 +47,24 @@ async function rateSeverity(connection, repId, score, emp_id) {
   }
 }
 
+async function getComments(connection, repId) {
+  var rows;
+  try {
+    [rows] = await connection.query(`SELECT comments FROM reports WHERE id = ?`, [repId]);
+  }
+  catch (e){
+    logger.error(e);
+    return {message: 'fail'};
+  }
+  //logger.info(rows[0].comments);
+  //return rows[0].comments;
+  return rows[0];
+}
+
 module.exports = {
   getReport,
   closeReport,
-  rateSeverity
+  rateSeverity,
+  getComments
 };
 

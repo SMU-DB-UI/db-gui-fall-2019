@@ -5,8 +5,8 @@ INSERT INTO employees VALUES
     (2, 'Marcus', 'Sykora', 1, 'Student', '1', 'address', 'email2', 214, 5, 0, null, null, null, 'true');
 
 INSERT INTO reports VALUES
-    (1, 1, 2, 'Test report text', '11/5/2019', 'open', null, 0),
-    (2, 2, 1, 'Some more text report text', '11/11/2019', 'open', null, 2);
+    (1, 1, 2, 'Test report text', '11/5/2019', 'open', null, 0, 'Comment for report ID 1'),
+    (2, 2, 1, 'Some more text report text', '11/11/2019', 'open', null, 2, 'Comment for report ID 2');
 
 INSERT INTO perf_reviews (emp_id, review, score, creation_date, active) VALUES
     (2, 'this is a performance review', 3, "11/3/2019", 'true'),

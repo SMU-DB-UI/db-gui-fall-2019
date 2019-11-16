@@ -143,7 +143,7 @@ async function reportHistory(connection, empId) {
   return {message: 'succeed', reportHistory: rows};
 }
 
-//Creates a report for an employee, by an employee who is a manager
+//Creates a report for an employee
 async function createReport(connection, {_for_emp_id, _report, _severity}, by_Employee) {
   let [rows] = await connection.query(`SELECT manager FROM employees WHERE id = ?`, [_for_emp_id]);
   
