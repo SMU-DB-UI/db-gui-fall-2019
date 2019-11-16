@@ -16,34 +16,42 @@ export class ReportsPage extends Component {
     
     state = {
         yourReports: [
-            new Report(1, 1, 2, "disgusting", 1, 5)
+            new Report(1, 1, 2, "disgusting", 'Oct-15-2019', 1, 5)
         ],
         reportsOnYou: [
-            new Report(1, 2, 1, "awful", 0, 5)
+            new Report(1, 2, 1, "awful", 'Oct-16-2019', 0, 5)
         ]
     }
 
     render() {
         return (
             <div className='container'>
-                <h2>Your reports</h2>
-                <ol>
-                    {
-                    this.state.yourReports.map(report => 
-                        <ReportCard report={report}/>
-                    )}
-                </ol>
 
-                <h2>Reports on you</h2>
-                <ol>
-                    {
-                        this.state.reportsOnYou.map(report => 
-                        <ReportCard report={report}/>
-                    )}
-                </ol>
+                <div className='card mt-3 bg-info  text-white'>
+                    <h2 className='card-header'>Your reports</h2>
+                    <ul className = 'card-body' 
+                        style={{'list-style': 'none'}, {'paddingLeft': 0}}>
+                        {
+                        this.state.yourReports.map(report => 
+                            <ReportCard report={report} key={report.id}/>
+                        )}
+                    </ul>
+                </div>
+
+                <div className='card mt-3 bg-info  text-white'>
+                    <h2 className='card-header'>Reports on you</h2>
+                    <ul className = 'card-body'
+                        style={{'list-style': 'none'}, {'paddingLeft': 0}}>
+                        {
+                            this.state.reportsOnYou.map(report => 
+                            <ReportCard report={report} key={report.id}/>
+                        )}
+                    </ul>
+                </div>
 
                 <h2>Submit a report</h2>
                 <ReportForm userId={1} empIds={[1, 2]} submitReport={x => this.onSubmitReport(x)}/>
+            
             </div>
 
         );

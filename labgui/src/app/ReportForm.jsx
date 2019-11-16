@@ -8,7 +8,8 @@ export class ReportForm extends Component {
         let report = new Report(0, 
                         this.state.fromId, 
                         this.state.toId, 
-                        this.state.comment, 
+                        this.state.comment,
+                        'Nov-16-2019', 
                         this.state.status, 
                         this.state.severity);
         this.setState({
@@ -30,9 +31,9 @@ export class ReportForm extends Component {
 
     render() {
         return (
-            <form className='container'>
+            <form>
                 <div className='card'>
-                    <h3><div className='card-header bg-danger'>Report</div></h3>
+                    <h3><div className='card-header bg-danger '>Report</div></h3>
                     <div className='card-body'>
                         <div className='form-row'>
                             <div className='col-8'>
