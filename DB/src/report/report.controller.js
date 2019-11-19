@@ -55,7 +55,7 @@ router.put('/reports/:repId/severity_score/:empId', async (req,res) => {
 });
 
 router.get('/reports/:repId/comments', async (req,res) => {
-  //if(notLoggedIn(req, res)) return;
+  if(notLoggedIn(req, res)) return;
 
   let{connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
