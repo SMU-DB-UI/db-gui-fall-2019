@@ -58,7 +58,7 @@ async function getComments(connection, repId) {
   }
   //logger.info(rows[0].comments);
   //return rows[0].comments;
-  return rows[0];
+  return {message: 'succeed', comments: rows[0].comments};
 }
 
 module.exports = {

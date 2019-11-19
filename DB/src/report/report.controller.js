@@ -61,7 +61,7 @@ router.get('/reports/:repId/comments', async (req,res) => {
   if (message == 'fail') return;
 
   let response = await model.getComments(connection, req.params.repId);
-  res.json({theComment: response.comments});
+  res.json(response);
 });
 
 module.exports = router;
