@@ -166,6 +166,34 @@ async function createReport(connection, {_for_emp_id, _report, _severity}, by_Em
   }
 }
 
+async function searchEmployees(connection, query) {
+  let terms = query.split(' ');
+  let queries = [];
+  for (i in terms)
+    queries[i] = `%\\${terms[i]}%`;
+  logger.info(queries);
+  let rows;
+  try {
+    if (queries.length == 1) {
+      [rows] = await connection.query(`SELECT id, fname, lname, dep_id, pos, manager, 
+        addr, email, phn_num, rating, strikes
+        FROM employees WHERE fname LIKE ? OR lname LIKE ?`, [queries[0], queries[0]]);
+    }
+    else {
+      [rows] = await connection.query(`SELECT id, fname, lname, dep_id, pos, manager, 
+        addr, email, phn_num, rating, strikes
+        FROM employees WHERE 
+        fname LIKE ? OR fname LIKE ? OR 
+        lname LIKE ? OR lname LIKE ?`, [queries[0], queries[1], queries[0], queries[1]]);
+    }
+  }
+  catch (e) {
+    logger.error(e.stack);
+    return {message: 'fail'};
+  }
+    return {message: 'succeed', employees: rows};
+}
+
 module.exports = {
   getEmployees,
   getEmployee,
@@ -175,5 +203,6 @@ module.exports = {
   setManager,
   reportHistory,
   addStrike,
-  createReport
+  createReport,
+  searchEmployees
 };

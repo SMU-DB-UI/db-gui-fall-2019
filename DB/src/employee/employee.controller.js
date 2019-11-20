@@ -108,6 +108,17 @@ router.put('/employees/:empId/profile/report-history', async (req, res) => {
 
   let response = await model.createReport(connection, req.body, by_Employee);
   res.json(response);
-})
+});
+
+router.get('/results', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  logger.info('query:' + req.query.search_query);
+
+  let response = await model.searchEmployees(connection, req.query.search_query);
+  res.json(response);
+});
 
 module.exports = router;
