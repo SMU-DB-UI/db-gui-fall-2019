@@ -27,15 +27,17 @@ app.use(cors());
 app.use(ExpressAPILogMiddleware(logger, { request: true }));
 app.use(session({secret: 'secretstuff'}));
 
-var employee  = require('./employee/employee.controller');
-var report    = require('./report/report.controller');
-var account   = require('./account/account.controller');
-var perfreviews = require('./perf_reviews/perf_reviews.controller');
+let employee    = require('./employee/employee.controller');
+let report      = require('./report/report.controller');
+let account     = require('./account/account.controller');
+let perfreviews = require('./perf_reviews/perf_reviews.controller');
+let department  = require('./department/department.controller');
 
 app.use(employee);
 app.use(report);
 app.use(account);
 app.use(perfreviews);
+app.use(department);
 
 /**     REQUEST HANDLERS        */
 

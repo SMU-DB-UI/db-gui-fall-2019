@@ -108,6 +108,6 @@ router.put('/employees/:empId/profile/report-history', async (req, res) => {
 
   let response = await model.createReport(connection, req.body, by_Employee);
   res.json(response);
-})
+});
 
 module.exports = router;
