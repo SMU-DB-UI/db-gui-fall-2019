@@ -10,4 +10,5 @@ INSERT INTO reports VALUES
 
 INSERT INTO perf_reviews (emp_id, review, score, creation_date, active) VALUES
     (2, 'this is a performance review', 3, "11/3/2019", 'true'),
-    (2, 'this is also a performance review', 4, '10/3/2019', 'true');
+    (2, 'this is also a performance review', 4, '10/3/2019', 'true'),
+    (1, 'this is a performance review', 3, "11/3/2019", 'true');

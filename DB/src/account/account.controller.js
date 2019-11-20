@@ -37,8 +37,10 @@ router.get('/login', async (req, res) => {
   if (message == 'fail') return;
 
   let response = await model.login(connection, req.body);
+  console.log(response)
   if (response.message == 'succeed') {
     req.session.active = true;
+    req.session.auth = response.id
     res.json(response);
   }
   else {
