@@ -53,6 +53,7 @@ async function deletePerfRev(connection, empId, perfRevId) {
 
 async function seeAllPerfRevsManager(connection, managerID) {
   let rows;
+  let revList = [];
   try {
     [rows] = await connection.query(`SELECT * FROM perf_reviews 
       INNER JOIN employees ON perf_reviews.emp_id = employees.id 
@@ -66,7 +67,9 @@ async function seeAllPerfRevsManager(connection, managerID) {
   for (var i in rows) {
     if (rows[i].manager == managerID) { 
     revList.push({
-      id:             rows[i].id, 
+      id:             rows[i].id,
+      fname:          rows[i].fname,
+      lname:          rows[i].lname, 
       emp_id:         rows[i].emp_id, 
       review:         rows[i].review,                   
       score:          rows[i].score, 

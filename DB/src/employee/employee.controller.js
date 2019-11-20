@@ -55,6 +55,18 @@ router.put('/employees/:empId/profile', async (req, res) => {
   res.json(response);
 });
 
+//Adds an employee to the database- must be logged in to do so
+router.post('/employees', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.addEmployee(connection, req.body);
+
+  res.json(response);
+});
+
 // Remove employee from database
 router.delete('/employees/:empId', async (req, res) => {
   if (notLoggedIn(req, res)) return;

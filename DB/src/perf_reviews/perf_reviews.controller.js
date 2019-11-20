@@ -31,7 +31,7 @@ router.post('/employees/:empId/profile/performance_reviews', async (req, res) =>
 router.get('/employees/:empId/profile/performance_reviews', async (req, res) => {
 
   if (notLoggedIn(req,res)) return;
-  console.log("id: req.session.auth")
+  console.log(req.session.auth)
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
@@ -51,7 +51,7 @@ router.delete('/employees/:empId/profile/performance_reviews/:perf_id', async (r
 })
 
 //allows a manager to see all performance reviews for any employee under him/her
-router.get('/employees/manager_perf_reviews', async (req,res) => {
+router.get('/employees/manager/perf_reviews', async (req,res) => {
   if (notLoggedIn(req,res)) return;
 
   let {connection, message} = await conn.getConnection(res);
