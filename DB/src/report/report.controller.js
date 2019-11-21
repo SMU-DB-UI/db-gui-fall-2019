@@ -33,16 +33,8 @@ router.get('/reports/:repId', async (req,res) => {
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
-  let profile = model.getReport(connection, req.params.repId);
-  res.json({
-    repId:        profile.id, 
-    byEmpId:      profile.by_emp_id, 
-    forEmpId:     profile.for_emp_id, 
-    report:       profile.report, 
-    creationDate: profile.creation_date, 
-    status:       profile.status, 
-    severity:     profile.severity
-  });
+  let response = await model.getReport(connection, req.params.repId);
+  res.json(response);
 });
 
 //Get all reports in the database
@@ -51,7 +43,8 @@ router.get('/reports', async (req,res) => {
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
-  let profile = model.getReports(connection);
+
+  let response = await model.getReports(connection);
   res.json(response);
 });
 
@@ -76,6 +69,16 @@ router.get('/reports/:manager', async (req,res) => {
   if (message == 'fail') return;
 
   let response = await model.getReportsManager(connection, req.params.manager);
+  res.json(response);
+});
+
+router.get('/reports/:repId/profile', async (req,res) => {
+  if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.getEmpProfile(connection, req.params.repId);
   res.json(response);
 });
 
