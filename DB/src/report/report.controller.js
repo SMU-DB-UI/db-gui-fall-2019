@@ -72,7 +72,7 @@ router.get('/reports/:manager', async (req,res) => {
   res.json(response);
 });
 
-router.get('/reports/:repId/profile', async (req,res) => {
+router.get('/reports/:repId/profiles', async (req,res) => {
   if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);

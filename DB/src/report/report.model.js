@@ -128,33 +128,31 @@ async function getReportsManager(connection, manager){
 }
 
 
-//still in progress
+//get the profiles of all employees involved in a report
 async function getEmpProfile(connection, rep_id){
   try {
-    //gets all reports that are by or about any employee under a specific manager
-    let [rows] = await connection.query(`SELECT by_emp_id, for_emp_id FROM reports WHERE id = ${rep_id})`);
+    let [rows] = await connection.query(`SELECT DISTINCT employees.id, fname, lname, dep_id, manager, addr, email, phn_num, rating 
+                                        FROM reports INNER JOIN employees ON by_emp_id = employees.id OR for_emp_id = employees.id WHERE reports.id = ${rep_id};`);
   }
   catch (e) {
     logger.error(e);
     return {message: 'fail'};
   }
 
-  var reportList = [];
+  var profileList = [];
 
   for(var i in rows) {
-    reportList.push({
-      id:            rows[i].id,
-      by_emp_id:     rows[i].by_emp_id,
-      for_emp_id:    rows[i].for_emp_id,
-      report:        rows[i].report,
-      creation_date: rows[i].creation_date,
-      status:        rows[i].status,
-      close_reason:  rows[i].close_reason,
-      severity:      rows[i].severity
+    profileList.push({
+      fname:    rows[i].fname, 
+      lname:    rows[i].lname, 
+      dep_id:   rows[i].dep_id,
+      manager:  rows[i].manager,                   
+      addr:     rows[i].addr, 
+      phn_num:  rows[i].phn_num, 
+      rating:   rows[i].rating
     });
   }
-
-  return {message: 'succeed', reportCount: reportList.length, reports: reportList};
+  return {message: 'succeed', profileCount: profileList.length, profiles: profileList};
 }
 
 module.exports = {
