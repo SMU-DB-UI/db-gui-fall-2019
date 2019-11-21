@@ -115,8 +115,6 @@ router.get('/results', async (req, res) => {
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
-  logger.info('query:' + req.query.search_query);
-
   let response = await model.searchEmployees(connection, req.query.search_query);
   res.json(response);
 });

@@ -171,7 +171,6 @@ async function searchEmployees(connection, query) {
   let queries = [];
   for (i in terms)
     queries[i] = `%\\${terms[i]}%`;
-  logger.info(queries);
   let rows;
   try {
     if (queries.length == 1) {
