@@ -132,7 +132,7 @@ router.get('/results', async (req, res) => {
   let response = await model.searchEmployees(connection, req.query.search_query);
   
   res.json(response);
-}
+});
 
 // Gets the employment history of an employee
 router.get('/employees/:empId/profile/employment-history', async (req, res) => {
