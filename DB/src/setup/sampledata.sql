@@ -8,6 +8,11 @@ INSERT INTO reports VALUES
     (1, 1, 2, 'Test report text', '11/5/2019', 'open', null, 0, 'Comment for report ID 1'),
     (2, 2, 1, 'Some more text report text', '11/11/2019', 'open', null, 2, 'Comment for report ID 2');
 
+INSERT INTO employment_history VALUES
+    (1, "Software Engineer", "1/1/2007"),
+    (1, "Professor", "1/1/2012");
+    
 INSERT INTO perf_reviews VALUES
     (1,1,"Great worker", 5, '11/5/2019', 'true'),
     (2,1,"Not great", 3, '11/6/2019', 'true');
+    

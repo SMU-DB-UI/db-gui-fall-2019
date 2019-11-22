@@ -64,3 +64,11 @@ CREATE TABLE perf_reviews(
     primary key(id),
     foreign key (emp_id) references employees(id)
 );
+
+CREATE TABLE employment_history(
+    id int not null,
+    position varchar(50) not null,
+    start_date varchar(50) not null,
+    primary key (id, position, start_date),
+    foreign key (id) references employees(id)
+);

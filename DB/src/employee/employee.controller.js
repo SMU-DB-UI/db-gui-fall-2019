@@ -79,7 +79,7 @@ router.put('/employees/:empId/profile/manager', async (req, res) => {
   res.json(response);
 });
 
-//Allows a user to view the report history of an employee (any reports they are involved in)
+// Gets the list of all reports an employee has been involved in
 router.get('/employees/:empId/profile/report-history', async (req, res) => {
   if (notLoggedIn(req, res)) return;
   
@@ -111,6 +111,29 @@ router.put('/employees/:empId/profile/report-history', async (req, res) => {
 
   let response = await model.createReport(connection, req.body, by_Employee);
   res.json(response);
-})
+});
+
+// Gets the employment history of an employee
+router.get('/employees/:empId/profile/employment-history', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.getEmploymentHistory(connection, req.params.empId);
+  res.json(response);
+});
+
+// Sets an employee's position to be something else and adds a new record in
+// employment_history
+router.put('/employees/:empId/profile/change-position', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.changePosition(connection, req.params.empId, req.body.position);
+  res.json(response);
+});
 
 module.exports = router;

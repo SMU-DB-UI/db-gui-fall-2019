@@ -177,6 +177,40 @@ async function createReport(connection, {_for_emp_id, _report, _severity}, by_Em
   }
 }
 
+async function getEmploymentHistory(connection, empId) {
+  let rows;
+  try {
+    [rows] = await connection.query(`SELECT * FROM employment_history WHERE id = ?`, [empId]);
+  }
+  catch (err) {
+    logger.error(err.stack);
+    return {message: 'fail'};
+  }
+
+  return {message: 'succeed', history: rows};
+}
+
+async function changePosition(connection, empId, position) {
+  try {
+    await connection.query(`UPDATE employees SET pos = ? WHERE id = ?`, [position, empId]);
+
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0');
+    let yyyy = String(today.getFullYear());
+    let fullDate = `${mm}/${dd}/${yyyy}`;
+
+    await connection.query(`INSERT INTO employment_history SET ?`, 
+      {id: empId, position: position, start_date: fullDate});
+  }
+  catch (err) {
+    logger.error(err.stack);
+    return {message: 'fail'};
+  }
+
+  return {message: 'succeed'};
+}
+
 module.exports = {
   getEmployees,
   getEmployee,
@@ -186,5 +220,7 @@ module.exports = {
   setManager,
   reportHistory,
   addStrike,
-  createReport
+  createReport,
+  getEmploymentHistory,
+  changePosition
 };
