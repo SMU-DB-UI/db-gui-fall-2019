@@ -76,11 +76,12 @@ async function closeReport(connection, repId, reason) {
 
 //change the severity of a report
 async function rateSeverity(connection, repId, score, emp_id) {
+  let rows;
   try{
     //finds the employee that the report was written by
     let [_by_emp_id] = await connection.query(`SELECT by_emp_id FROM reports WHERE id = ?`, [repId]);
     //find that employee's manager
-    let [rows] = await connection.query(`SELECT manager FROM employees WHERE id = ?`, [_by_emp_id[0].by_emp_id] );
+    [rows] = await connection.query(`SELECT manager FROM employees WHERE id = ?`, [_by_emp_id[0].by_emp_id] );
   }catch(e){
     logger.error(e);
     return{message: 'fail'};
@@ -100,9 +101,10 @@ async function rateSeverity(connection, repId, score, emp_id) {
 
 //gets all the reports related to employees under a cretain manager
 async function getReportsManager(connection, manager){
+  let rows;
   try {
     //gets all reports that are by or about any employee under a specific manager
-    let [rows] = await connection.query(`SELECT * FROM reports WHERE by_emp_id OR for_emp_id IN (SELECT DISTINCT id FROM employees WHERE manager = ${manager})`);
+    [rows] = await connection.query(`SELECT * FROM reports WHERE by_emp_id OR for_emp_id IN (SELECT DISTINCT id FROM employees WHERE manager = ${manager})`);
   }
   catch (e) {
     logger.error(e);
@@ -130,8 +132,9 @@ async function getReportsManager(connection, manager){
 
 //get the profiles of all employees involved in a report
 async function getEmpProfile(connection, rep_id){
+  let rows;
   try {
-    let [rows] = await connection.query(`SELECT DISTINCT employees.id, fname, lname, dep_id, manager, addr, email, phn_num, rating 
+    [rows] = await connection.query(`SELECT DISTINCT employees.id, fname, lname, dep_id, manager, addr, email, phn_num, rating 
                                         FROM reports INNER JOIN employees ON by_emp_id = employees.id OR for_emp_id = employees.id WHERE reports.id = ${rep_id};`);
   }
   catch (e) {
