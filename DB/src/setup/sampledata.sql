@@ -1,4 +1,7 @@
-INSERT INTO departments VALUES(1, 'Computer Science');
+INSERT INTO departments VALUES
+    (1, 'Computer Science'),
+    (2, 'Mechanical Engineering'),
+    (3, 'Marketing');
 
 INSERT INTO employees VALUES
     (1, 'mark', 'fontenot', 1, 'prof', null, 'address', 'email1', 214, -1, 0, null, null, null, 'true'),
