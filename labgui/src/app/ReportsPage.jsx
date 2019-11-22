@@ -30,13 +30,15 @@ export class ReportsPage extends Component {
     componentWillMount() {
         this.reportsRepo.login()
         .then (x => {
-            this.reportsRepo.getReportHistory(1)
-            .then ( report => {
-                if (report) {
-                this.setState({yourReports: [report]})
-                }
-            })
-            .catch (x => alert(x))
+                this.reportsRepo.login();
+            
+            // this.reportsRepo.getReportHistory(1)
+            // .then ( report => {
+            //     if (report) {
+            //     this.setState({yourReports: [report]})
+            //     }
+            // })
+            // .catch (x => alert(x))
         })
     }
 
