@@ -33,13 +33,9 @@ let account     = require('./account/account.controller');
 let perfreviews = require('./perf_reviews/perf_reviews.controller');
 let department  = require('./department/department.controller');
 
-app.use(employee);
-app.use(report);
-app.use(account);
-app.use(perfreviews);
-app.use(department);
-
-/**     REQUEST HANDLERS        */
+function redirectInvalid(req, res) {
+  res.send('<h1>404 Not Found</h1>');
+}
 
 //connecting the express object to listen on a particular port as defined in the config object. 
 app.listen(config.port, config.host, (e) => {
@@ -48,3 +44,10 @@ app.listen(config.port, config.host, (e) => {
   }
   logger.info(`${config.name} running on ${config.host}:${config.port}`);
 });
+
+app.use(employee);
+app.use(report);
+app.use(account);
+app.use(perfreviews);
+
+app.use(redirectInvalid);
