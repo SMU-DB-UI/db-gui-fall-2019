@@ -36,6 +36,7 @@ router.get('/employees/:empId', async (req, res) => {
 });
   
 //Returns contact info of a given employee- does not need perms to get this
+//we will need to return what type of user is accessing this so we can hide info if necessary (user story 1.4)
 router.get('/employees/:empId/profile', async (req, res) => {
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
@@ -52,6 +53,18 @@ router.put('/employees/:empId/profile', async (req, res) => {
   if (message == 'fail') return;
 
   let response = await model.updateContactInfo(connection, req.params.empId, req.body);
+  res.json(response);
+});
+
+//Adds an employee to the database- must be logged in to do so
+router.post('/employees', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.addEmployee(connection, req.body);
+
   res.json(response);
 });
 
@@ -77,6 +90,7 @@ router.put('/employees/:empId/profile/manager', async (req, res) => {
   res.json(response);
 });
 
+// Gets the list of all reports an employee has been involved in
 router.get('/employees/:empId/profile/report-history', async (req, res) => {
   if (notLoggedIn(req, res)) return;
   
@@ -116,6 +130,30 @@ router.get('/results', async (req, res) => {
   if (message == 'fail') return;
 
   let response = await model.searchEmployees(connection, req.query.search_query);
+  
+  res.json(response);
+}
+
+// Gets the employment history of an employee
+router.get('/employees/:empId/profile/employment-history', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.getEmploymentHistory(connection, req.params.empId);
+  res.json(response);
+});
+
+// Sets an employee's position to be something else and adds a new record in
+// employment_history
+router.put('/employees/:empId/profile/change-position', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.changePosition(connection, req.params.empId, req.body.position);
   res.json(response);
 });
 

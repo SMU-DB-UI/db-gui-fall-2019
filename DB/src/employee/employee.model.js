@@ -14,6 +14,13 @@ async function getEmployees(connection) {
   var empList = [];
   
   for (var i in rows) {
+
+    //when we create an employee, assign a value of -1 please!!
+    if(rows[i].rating == -1 | rows[i].rating == null){ //employee doesn't have a rating yet
+      [avg] = await connection.query(`SELECT AVG(score) AS s FROM perf_reviews WHERE (emp_id = ${rows[i].id} AND active = 'true')`);
+      connection.query(`UPDATE employees SET rating = ${avg[0].s} WHERE id = ${rows[i].id}`);
+    }
+
     empList.push({
       fname:    rows[i].fname, 
       lname:    rows[i].lname, 
@@ -24,6 +31,36 @@ async function getEmployees(connection) {
     });
   }
   return {message: 'succeed', employeeCount: empList.length, employees: empList};
+}
+
+async function addEmployee(connection, empDetails) {
+  //check if id already in the table
+  let rows;
+  try {
+    [rows] = await connection.query(`select * from employees where id = ${empDetails.id}`);
+  }
+  catch (e) {
+    if (e == undefined) logger.info('yes for some reason');
+    logger.error(e.stack);
+    return {message: 'fail'};
+  }
+    
+  if (rows[0] != undefined) {
+    return {message: 'employee id already exists'};
+  }
+  //(2, 'Marcus', 'Sykora', 1, 'Student', '1', 'address', 'email2', 214, 5, 0, null, null, null, 'true');
+  try {
+    await connection.query(`INSERT INTO employees VALUES (${empDetails.id}, '${empDetails.fname}', 
+    '${empDetails.lname}', ${empDetails.dep_id}, '${empDetails.pos}', 
+    '${empDetails.manager}', '${empDetails.addr}', '${empDetails.email}', 
+    ${empDetails.phn_num}, -1, ${empDetails.strikes}, null, null, null, 'true')`)
+  }
+  catch(e) {
+    logger.error(e);
+    return {message: 'fail'};
+  }
+
+  return {message: 'succeed'};
 }
 
 async function removeEmployee(connection, empId) {
@@ -112,6 +149,10 @@ async function getEmployee(connection, empId) {
     return {message: 'fail'};
   }
 
+  if(rows[0].rating == -1 | rows[0].rating == null){ //employee doesn't have a rating yet
+    [avg] = await connection.query(`SELECT AVG(score) AS s FROM perf_reviews WHERE (emp_id = ${rows[0].id} AND active = 'true')`);
+    connection.query(`UPDATE employees SET rating = ${avg[0].s} WHERE id = ${rows[0].id}`);
+}
   // Formatted as JSON
   let profile = {'profile':
     {
@@ -143,7 +184,7 @@ async function reportHistory(connection, empId) {
   return {message: 'succeed', reportHistory: rows};
 }
 
-//Creates a report for an employee, by an employee who is a manager
+//Creates a report for an employee
 async function createReport(connection, {_for_emp_id, _report, _severity}, by_Employee) {
   let [rows] = await connection.query(`SELECT manager FROM employees WHERE id = ?`, [_for_emp_id]);
   
@@ -193,9 +234,44 @@ async function searchEmployees(connection, query) {
     return {message: 'succeed', employees: rows};
 }
 
+async function getEmploymentHistory(connection, empId) {
+  let rows;
+  try {
+    [rows] = await connection.query(`SELECT * FROM employment_history WHERE id = ?`, [empId]);
+  }
+  catch (err) {
+    logger.error(err.stack);
+    return {message: 'fail'};
+  }
+
+  return {message: 'succeed', history: rows};
+}
+
+async function changePosition(connection, empId, position) {
+  try {
+    await connection.query(`UPDATE employees SET pos = ? WHERE id = ?`, [position, empId]);
+
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0');
+    let yyyy = String(today.getFullYear());
+    let fullDate = `${mm}/${dd}/${yyyy}`;
+
+    await connection.query(`INSERT INTO employment_history SET ?`, 
+      {id: empId, position: position, start_date: fullDate});
+  }
+  catch (err) {
+    logger.error(err.stack);
+    return {message: 'fail'};
+  }
+
+  return {message: 'succeed'};
+}
+
 module.exports = {
   getEmployees,
   getEmployee,
+  addEmployee,
   removeEmployee,
   getContactInfo,
   updateContactInfo,
@@ -203,5 +279,7 @@ module.exports = {
   reportHistory,
   addStrike,
   createReport,
-  searchEmployees
+  searchEmployees,
+  getEmploymentHistory,
+  changePosition
 };
