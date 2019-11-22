@@ -5,13 +5,7 @@ import { thisExpression } from '@babel/types';
 export class ReportsRepository {
     url = 'http://35.223.74.36:3000'
     session = {
-        Authorization: {
-            username: 'mfontenot',
-            password: 'password'
-        },
-        Headers: {
 
-        }
      
     }
         // headers: {
@@ -26,9 +20,12 @@ export class ReportsRepository {
     // }
 
     login() {
-            axios.get(`${this.url}/login`, this.session)
+            return axios.put(`${this.url}/login`, {
+                "username":"mfontenot",
+                "password":"password"
+            },this.session)
                 .then(x => {
-                    // this.session = x.data.session;
+                    this.session = x.data.session;
                     console.log("logged in")
                     console.log(x);})
                 .catch(x => console.log("failed to log in", x));
@@ -37,7 +34,7 @@ export class ReportsRepository {
     getReportHistory(userId) {
         return new Promise((resolve, reject) => {
             return axios.get(`${this.url}/reports/1`, this.session)
-            .then(x => resolve(x.data))
+            .then(x => console.log(x))//resolve(x.data))
             .catch(x => alert(x));
         });
 

@@ -3,6 +3,8 @@ import { Report } from '../models/Report';
 import {ReportCard} from './ReportCard';
 import { ReportForm } from './ReportForm';
 import {ReportsHistory, ReportsRepository} from '../api/reportsRepository'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import AppBar from 'material-ui/AppBar';
 
 export class ReportsPage extends Component {
 
@@ -26,24 +28,30 @@ export class ReportsPage extends Component {
     reportsRepo = new ReportsRepository()
 
     componentWillMount() {
-        this.reportsRepo.login();
-
-        // this.reportsRepo.getReportHistory(1)
-        // .then ( report => {
-        //     if (report) {
-        //     this.setState({yourReports: [report]})
-        //     }
-        // })
-        // .catch (x => alert(x))
+        this.reportsRepo.login()
+        .then (x => {
+            this.reportsRepo.getReportHistory(1)
+            .then ( report => {
+                if (report) {
+                this.setState({yourReports: [report]})
+                }
+            })
+            .catch (x => alert(x))
+        })
     }
 
     componentDidMount() {
+
         console.log(this.state.yourReports)
     }
 
     render() {
         return (
-            
+            <>
+        <MuiThemeProvider>
+        <AppBar title="Reports"/>
+        </MuiThemeProvider>
+
             <div className='container'>
                 <div className='card mt-3 bg-info  text-white'>
                     <h2 className='card-header'>Your reports</h2>
@@ -71,7 +79,7 @@ export class ReportsPage extends Component {
                 <ReportForm userId={1} empIds={[1, 2]} submitReport={x => this.onSubmitReport(x)}/>
             
             </div>
-
+            </>
         );
     }
 }
