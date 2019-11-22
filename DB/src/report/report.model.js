@@ -98,6 +98,21 @@ async function rateSeverity(connection, repId, score, emp_id) {
   }
 }
 
+async function getComments(connection, repId) {
+  var rows;
+  try {
+    [rows] = await connection.query(`SELECT comments FROM reports WHERE id = ?`, [repId]);
+  }
+  catch (e){
+    logger.error(e);
+    return {message: 'fail'};
+  }
+  //logger.info(rows[0].comments);
+  //return rows[0].comments;
+  return {message: 'succeed', comments: rows[0].comments};
+
+}
+
 //gets all the reports related to employees under a cretain manager
 async function getReportsManager(connection, manager){
   try {
@@ -160,6 +175,7 @@ module.exports = {
   getReports,
   closeReport,
   rateSeverity,
+  getComments,
   getReportsManager,
   getEmpProfile
 };

@@ -21,18 +21,29 @@ router.put('/reports/:repId/close', async (req, res) => {
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
-  let response = model.closeReport(connection, req.params.repId, req.body.reason);
+  let response = await model.closeReport(connection, req.params.repId, req.body.reason);
   res.json(response);
 });
   
 
 //Get a specific report by its rep id
 router.get('/reports/:repId', async (req,res) => {
-  if (notLoggedIn(req, res)) return;
+  //if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
+  let profile = await model.getReport(connection, req.params.repId);
+  res.json({
+    repId:        profile.id, 
+    byEmpId:      profile.by_emp_id, 
+    forEmpId:     profile.for_emp_id, 
+    report:       profile.report, 
+    creationDate: profile.creation_date, 
+    status:       profile.status, 
+    severity:     profile.severity
+  });
+  
   let response = await model.getReport(connection, req.params.repId);
   res.json(response);
 });
@@ -61,8 +72,18 @@ router.put('/reports/:repId/severity_score/:empId', async (req,res) => {
   res.json(response);
 });
 
+router.get('/reports/:repId/comments', async (req,res) => {
+  if(notLoggedIn(req, res)) return;
+
+  let{connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.getComments(connection, req.params.repId);
+  res.json(response);
+});
+
 //get the reports of all employees under a specific manager
-router.get('/reports/:manager', async (req,res) => {
+router.get('/reports/manager/:manager', async (req,res) => {
   if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
@@ -81,6 +102,5 @@ router.get('/reports/:repId/profiles', async (req,res) => {
   let response = await model.getEmpProfile(connection, req.params.repId);
   res.json(response);
 });
-
 
 module.exports = router;
