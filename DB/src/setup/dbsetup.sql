@@ -41,6 +41,7 @@ CREATE TABLE reports(
     status varchar(50) not null,
     close_reason varchar(100),
     severity int not null,
+    comments TEXT,
     PRIMARY KEY (id),
     foreign key (by_emp_id) references employees(id),
     foreign key (for_emp_id) references employees(id)

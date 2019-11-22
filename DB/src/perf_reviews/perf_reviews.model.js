@@ -36,6 +36,20 @@ async function seeAllPerfRevs(connection, empId) {
   return {message: 'succeed', reviews: revList};
 }
 
+async function getPerfScore(connection, empId) {
+  try {
+    [avg] = await connection.query(`SELECT AVG(score) FROM perf_reviews WHERE emp_id = ${empId} AND active = 'true'`);
+  }
+  catch (e) {
+    logger.error(e);
+    return {message: 'fail'};
+  }
+ 
+  return {message: 'succeed', score: avg};
+}
+
+
+//Sets a performance review as "inactive", or deleted.
 async function deletePerfRev(connection, empId, perfRevId) {
   try {
     await connection.query(`UPDATE perf_reviews SET active = 'false' WHERE (id = ${perfRevId} AND emp_id = ${empId})`);
@@ -53,5 +67,6 @@ module.exports = {
     //functions that will be used
     postNewPerfRev,
     seeAllPerfRevs,
-    deletePerfRev
+    deletePerfRev,
+    getPerfScore
   };

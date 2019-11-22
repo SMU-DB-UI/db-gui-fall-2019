@@ -14,6 +14,13 @@ async function getEmployees(connection) {
   var empList = [];
   
   for (var i in rows) {
+
+    //when we create an employee, assign a value of -1 please!!
+    if(rows[i].rating == -1 | rows[i].rating == null){ //employee doesn't have a rating yet
+      [avg] = await connection.query(`SELECT AVG(score) AS s FROM perf_reviews WHERE (emp_id = ${rows[i].id} AND active = 'true')`);
+      connection.query(`UPDATE employees SET rating = ${avg[0].s} WHERE id = ${rows[i].id}`);
+    }
+
     empList.push({
       fname:    rows[i].fname, 
       lname:    rows[i].lname, 
@@ -112,6 +119,10 @@ async function getEmployee(connection, empId) {
     return {message: 'fail'};
   }
 
+  if(rows[0].rating == -1 | rows[0].rating == null){ //employee doesn't have a rating yet
+    [avg] = await connection.query(`SELECT AVG(score) AS s FROM perf_reviews WHERE (emp_id = ${rows[0].id} AND active = 'true')`);
+    connection.query(`UPDATE employees SET rating = ${avg[0].s} WHERE id = ${rows[0].id}`);
+}
   // Formatted as JSON
   let profile = {'profile':
     {
@@ -143,7 +154,7 @@ async function reportHistory(connection, empId) {
   return {message: 'succeed', reportHistory: rows};
 }
 
-//Creates a report for an employee, by an employee who is a manager
+//Creates a report for an employee
 async function createReport(connection, {_for_emp_id, _report, _severity}, by_Employee) {
   let [rows] = await connection.query(`SELECT manager FROM employees WHERE id = ?`, [_for_emp_id]);
   
