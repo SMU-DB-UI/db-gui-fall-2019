@@ -124,6 +124,16 @@ router.put('/employees/:empId/profile/report-history', async (req, res) => {
   res.json(response);
 });
 
+router.get('/results', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.searchEmployees(connection, req.query.search_query);
+  
+  res.json(response);
+}
+
 // Gets the employment history of an employee
 router.get('/employees/:empId/profile/employment-history', async (req, res) => {
   if (notLoggedIn(req, res)) return;
