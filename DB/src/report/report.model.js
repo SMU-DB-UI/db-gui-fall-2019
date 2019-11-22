@@ -6,7 +6,7 @@ var logger = require('../helpers/logger');
 async function getReport(connection, repId){
   let rows;
   try {
-    [rows] = await connection.query(`select * from reports where id = ${repId}`);
+    [rows] = await connection.query(`SELECT * FROM reports WHERE id = ${repId}`);
   }
   catch (e) {
     logger.error(e);
@@ -63,7 +63,7 @@ async function getReports(connection){
 //set a report status to closed
 async function closeReport(connection, repId, reason) {
   try {
-    await connection.query(`update reports set status = 'closed', close_reason = '${reason}' where id = ${repId}`);
+    await connection.query(`UPDATE reports SET status = 'closed', close_reason = '${reason}' where id = ${repId}`);
   }
   catch (e) {
     logger.error(e);
@@ -89,7 +89,7 @@ async function rateSeverity(connection, repId, score, emp_id) {
   //if the manager (rows[0]/manager) is the correct emp_id for who is allowed to edit this report
   if(rows[0].manager == emp_id){ 
     try {
-      await connection.query(`update reports set severity = ${score} where id = ${repId}`);
+      await connection.query(`UPDATE reports SET severity = ${score} WHERE id = ${repId}`);
     }
     catch (e) {
       logger.error(e);
