@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Report } from '../models/Report';
 import {ReportCard} from './ReportCard';
 import { ReportForm } from './ReportForm';
+import {ReportsHistory, ReportsRepository} from '../api/reportsRepository'
 
 export class ReportsPage extends Component {
 
@@ -13,7 +14,6 @@ export class ReportsPage extends Component {
         //TODO put report to DB
     }
 
-    
     state = {
         yourReports: [
             new Report(1, 1, 2, "disgusting", 'Oct-15-2019', 1, 5)
@@ -23,10 +23,28 @@ export class ReportsPage extends Component {
         ]
     }
 
+    reportsRepo = new ReportsRepository()
+
+    componentWillMount() {
+        this.reportsRepo.login();
+
+        // this.reportsRepo.getReportHistory(1)
+        // .then ( report => {
+        //     if (report) {
+        //     this.setState({yourReports: [report]})
+        //     }
+        // })
+        // .catch (x => alert(x))
+    }
+
+    componentDidMount() {
+        console.log(this.state.yourReports)
+    }
+
     render() {
         return (
+            
             <div className='container'>
-
                 <div className='card mt-3 bg-info  text-white'>
                     <h2 className='card-header'>Your reports</h2>
                     <ul className = 'card-body' 
