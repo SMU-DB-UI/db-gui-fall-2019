@@ -5,7 +5,7 @@ const logger = require('../helpers/logger');
 async function register(connection, {email, username, password}) {
   let rows;
   try {
-    [rows] = await connection.query(`select * from employees where username = '${username}'`);
+    [rows] = await connection.query(`SELECT * FROM employees WHERE username = '${username}'`);
   }
   catch (e) {
     if (e == undefined) logger.info('yes for some reason');
@@ -20,8 +20,8 @@ async function register(connection, {email, username, password}) {
   salt = crypto.randomBytes(16).toString('hex');
   hash = hashPassword(password, salt);
   try {
-    await connection.query(`update employees set username = '${username}', 
-      password = '${hash}', salt = '${salt}' where email = '${email}'`);
+    await connection.query(`UPDATE employees SET username = '${username}', 
+      password = '${hash}', salt = '${salt}' WHERE email = '${email}'`);
   }
   catch (e) {
     logger.error(e.stack);
@@ -34,7 +34,7 @@ async function register(connection, {email, username, password}) {
 async function login(connection, {username, password}) {
   let rows;
   try {
-    [rows] = await connection.query(`select * from employees where username = '${username}'`);
+    [rows] = await connection.query(`SELECT * FROM employees WHERE username = '${username}'`);
   }
   catch (e) {
     logger.error(e.stack);

@@ -5,7 +5,7 @@ const logger = require('../helpers/logger');
 async function getEmployees(connection) {
   let rows;
   try {
-    [rows] = await connection.query(`select * from employees`);
+    [rows] = await connection.query(`SELECT * FROM employees`);
   }
   catch (e) {
     logger.error(e);
@@ -35,7 +35,7 @@ async function getEmployees(connection) {
 
 async function removeEmployee(connection, empId) {
   try {
-    await connection.query(`update employees set active = 'false' where id = ${empId}`);
+    await connection.query(`UPDATE employees SET active = 'false' WHERE id = ${empId}`);
   }
   catch (e) {
     logger.error(e);
@@ -47,7 +47,7 @@ async function removeEmployee(connection, empId) {
 
 async function setManager(connection, empId, managerId) {
   try {
-    await connection.query(`update employees set manager = ${managerId} where id = ${empId}`);
+    await connection.query(`UPDATE employees SET manager = ${managerId} WHERE id = ${empId}`);
   }
   catch (e) {
     logger.error(e);
@@ -97,7 +97,8 @@ async function updateContactInfo(connection, empId, body) {
       fname = '${body.fname}', 
       lname = '${body.lname}', 
       addr = '${body.address}', 
-      phn_num = '${body.phn_num}' 
+      email = '${body.email}',
+      phn_num = '${body.phn_num}'
       WHERE id = ${empId}`);
   }
   catch (e) {
@@ -112,7 +113,7 @@ async function updateContactInfo(connection, empId, body) {
 async function getEmployee(connection, empId) {
   let rows;
   try {
-    [rows] = await connection.query(`select * from employees where id = ${empId}`);
+    [rows] = await connection.query(`SELECT * FROM employees WHERE id = ${empId}`);
   }
   catch (e) {
     logger.error(e);
@@ -144,7 +145,7 @@ async function getEmployee(connection, empId) {
 async function reportHistory(connection, empId) {
   let rows;
   try {
-    [rows] = await connection.query(`select * from reports where by_emp_id = ${empId} OR for_emp_id = ${empId}`);
+    [rows] = await connection.query(`SELECT * FROM reports WHERE by_emp_id = ${empId} OR for_emp_id = ${empId}`);
   }
   catch (e) {
     logger.error(e);
