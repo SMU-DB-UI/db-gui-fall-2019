@@ -26,13 +26,16 @@ router.post('/employees/:empId/profile/performance_reviews', async (req, res) =>
 
 });
 
-
-//View an employee's performance reviews 
+//now gets only the employee that is currently logged in if it matches the one that is requested 
+//could also be amended if (or is manager) once we have that
 router.get('/employees/:empId/profile/performance_reviews', async (req, res) => {
+
+  if (notLoggedIn(req,res)) return;
+  console.log(req.session.auth)
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
-  let perf_rev = await model.seeAllPerfRevs(connection, req.params.empId);
+  let perf_rev = await model.seeAllPerfRevs(connection, req.params.empId, req.session.auth);
   res.json(perf_rev);
 });
 
@@ -55,6 +58,17 @@ router.delete('/employees/:empId/profile/performance_reviews/:perf_id', async (r
 
   let response = await model.deletePerfRev(connection, req.params.empId, req.params.perf_id);
   res.json(response);
+})
+
+//allows a manager to see all performance reviews for any employee under him/her
+router.get('/employees/manager/perf_reviews', async (req,res) => {
+  if (notLoggedIn(req,res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let manager_perf_rev = await model.seeAllPerfRevsManager(connection, req.session.auth);
+  res.json(manager_perf_rev);
 })
 
 
