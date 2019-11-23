@@ -157,4 +157,17 @@ router.put('/employees/:empId/profile/change-position', async (req, res) => {
   res.json(response);
 });
 
+router.post('/employees/:empId/profile/make-confidential', async (req, res) => {
+  //if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  var userID = req.session.auth;
+  logger.info(userID);
+
+  let response = await model.makeConfidential(connection, userID, req.params.empId);
+  res.json(response);
+});
+
 module.exports = router;
