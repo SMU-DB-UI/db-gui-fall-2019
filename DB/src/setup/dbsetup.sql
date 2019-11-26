@@ -29,6 +29,7 @@ CREATE TABLE employees(
     password varchar(128),
     salt varchar(32),
     active varchar(10),
+    confidential int, 
     UNIQUE KEY(username),
     FOREIGN KEY (dep_id) REFERENCES departments(id)
 );
