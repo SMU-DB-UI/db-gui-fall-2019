@@ -1,26 +1,25 @@
 import React, { Component } from 'react';
 import { Report } from '../models/Report';
+import './ReportCard.css'
 
 export const ReportCard = (props) => {
     return (
         <li className='mt-3 mb-3 row container' style={{'list-style': 'none'}}>
-            <div className='col-3 bg-none mt-3'>
-                <h3>
-                    <div className='badge badge-info'>
-                        {props.report.date}
-                    </div>
-                    <div className='w-100'></div>
-                    <div className='badge badge-success'
-                        style={{ 'display': (props.report.status == 1) ? 'relative': 'none' }}>
-                        Closed
-                    </div>
-                    <div className='badge badge-danger'
-                        style={{ 'display': (props.report.status == 0) ? 'relative': 'none' }}>
-                        Open
-                    </div>
-                </h3>
-            </div>
-            <div className='card bg-light col-9 text-dark'>
+            <h4 className='col-3 bg-none mt-3 mr-1'>
+                {/* <div className='w-100'></div> */}
+                <div className='badge badge-success'
+                    style={{ 'display': (props.report.status == 1) ? 'relative': 'none' }}>
+                    Closed
+                </div>
+                <div className='badge badge-danger'
+                    style={{ 'display': (props.report.status == 0) ? 'relative': 'none' }}>
+                    Open
+                </div>
+                <div className=''>
+                    {props.report.date}
+                </div>
+            </h4>
+            <div className='card bg-light col text-dark'>
                 <div className='card-header'>
                     
                 <h3>
@@ -32,8 +31,16 @@ export const ReportCard = (props) => {
                         style={{ 'display': (props.report.status == 0) ? 'relative': 'none' }}>
                         Open
                     </span> */}
+                    <div>
                         <span className= 'float-left'>Report by: {props.report.byId}</span>
-                        <span className = 'float-right'>Severity: {props.report.severity}</span>
+                        <span className = 'float-right'>Severity: 
+                            <span className={props.report.severity == 1 ? 'text-success'
+                                : props.report.severity == 5 ? 'text-danger'
+                                    :'text-warning'}>
+                                {props.report.severity}
+                            </span>
+                        </span>
+                    </div>
                     </h3>
 
                 </div>

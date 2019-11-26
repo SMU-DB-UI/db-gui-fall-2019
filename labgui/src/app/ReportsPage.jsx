@@ -13,36 +13,47 @@ export class ReportsPage extends Component {
             prevState.yourReports.push(rep);
             return prevState;
         })
-        //TODO put report to DB
+        this.reportsRepo.addReport(rep);
     }
 
     state = {
         yourReports: [
-            new Report(1, 1, 2, "disgusting", 'Oct-15-2019', 1, 5)
+            new Report(1, 1, 2, "disgusting", 'Oct-15-2019', 1, 5),
+            new Report(2, 1, 2, "ok", 'Oct-15-2019', 1, 3),
+            new Report(3, 1, 2, "good", 'Oct-15-2019', 1, 1),
         ],
         reportsOnYou: [
-            new Report(1, 2, 1, "awful", 'Oct-16-2019', 0, 5)
+            new Report(4, 2, 1, "awful", 'Oct-16-2019', 0, 5)
         ]
     }
 
     reportsRepo = new ReportsRepository()
 
-    componentWillMount() {
-        this.reportsRepo.login()
+
+    setReportInfo() {
+        this.reportsRepo.getReportHistory(1)
         .then (x => {
-                this.reportsRepo.login();
-            
-            // this.reportsRepo.getReportHistory(1)
-            // .then ( report => {
-            //     if (report) {
-            //     this.setState({yourReports: [report]})
-            //     }
-            // })
-            // .catch (x => alert(x))
+            this.setState({yourReports: x.yourReports, reportsOnYou: x.reportsOnYou});
+            this.state.yourReports.forEach(rep => {
+                let repInf = this.reportsRepo.getEmpInfo(rep.id)
+                rep.byId = repInf.by;
+                rep.forId = repInf.for;
+            });
+            this.state.reportsOnYou.forEach(rep => {
+                let repInf = this.reportsRepo.getEmpInfo(rep.id)
+                rep.byId = repInf.by;
+                rep.forId = repInf.for;
+            });
         })
     }
 
     componentDidMount() {
+        this.reportsRepo.login()
+        .then (x => {
+                this.reportsRepo.login();
+        })
+        // this.setReportInfo()
+
 
         console.log(this.state.yourReports)
     }
