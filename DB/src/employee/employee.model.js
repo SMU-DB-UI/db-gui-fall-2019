@@ -165,7 +165,7 @@ async function getEmployee(connection, empId) {
       'manager':'confidential', 
       'address':'confidential',
       'phone':'confidential',
-      'rating':'confidential',
+      'rating':'confidential',  
       'strikes':'confidential',
       'active':'confidential'
     }};
@@ -296,10 +296,8 @@ async function makeConfidential(connection, userID, empId) {
     logger.info(userID);
     let position = rows[0].pos;
 
-    if(position == "HR Manager"){
+    if(position != "HR Manager"){
       //Do nothing, ill probably improve this if else block
-    }
-    else {
       return {message: 'fail'};
     }
   }
