@@ -31,7 +31,11 @@ router.get('/employees/:empId', async (req, res) => {
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
-  let response = await model.getEmployee(connection, req.params.empId);
+  var is_HRM = req.session.hrm;
+  logger.info(is_HRM);
+  let userId = req.session.auth;
+
+  let response = await model.getEmployee(connection, req.params.empId, is_HRM, userId);
   res.json(response);
 });
   

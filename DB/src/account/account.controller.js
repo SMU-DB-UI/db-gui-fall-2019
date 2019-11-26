@@ -41,6 +41,12 @@ router.get('/login', async (req, res) => {
   if (response.message == 'succeed') {
     req.session.active = true;
     req.session.auth = response.id
+    if(response.pos == "HR Manager"){
+      req.session.hrm = true;
+    }
+    else{
+      req.session.hrm = false;
+    }
     res.json(response);
   }
   else {
