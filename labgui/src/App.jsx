@@ -40,7 +40,6 @@ class App extends Component {
       
       <div className="App">
         <BrowserRouter>
-          <div className='container'>
             <Header toggleNav={x => (this.toggleNav())}></Header>
             <div className='col-2 align-left float-left card text-left jumbotron jumbotron-fluid bg-info' 
                 style={{'display': (this.state.navigating ? 'block' : 'none')}}>
@@ -64,7 +63,6 @@ class App extends Component {
             {/* {this.state.loginPage}
             {this.state.uploadScreen}
             {this.state.reportsPage} */}
-            </div>
         </BrowserRouter>
       </div>
     );
