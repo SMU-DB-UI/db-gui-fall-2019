@@ -33,7 +33,7 @@ export class ReportsPage extends Component {
     setReportInfo() {
         this.reportsRepo.getReportHistory(1)
         .then (x => {
-            this.setState({yourReports: x.yourReports, reportsOnYou: x.reportsOnYou});
+            this.setState({yourReports: x.data.yourReports, reportsOnYou: x.data.reportsOnYou});
             this.state.yourReports.forEach(rep => {
                 let repInf = this.reportsRepo.getEmpInfo(rep.id)
                 rep.byId = repInf.by;
@@ -41,8 +41,8 @@ export class ReportsPage extends Component {
             });
             this.state.reportsOnYou.forEach(rep => {
                 let repInf = this.reportsRepo.getEmpInfo(rep.id)
-                rep.byId = repInf.by;
-                rep.forId = repInf.for;
+                rep.byId = repInf.data.by;
+                rep.forId = repInf.data.for;
             });
         })
     }
@@ -61,10 +61,11 @@ export class ReportsPage extends Component {
     render() {
         return (
             <>
-        <MuiThemeProvider>
-        <AppBar title="Reports"/>
-        </MuiThemeProvider>
-
+            <nav className='navbar-fluid' title='login'>
+                <ol className="breadcrumb breadcrumb-light">
+                    <li className="breadcrumb-item">Reports</li>
+                </ol>
+            </nav>
             <div className='container'>
                 <div className='card mt-3 bg-info  text-white'>
                     <h2 className='card-header'>Your reports</h2>

@@ -2,8 +2,19 @@ import React, { Component } from 'react';
 import './App.css';
 import LoginScreen from './Loginscreen';
 import {ReportsPage} from './app/ReportsPage'
+import {Route, BrowserRouter, Switch, Link} from 'react-router-dom'
+import {Routes} from './Routes'
+import {Header} from './app/header'
 
 class App extends Component {
+
+  state = {
+    navigating: false
+  }
+
+  toggleNav() {
+    this.setState({navigating: !this.state.navigating})
+  }
   constructor(props){
     super(props);
     this.state={
@@ -26,10 +37,35 @@ class App extends Component {
   }
   render() {
     return (
+      
       <div className="App">
-        {this.state.loginPage}
-        {this.state.uploadScreen}
-        {this.state.reportsPage}
+        <BrowserRouter>
+          <div className='container'>
+            <Header toggleNav={x => (this.toggleNav())}></Header>
+            <div className='col-2 align-left float-left card text-left jumbotron jumbotron-fluid bg-info' 
+                style={{'display': (this.state.navigating ? 'block' : 'none')}}>
+                    {
+                        Routes().map(x => (
+                              <Link to={x[0]} className='text-light'>
+                                  <h3 className='ml-3'>{x[2]}</h3>
+                              </Link>
+                        ))
+                    }
+            </div>
+            <div className={(this.state.navigating ? 'col-10 float-right' : '')}>
+                <Switch>
+                {
+                  Routes().map(x => (
+                    <Route path={x[0]} component={x[1]} key={x[0]}></Route>
+                  ))
+                }
+                </Switch>
+            </div>
+            {/* {this.state.loginPage}
+            {this.state.uploadScreen}
+            {this.state.reportsPage} */}
+            </div>
+        </BrowserRouter>
       </div>
     );
   }
