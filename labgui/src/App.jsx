@@ -41,7 +41,7 @@ class App extends Component {
       <div className="App">
         <BrowserRouter>
             <Header toggleNav={x => (this.toggleNav())}></Header>
-            <div className='col-2 align-left float-left card text-left jumbotron jumbotron-fluid bg-info' 
+            <div className='col-2 align-left float-left card text-left jumbotron jumbotron-fluid bg-info maxHeight' 
                 style={{'display': (this.state.navigating ? 'block' : 'none')}}>
                     {
                         Routes().map(x => (
