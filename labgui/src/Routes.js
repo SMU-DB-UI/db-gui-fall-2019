@@ -1,11 +1,13 @@
 import Loginscreen from "./Loginscreen"
 import { ReportsPage } from "./app/ReportsPage"
 import HomePage from "./HomePage"
+import HrReports from "./HrReports"
 
 export const Routes = () => {
     return ([
         ['/HomePage', HomePage, 'Home'],
         ['/login', Loginscreen, 'Login'],
-        ['/reports', ReportsPage, 'Reports']
+        ['/reports', ReportsPage, 'Reports'],
+        ['/HrReports', HrReports, 'HrReports']
     ])
 }

@@ -23,3 +23,129 @@
 .maxHeight {
   height:100vh;
 }
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #09d3ac;
+}
+
+.gray-border{
+  border-width: 1px;
+  border: solid gray;
+}
+
+.red-border {
+  border-width: 1px;
+  border: solid red;
+}
+
+.light-blue {
+  background-color: lightblue;
+}
+
+.white {
+  background-color: white;
+}
+
+.name-block {
+  background-color: rgb(0, 228, 252, 0.6);
+  margin: 0;
+}
+
+.emp-details {
+  margin: 3em 3em 0em 3em;
+}
+
+.horizontal {
+  display: inline-flex;
+}
+
+.auto-margins {
+  margin: auto;
+}
+
+.auto-margins-right {
+  margin: auto 10px auto auto;
+}
+
+.auto-margin-left {
+  margin: auto auto auto 20px;
+}
+
+.margin-tbl {
+  margin: 5px auto 5px 20px;
+}
+
+.margin-bottom {
+  margin-bottom: 5px;
+}
+
+.width-100 {
+  width: 100%;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.no-bullets {
+  list-style-type: none;
+}
+
+.report-bound-box {
+  border: 1px solid gray;
+}
+
+.report-instance {
+  margin: 10px
+}
+
+.black-text {
+  color: black;
+}
+
+.green-text{
+  color: green;
+}
+
+.orange-text {
+  color: orange;
+}
+
+.red-text {
+  color: red;
+}
+
+.gray-text {
+  color: gray;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.float-right{
+  float: right;
+}
+
+.clear {
+  clear: both;
+}

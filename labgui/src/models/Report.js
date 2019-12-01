@@ -1,4 +1,3 @@
-
 export class Report {
     constructor(id, byId, forId, reportText, date, status, severity) {
         this.id = id; 
