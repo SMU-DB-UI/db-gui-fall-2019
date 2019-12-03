@@ -18,7 +18,7 @@ class Login extends Component {
       <MuiThemeProvider key={"theme"}>
         <div>
          <TextField
-           floatingLabelText="Emplyee Id"
+           floatingLabelText="Employee Id"
            onChange={(event,newValue) => this.setState({username:newValue})}
            />
          <br/>
@@ -178,16 +178,6 @@ class Login extends Component {
   render() {
     return (
       <div>
-        <nav className='navbar-fluid' title='login'>
-          <ol className="breadcrumb breadcrumb-light">
-              <li className="breadcrumb-item">Login</li>
-          </ol>
-        </nav>
-        {/* <MuiThemeProvider>
-        <AppBar
-             title="Login"
-           />
-        </MuiThemeProvider> */}
         <MuiThemeProvider>
         <div>
         <p>Login as:</p>
