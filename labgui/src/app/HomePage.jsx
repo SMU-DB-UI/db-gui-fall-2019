@@ -10,15 +10,6 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
 
-    // this.state = {
-    //   fname: null,
-    //   lname: null,
-    //   address: null,
-    //   phone: null,
-    //   isLoading: true,
-    //   updating: false
-    // };
-
     this.state = {//Use this incase the db is down
       fname: "Mark",
       lname: "Fontenot",
