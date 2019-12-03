@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-// import PropTypes from "prop-types";
-import { employee } from './models/employee';
+import { employee } from '../models/employee';
 
 class Employee extends Component {
 
@@ -98,7 +97,7 @@ class Employee extends Component {
                     <div className="auto-margins-right">
                         {/* <button width="50" height="50" onclick={this.props.updateEmployee(this.props.fname, this.props.lname, this.props.address, this.props.phone)}> */}
                         <button width="50" height="50" onClick={() => this.handleClick()}>
-                            <img src={require('./assets/pencil.jpg')} width="50" height="50" alt="Pencil Image" />
+                            <img src={require('../assets/pencil.jpg')} width="50" height="50" alt="Pencil Image" />
                         </button>
                     </div>
 
