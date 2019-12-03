@@ -1,28 +1,19 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
-import { Report } from '../models/Report'
+import { Report } from '../models/Report';
+import { ReportCard } from './ReportCard';
 
 class HrReports extends Component {
 
     constructor(props) {
         super(props);
-
-        // this.state ={
-        //     by: null,
-        //     for: null,
-        //     reports: null,
-        //     creationDate: null,
-        //     status: null,
-        //     close_reason: null,
-        //     severity: null
-        // }
-
-        let rep1 = new Report("1", "Me", "You", "Your code sucks", "Today", "Open", "High");
-        let rep2 = new Report("2", "You", "Me", "Hire me pls", "Yesterday", "Closed", "Low");
-        let rep3 = new Report("3", "Other Person", "You", "Extra report", "Nov 21, 2019", "Closed", "Mid")
         this.state = {
-            reports: [rep1, rep2, rep3]
+            reports: [
+                new Report(1, 1, 2, "disgusting", 'Oct-15-2019', 1, 5),
+                new Report(2, 1, 2, "ok", 'Oct-15-2019', 1, 3),
+                new Report(3, 1, 2, "good", 'Oct-15-2019', 1, 1),
+            ],
         }
     }
 
@@ -47,64 +38,75 @@ class HrReports extends Component {
     //     return <div className="margin-bottom"><strong>Reason for close: </strong> {closeReason}</div>
     // }
 
-    generateReport(report) {
-        
-        return <div className="report-bound-box report-instance white">
 
-            <div>
-                <ul className="horizontal no-bullets no-padding width-100">
-                    <li className="auto-margin-left">
-                        <strong>Report for: </strong> {report.forId}
-                    </li>
-                    <li>
-                        <ul className="no-bullets float-right">
-                            <li>
-                                <strong>Date: </strong>{report.date}
-                            </li>
-                            <li>
-                                <strong>Status: </strong>{report.status}
-                            </li>
-                            <li className={this.getSeverity(report.severity)}>
-                                <strong className="black-text">Severity:</strong>{report.severity}
-                            </li>
-                        </ul>
-                        <div className={"clear"}></div>
-                    </li>
-                </ul>
+    // generateNReport(report) {
 
-            </div>
+    //     return <div className="report-bound-box report-instance white">
 
-            <div className="auto-margin-left margin-tbl report-bound-box">
-                <strong>Report: </strong>
-                <p>
-                    {report.reportText}
-                </p>
-            </div>
+    //         <div>
+    //             <ul className="horizontal no-bullets no-padding width-100">
+    //                 <li className="auto-margin-left">
+    //                     <strong>Report for: </strong> {report.forId}
+    //                 </li>
+    //                 <li>
+    //                     <ul className="no-bullets float-right">
+    //                         <li>
+    //                             <strong>Date: </strong>{report.date}
+    //                         </li>
+    //                         <li>
+    //                             <strong>Status: </strong>{report.status}
+    //                         </li>
+    //                         <li className={this.getSeverity(report.severity)}>
+    //                             <strong className="black-text">Severity:</strong>{report.severity}
+    //                         </li>
+    //                     </ul>
+    //                     <div className={"clear"}></div>
+    //                 </li>
+    //             </ul>
 
-            <div className="auto-margin-left margin-tbl">
-                {/* {this.getCloseReason(report.status, report.close_reason)} */}
-                <strong className="">Submitted by: </strong> {report.byId}
-            </div>
+    //         </div>
+
+    //         <div className="auto-margin-left margin-tbl report-bound-box">
+    //             <strong>Report: </strong>
+    //             <p>
+    //                 {report.reportText}
+    //             </p>
+    //         </div>
+
+    //         <div className="auto-margin-left margin-tbl">
+    //             {/* {this.getCloseReason(report.status, report.close_reason)} */}
+    //             <strong className="">Submitted by: </strong> {report.byId}
+    //         </div>
 
 
-        </div>
+    //     </div>
 
-    }
+    // }
 
 
     render() {
 
         return (
+
             <div>
 
-                <h1>All Reports</h1>
+                <nav className='navbar-fluid' title='login'>
+                    <ol className="breadcrumb breadcrumb-light">
+                        <li className="breadcrumb-item">Your Reports</li>
+                    </ol>
+                </nav>
 
-                {this.state.reports.map(report => <li className="no-bullets" key={report.reportBy + report.reportFor} value={report.reports} >
+                <div className='card mt-3 bg-info  text-white'>
+                    <ul className='card-body'
+                        style={{ 'list-style': 'none' }, { 'paddingLeft': 0 }}>
 
-                    {this.generateReport(report)}
+                        {this.state.reports.map(report => <li className="no-bullets" key={report.reportBy + report.reportFor} value={report.reports} >
 
-                </li>)}
+                            <ReportCard report={report} key={report.id} />
 
+                        </li>)}
+                    </ul>
+                </div>
             </div>
         );
 
