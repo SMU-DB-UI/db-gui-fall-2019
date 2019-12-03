@@ -25,7 +25,8 @@ export class ReviewsPage extends Component {
 
         ],
         reviewsOnYou: [
-            new Review(4, 2, 1, "Effectively communicates expectations",5, 'Oct-16-2019')
+            new Review(4, 2, 1, "Effectively communicates expectations",5, 'Oct-16-2019'),
+            new Review(4, 2, 1, "Effectively communicates expectations",2, 'Oct-16-2019')
         ]
     }
 
