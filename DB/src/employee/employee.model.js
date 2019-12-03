@@ -34,29 +34,14 @@ async function getEmployees(connection) {
 }
 
 async function addEmployee(connection, empDetails) {
-  //check if id already in the table
-  let rows;
   try {
-    [rows] = await connection.query(`select * from employees where id = ${empDetails.id}`);
-  }
-  catch (e) {
-    if (e == undefined) logger.info('yes for some reason');
-    logger.error(e.stack);
-    return {message: 'fail'};
-  }
-    
-  if (rows[0] != undefined) {
-    return {message: 'employee id already exists'};
-  }
-  //(2, 'Marcus', 'Sykora', 1, 'Student', '1', 'address', 'email2', 214, 5, 0, null, null, null, 'true');
-  try {
-    await connection.query(`INSERT INTO employees VALUES (${empDetails.id}, '${empDetails.fname}', 
+    await connection.query(`INSERT INTO employees VALUES (null, '${empDetails.fname}', 
     '${empDetails.lname}', ${empDetails.dep_id}, '${empDetails.pos}', 
     '${empDetails.manager}', '${empDetails.addr}', '${empDetails.email}', 
-    ${empDetails.phn_num}, -1, ${empDetails.strikes}, null, null, null, 'true')`)
+    ${empDetails.phn_num}, -1, ${empDetails.strikes}, null, null, null, 'true', 0)`)
   }
   catch(e) {
-    logger.error(e);
+    logger.error(e.stack);
     return {message: 'fail'};
   }
 

@@ -14,7 +14,7 @@ CREATE TABLE departments(
 );
 
 CREATE TABLE employees(
-    id int primary key, 
+    id int AUTO_INCREMENT,
     fname varchar(50) NOT null,
     lname varchar(50) NOT null,
     dep_id int,
@@ -30,6 +30,7 @@ CREATE TABLE employees(
     salt varchar(32),
     active varchar(10),
     confidential int, 
+    PRIMARY KEY (id),
     UNIQUE KEY(username),
     FOREIGN KEY (dep_id) REFERENCES departments(id)
 );
