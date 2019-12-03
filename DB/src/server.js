@@ -49,5 +49,6 @@ app.use(employee);
 app.use(report);
 app.use(account);
 app.use(perfreviews);
+app.use(department);
 
 app.use(redirectInvalid);
