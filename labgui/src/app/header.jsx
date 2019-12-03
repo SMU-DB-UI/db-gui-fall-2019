@@ -10,11 +10,24 @@ export class Header extends Component{
         showOptions: false
     }
 
+    getTitle() {
+        console.log("header location");
+        console.log(window.location);
+        let curr = window.location.pathname;
+        let title = 'Hr App';
+        Routes().all.forEach(route => {
+            if (route[0] == curr){
+                title = route[2];
+            }
+        });
+        return title;
+    }
+
     render () {
         return (
             <div>
                 <MuiThemeProvider>
-                    <AppBar iconElementLeft='' title="HR App" onLeftIconButtonClick={() => this.props.toggleNav()}>
+                    <AppBar iconElementLeft='' title={this.getTitle()} onLeftIconButtonClick={() => this.props.toggleNav()}>
                     </AppBar>
                 </MuiThemeProvider>
             </div>

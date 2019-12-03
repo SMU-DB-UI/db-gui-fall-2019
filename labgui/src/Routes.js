@@ -7,11 +7,25 @@ import { ReviewsPage } from "./app/ReviewsPage"
 
 
 export const Routes = () => {
-    return ([
-        ['/', Loginscreen, 'Login'],
-        ['/HomePage', HomePage, 'Home'],
-        ['/reports', ReportsPage, 'Reports'],
-        ['/HrReports', HrReports, 'HrReports'],
-        ['/reviews', ReviewsPage, 'Reviews']
-    ])
+    return ({
+        employee: [
+            ['/', Loginscreen, 'Login'],
+            ['/HomePage', HomePage, 'Home'],
+            ['/reports', ReportsPage, 'Reports'],
+            ['/reviews', ReviewsPage, 'Reviews']
+        ],
+        hr: [
+            ['/', Loginscreen, 'Login'],
+            ['/HomePage', HomePage, 'Home'],
+            ['/HrReports', HrReports, 'Reports'],
+            ['/reviews', ReviewsPage, 'Reviews']
+        ],
+        all: [
+            ['/', Loginscreen, 'Login'],
+            ['/HomePage', HomePage, 'Home'],
+            ['/HrReports', HrReports, 'Reports'],
+            ['/reports', ReportsPage, 'Reports'],
+            ['/reviews', ReviewsPage, 'Reviews']
+        ]
+    })
 }
