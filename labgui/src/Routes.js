@@ -11,7 +11,7 @@ export const Routes = () => {
         ['/HomePage', HomePage, 'Home'],
         ['/login', Loginscreen, 'Login'],
         ['/reports', ReportsPage, 'Reports'],
-        ['/HrReports', HrReports, 'HrReports']
+        ['/HrReports', HrReports, 'HrReports'],
         ['/reviews', ReviewsPage, 'Reviews']
     ])
 }
