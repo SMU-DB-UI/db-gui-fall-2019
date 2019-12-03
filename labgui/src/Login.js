@@ -18,7 +18,7 @@ class Login extends Component {
       <MuiThemeProvider key={"theme"}>
         <div>
          <TextField
-           floatingLabelText="Emplyee Id"
+           floatingLabelText="Employee Id"
            onChange={(event,newValue) => this.setState({username:newValue})}
            />
          <br/>
