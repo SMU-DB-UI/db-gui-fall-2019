@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
-import { Report } from './models/Report'
+import { Report } from '../models/Report'
 
 class HrReports extends Component {
 

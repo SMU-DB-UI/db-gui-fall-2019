@@ -3,7 +3,7 @@ import Employee from './Employee';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import API from "./api";
-import { employee } from "./models/employee"
+import { employee } from "../models/employee"
 
 class HomePage extends Component {
 
