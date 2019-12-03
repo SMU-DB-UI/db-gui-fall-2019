@@ -8,8 +8,8 @@ import { ReviewsPage } from "./app/ReviewsPage"
 
 export const Routes = () => {
     return ([
-        ['/HomePage', HomePage, 'Home'],
         ['/', Loginscreen, 'Login'],
+        ['/HomePage', HomePage, 'Home'],
         ['/reports', ReportsPage, 'Reports'],
         ['/HrReports', HrReports, 'HrReports'],
         ['/reviews', ReviewsPage, 'Reviews']
