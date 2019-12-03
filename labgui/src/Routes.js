@@ -9,7 +9,7 @@ import { ReviewsPage } from "./app/ReviewsPage"
 export const Routes = () => {
     return ([
         ['/HomePage', HomePage, 'Home'],
-        ['/login', Loginscreen, 'Login'],
+        ['/', Loginscreen, 'Login'],
         ['/reports', ReportsPage, 'Reports'],
         ['/HrReports', HrReports, 'HrReports'],
         ['/reviews', ReviewsPage, 'Reviews']
