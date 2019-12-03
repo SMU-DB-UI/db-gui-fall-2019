@@ -3,6 +3,7 @@ import { ReportsPage } from "./app/ReportsPage"
 import HomePage from "./app/HomePage"
 import HrReports from "./app/HrReports"
 import { ReviewsPage } from "./app/ReviewsPage"
+import { AddEmpForm } from "./app/AddEmpForm"
 
 
 
@@ -18,14 +19,17 @@ export const Routes = () => {
             ['/', Loginscreen, 'Login'],
             ['/HomePage', HomePage, 'Home'],
             ['/HrReports', HrReports, 'Reports'],
-            ['/reviews', ReviewsPage, 'Performance Reviews']
+            ['/reviews', ReviewsPage, 'Performance Reviews'],
+            ['/addEmp', AddEmpForm, 'Add an Employee']
         ],
         all: [
             ['/', Loginscreen, 'Login'],
             ['/HomePage', HomePage, 'Home'],
             ['/HrReports', HrReports, 'Reports'],
             ['/reports', ReportsPage, 'Reports'],
-            ['/reviews', ReviewsPage, 'Performance Reviews']
+            ['/reviews', ReviewsPage, 'Performance Reviews'],
+            ['/addEmp', AddEmpForm, 'Add an Employee']
+
         ]
     })
 }

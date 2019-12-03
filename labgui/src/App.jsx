@@ -12,8 +12,8 @@ class App extends Component {
 
   state = {
     navigating: false,
-    hrAuth: false,
-    empAuth: true,
+    hrAuth: true,
+    empAuth: false,
   }
 
   toggleNav() {
