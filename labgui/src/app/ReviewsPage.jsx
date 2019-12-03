@@ -18,12 +18,14 @@ export class ReviewsPage extends Component {
 
     state = {
         yourReviews: [
-            new Review(1, 1, 2, "disgusting",5, 'Oct-15-2019'),
-            new Review(2, 1, 2, "ok", 1,'Oct-15-2019'),
-            new Review(3, 1, 2, "good",3, 'Oct-15-2019'),
+            new Review(1, 1, 2, "Develops successful administrative strategies such as [task] that led to [results]",5, 'Oct-15-2019'),
+            new Review(2, 1, 2, "Continuously examines administrative effectiveness and seeks better procedures such as [tasks]", 4,'Oct-15-2019'),
+            new Review(3, 1, 2, "Shows a sincere interest in employees and the solutions to their problems",3, 'Oct-15-2019'),
+            new Review(3, 1, 2, "Always submits work late.",1, 'Oct-15-2019'),
+
         ],
         reviewsOnYou: [
-            new Review(4, 2, 1, "awful",4, 'Oct-16-2019')
+            new Review(4, 2, 1, "Effectively communicates expectations",5, 'Oct-16-2019')
         ]
     }
 
@@ -45,6 +47,19 @@ export class ReviewsPage extends Component {
                 rev.forId = revInf.data.for;
             });
         })
+    }
+
+    getAvgRating(){
+        let counter = 0;
+        let avg = 0;
+        this.state.reviewsOnYou.forEach(rev => {
+            avg = avg + rev.rating;
+            counter = counter + 1;
+        });
+        console.log("here")
+        console.log(avg);
+        return avg = avg / counter;
+        
     }
 
     componentDidMount() {
@@ -76,7 +91,20 @@ export class ReviewsPage extends Component {
                         )}
                     </ul>
                 </div>
-
+                <div className='card mt-3 bg-light  text-black'>
+                    <h2>
+                        <div>
+                            <span>Your average rating: </span>
+                            <span> 
+                                <span className={this.getAvgRating() == 1 ? 'text-danger'
+                                    : this.getAvgRating() == 5 ? 'text-success'
+                                        :'text-warning'}>
+                                    {this.getAvgRating()}
+                                </span>
+                            </span>
+                        </div>
+                    </h2>
+                </div>
                 <div className='card mt-3 bg-info  text-white'>
                     <h2 className='card-header'>Reviews on you</h2>
                     <ul className = 'card-body'

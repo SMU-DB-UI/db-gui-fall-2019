@@ -14,8 +14,8 @@ export const ReviewCard = (props) => {
                 <div className='card-header'>
                 <h3>
                     <div>
-                        <span className= 'float-left'>Report by: {props.review.byId}</span>
-                        <span className = 'float-right'>Rating: 
+                        <span className= 'float-left'>Review by: {props.review.byId}</span>
+                        <span className = 'float-right'>Rating:
                             <span className={props.review.rating == 1 ? 'text-danger'
                                 : props.review.rating == 5 ? 'text-success'
                                     :'text-warning'}>
