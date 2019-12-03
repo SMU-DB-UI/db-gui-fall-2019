@@ -47,7 +47,7 @@ async function login(connection, {username, password}) {
   
   hash = hashPassword(password, rows[0].salt);
   if (hash == rows[0].password) {
-    return {message: 'succeed', id: rows[0].id};
+    return {message: 'succeed', id: rows[0].id, pos: rows[0].pos};
   }
   else {
     return {message: 'fail'};

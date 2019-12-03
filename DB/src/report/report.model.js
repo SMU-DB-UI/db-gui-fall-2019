@@ -57,7 +57,6 @@ async function getReports(connection){
   }
 
   return {message: 'succeed', reportCount: reportList.length, reports: reportList};
-
 }
 
 //set a report status to closed
@@ -182,4 +181,3 @@ module.exports = {
   getReportsManager,
   getEmpProfile
 };
-

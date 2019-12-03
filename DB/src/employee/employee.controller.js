@@ -31,7 +31,11 @@ router.get('/employees/:empId', async (req, res) => {
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
-  let response = await model.getEmployee(connection, req.params.empId);
+  var is_HRM = req.session.hrm;
+  logger.info(is_HRM);
+  let userId = req.session.auth;
+
+  let response = await model.getEmployee(connection, req.params.empId, is_HRM, userId);
   res.json(response);
 });
   
@@ -113,8 +117,8 @@ router.post('/employees/:empId', async (req, res) => {
 });
 
 //Create a new report for an employee, by a manager
-router.put('/employees/:empId/profile/report-history', async (req, res) => {
-  //if (notLoggedIn(req, res)) return;
+router.post('/employees/:empId/profile/create-report', async (req, res) => {
+  if (notLoggedIn(req, res)) return;
   let by_Employee = req.params.empId;
 
   let {connection, message} = await conn.getConnection(res);
@@ -154,6 +158,19 @@ router.put('/employees/:empId/profile/change-position', async (req, res) => {
   if (message == 'fail') return;
 
   let response = await model.changePosition(connection, req.params.empId, req.body.position);
+  res.json(response);
+});
+
+router.post('/employees/:empId/profile/make-confidential', async (req, res) => {
+  //if (notLoggedIn(req, res)) return;
+
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  var userID = req.session.auth;
+  logger.info(userID);
+
+  let response = await model.makeConfidential(connection, userID, req.params.empId);
   res.json(response);
 });
 
