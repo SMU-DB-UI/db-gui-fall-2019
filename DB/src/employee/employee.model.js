@@ -185,14 +185,20 @@ async function reportHistory(connection, empId) {
 }
 
 //Creates a report for an employee
-async function createReport(connection, {_for_emp_id, _report, _severity}, by_Employee) {
-  let [rows] = await connection.query(`SELECT manager FROM employees WHERE id = ?`, [_for_emp_id]);
+async function createReport(connection, body, by_Employee) {
+  logger.info(body.for_emp_id);
+  let rows;
+  [rows] = await connection.query(`SELECT manager FROM employees WHERE id = ?`, [body.for_emp_id]);
   
   if(rows[0].manager == by_Employee){ 
-    let datetime = new Date();
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0');
+    let yyyy = String(today.getFullYear());
+    let fullDate = `${mm}/${dd}/${yyyy}`;
 
     try {
-      let tuple = {by_emp_id: by_Employee, for_emp_id: _for_emp_id, report: _report, creation_date: datetime, status: 'open', severity: _severity};
+      let tuple = {by_emp_id: by_Employee, for_emp_id: body.for_emp_id, report: body.report_body, creation_date: fullDate, status: 'open', severity: body.severity};
       await connection.query(`INSERT INTO reports SET ?`, tuple);
   
     }
