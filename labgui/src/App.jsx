@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import LoginScreen from './Loginscreen';
 import {ReportsPage} from './app/ReportsPage'
+import {ReviewsPage} from './app/ReviewsPage'
+
 import {Route, BrowserRouter, Switch, Link} from 'react-router-dom'
 import {Routes} from './Routes'
 import {Header} from './app/header'
@@ -20,15 +22,20 @@ class App extends Component {
     this.state={
       loginPage:[],
       uploadScreen:[],
-      reportsPage: []
+      reportsPage: [],
+      reviewsPage: []
     }
   }
   componentWillMount(){
     var reports = [];
     reports.push(<ReportsPage/>)
+    var reviews = [];
+    reviews.push(<ReviewsPage/>)
     this.setState({
-      reportsPage:reports
+      reportsPage:reports,
+      reviewsPage:reviews
     })
+
     // var loginPage =[];
     // loginPage.push(<LoginScreen appContext={this} key={"login-screen"}/>);
     // this.setState({
