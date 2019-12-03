@@ -12,20 +12,20 @@ export const Routes = () => {
             ['/', Loginscreen, 'Login'],
             ['/HomePage', HomePage, 'Home'],
             ['/reports', ReportsPage, 'Reports'],
-            ['/reviews', ReviewsPage, 'Reviews']
+            ['/reviews', ReviewsPage, 'Performance Reviews']
         ],
         hr: [
             ['/', Loginscreen, 'Login'],
             ['/HomePage', HomePage, 'Home'],
             ['/HrReports', HrReports, 'Reports'],
-            ['/reviews', ReviewsPage, 'Reviews']
+            ['/reviews', ReviewsPage, 'Performance Reviews']
         ],
         all: [
             ['/', Loginscreen, 'Login'],
             ['/HomePage', HomePage, 'Home'],
             ['/HrReports', HrReports, 'Reports'],
             ['/reports', ReportsPage, 'Reports'],
-            ['/reviews', ReviewsPage, 'Reviews']
+            ['/reviews', ReviewsPage, 'Performance Reviews']
         ]
     })
 }

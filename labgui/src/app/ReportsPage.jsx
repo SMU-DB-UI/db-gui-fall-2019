@@ -61,11 +61,6 @@ export class ReportsPage extends Component {
     render() {
         return (
             <>
-            <nav className='navbar-fluid' title='login'>
-                <ol className="breadcrumb breadcrumb-light">
-                    <li className="breadcrumb-item">Reports</li>
-                </ol>
-            </nav>
             <div className='container'>
                 <div className='card mt-3 bg-info  text-white'>
                     <h2 className='card-header'>Your reports</h2>
