@@ -52,28 +52,25 @@ export class ReportsPage extends Component {
                 }
             })
             this.setState({yourReports: yourReps, reportsOnYou: repsOnYou});
-            // this.state.yourReports.forEach(rep => {
-            //     let repInf = this.reportsRepo.getEmpInfo(rep.id)
-            //     this.setState(prevState => {
-            //         prevState.yourReports.find(function(e) {
-            //             return e.id == rep.id;
-            //         }).byId = repInf.by
-            //         prevState.yourReports.find(function(e) {
-            //             return e.id == rep.id;
-            //         }).forId = repInf.for;
-            //     })
-            // });
-            // this.state.reportsOnYou.forEach(rep => {
-            //     let repInf = this.reportsRepo.getEmpInfo(rep.id)
-            //     this.setState(prevState => {
-            //         prevState.yourReports.find(function(e) {
-            //             return e.id == rep.id;
-            //         }).byId = repInf.by
-            //         prevState.yourReports.find(function(e) {
-            //             return e.id == rep.id;
-            //         }).forId = repInf.for;
-            //     })
-            // });
+            this.setState(prevState => {
+                for (let i =0; i < prevState.yourReports.length; i++){
+                    this.reportsRepo.getEmpInfo(prevState.yourReports[i].id)
+                    .then(info => {
+                        prevState.yourReports[i].byId = info[0].fname + info[0].lname;
+                        prevState.yourReports[i].forId = info[1].fname + info[1].lname;
+                    })
+                }
+                for (let i =0; i < prevState.reportsOnYou.length; i++){
+                    this.reportsRepo.getEmpInfo(prevState.yourReports[i].id)
+                    .then(info => {
+                        prevState.reportsOnYou[i].byId = info[0].fname + info[0].lname;
+                        prevState.reportsOnYou[i].forId = info[1].fname + info[1].lname;
+                    })
+                }
+                console.log("new state:")
+                console.log(prevState)
+                return prevState;
+            })
         })
     }
 

@@ -72,7 +72,7 @@ export class ReportsRepository {
     getEmpInfo(repId) {
       console.log("in getEmpInfo")
         return axios.get(`${this.url}/reports/${repId}/profiles`, this.session)
-        .then(x => {console.log("EmpInfo");console.log(x); return x.data})
+        .then(x => {console.log("EmpInfo");console.log(x); return x.data.profiles})
         .catch((error) => {
             // Error
             if (error.response) {
