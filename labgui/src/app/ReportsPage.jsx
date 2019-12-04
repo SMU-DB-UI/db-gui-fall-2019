@@ -32,9 +32,9 @@ export class ReportsPage extends Component {
 
     setReportInfo() {
         console.log("User id = " + window.location.userId)
+        let newState = {};
         this.reportsRepo.getReportHistory(1)
         .then (x => {
-            console.log(x);
             let yourReps = [];
             let repsOnYou = [];
 
@@ -51,27 +51,47 @@ export class ReportsPage extends Component {
                     // alert("Weird data in report history")
                 }
             })
-            this.setState({yourReports: yourReps, reportsOnYou: repsOnYou});
-            this.setState(prevState => {
-                for (let i =0; i < prevState.yourReports.length; i++){
-                    this.reportsRepo.getEmpInfo(prevState.yourReports[i].id)
+
+            let promise = new Promise((res, rej) => {
+                for (let i = 0; i < yourReps.length; i++){
+                    this.reportsRepo.getEmpInfo(yourReps[i].id)
                     .then(info => {
-                        prevState.yourReports[i].byId = info[0].fname + info[0].lname;
-                        prevState.yourReports[i].forId = info[1].fname + info[1].lname;
+                        yourReps[i].byId = info[0].fname +" "+ info[0].lname;
+                        yourReps[i].forId = info[1].fname +" "+ info[1].lname;
                     })
                 }
-                for (let i =0; i < prevState.reportsOnYou.length; i++){
-                    this.reportsRepo.getEmpInfo(prevState.yourReports[i].id)
+                for (let i =0; i < repsOnYou.length; i++){
+                    this.reportsRepo.getEmpInfo(repsOnYou[i].id)
                     .then(info => {
-                        prevState.reportsOnYou[i].byId = info[0].fname + info[0].lname;
-                        prevState.reportsOnYou[i].forId = info[1].fname + info[1].lname;
+                        repsOnYou[i].byId = info[1].fname +" "+ info[1].lname;
+                        repsOnYou[i].forId = info[0].fname +" "+ info[0].lname;
                     })
                 }
-                console.log("new state:")
-                console.log(prevState)
-                return prevState;
             })
-        })
+            .then(() => {
+                this.setState({yourReports: yourReps, reportsOnYou: repsOnYou});
+            debugger;
+            console.log("actual new state:")
+            console.log(this.state)
+            })
+            .catch( () => {
+                this.setState({yourReports: yourReps, reportsOnYou: repsOnYou});
+                debugger;
+                console.log("actual new state:")
+                console.log(this.state)
+            })
+
+
+            
+
+            newState = this.state;
+        });
+        // this.setState(newState);
+                
+        // console.log("newState:")
+        // console.log(newState)
+        // console.log("actual actual new state:")
+        // console.log(this.state)
     }
 
     componentDidMount() {
