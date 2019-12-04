@@ -10,15 +10,6 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
 
-    // this.state = {
-    //   fname: null,
-    //   lname: null,
-    //   address: null,
-    //   phone: null,
-    //   isLoading: true,
-    //   updating: false
-    // };
-
     this.state = {//Use this incase the db is down
       fname: "Mark",
       lname: "Fontenot",
@@ -56,8 +47,6 @@ class HomePage extends Component {
         console.log("Successful call to db")
         let contactInfo = response.data.contactinfo.contactinfo;
 
-        debugger;
-
         let fname = contactInfo.fname;
         let lname = contactInfo.lname;
         let address = contactInfo.address;
@@ -74,7 +63,7 @@ class HomePage extends Component {
       })
       .catch((error) => {
         // Error
-        debugger;
+        
         if (error.response) {
           /*
            * The request was made and the server responded with a

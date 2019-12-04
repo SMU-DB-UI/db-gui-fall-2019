@@ -34,29 +34,14 @@ async function getEmployees(connection) {
 }
 
 async function addEmployee(connection, empDetails) {
-  //check if id already in the table
-  let rows;
   try {
-    [rows] = await connection.query(`select * from employees where id = ${empDetails.id}`);
-  }
-  catch (e) {
-    if (e == undefined) logger.info('yes for some reason');
-    logger.error(e.stack);
-    return {message: 'fail'};
-  }
-    
-  if (rows[0] != undefined) {
-    return {message: 'employee id already exists'};
-  }
-  //(2, 'Marcus', 'Sykora', 1, 'Student', '1', 'address', 'email2', 214, 5, 0, null, null, null, 'true');
-  try {
-    await connection.query(`INSERT INTO employees VALUES (${empDetails.id}, '${empDetails.fname}', 
+    await connection.query(`INSERT INTO employees VALUES (null, '${empDetails.fname}', 
     '${empDetails.lname}', ${empDetails.dep_id}, '${empDetails.pos}', 
     '${empDetails.manager}', '${empDetails.addr}', '${empDetails.email}', 
-    ${empDetails.phn_num}, -1, ${empDetails.strikes}, null, null, null, 'true')`)
+    ${empDetails.phn_num}, -1, ${empDetails.strikes}, null, null, null, 'true', 0)`)
   }
   catch(e) {
-    logger.error(e);
+    logger.error(e.stack);
     return {message: 'fail'};
   }
 
@@ -221,14 +206,20 @@ async function reportHistory(connection, empId) {
 }
 
 //Creates a report for an employee
-async function createReport(connection, {_for_emp_id, _report, _severity}, by_Employee) {
-  let [rows] = await connection.query(`SELECT manager FROM employees WHERE id = ?`, [_for_emp_id]);
+async function createReport(connection, body, by_Employee) {
+  logger.info(body.for_emp_id);
+  let rows;
+  [rows] = await connection.query(`SELECT manager FROM employees WHERE id = ?`, [body.for_emp_id]);
   
   if(rows[0].manager == by_Employee){ 
-    let datetime = new Date();
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0');
+    let yyyy = String(today.getFullYear());
+    let fullDate = `${mm}/${dd}/${yyyy}`;
 
     try {
-      let tuple = {by_emp_id: by_Employee, for_emp_id: _for_emp_id, report: _report, creation_date: datetime, status: 'open', severity: _severity};
+      let tuple = {by_emp_id: by_Employee, for_emp_id: body.for_emp_id, report: body.report_body, creation_date: fullDate, status: 'open', severity: body.severity};
       await connection.query(`INSERT INTO reports SET ?`, tuple);
   
     }

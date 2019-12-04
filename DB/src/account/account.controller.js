@@ -27,7 +27,7 @@ router.post('/register', async (req, res) => {
   }
 });
   
-router.get('/login', async (req, res) => {
+router.put('/login', async (req, res) => {
   if (req.session.active) {
     res.json({message: 'already logged in'});
     return;

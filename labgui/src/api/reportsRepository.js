@@ -3,7 +3,7 @@ import { thisExpression } from '@babel/types';
 
 
 export class ReportsRepository {
-    url = 'http://35.223.74.36:3000'
+    url = 'http://35.238.147.205:3000'
     session = {
         withCredentials: false,
         Headers: {
