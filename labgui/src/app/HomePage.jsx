@@ -10,14 +10,12 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {//Use this incase the db is down
-      fname: "Mark",
-      lname: "Fontenot",
-      address: "123 SMU Lane",
-      phone: "123-456-7890",
-      isLoading: false,
+    this.state ={
+      currentEmp: null,
+      isLoading: true,
       updating: false
     }
+
   }
 
   updateEmployee(fname, lname, address, phone) {
@@ -31,9 +29,15 @@ class HomePage extends Component {
     }));
   }
 
-  endUpdate = () => {
+  endUpdate = (fname, lname, address, phone) => {
+    debugger;
     console.log("End Update");
+    let newEmp = this.state.currentEmp
+
+    newEmp.fname = fname
+
     this.setState(prevState => ({
+      currentEmp: newEmp,
       updating: false
     }));
   }
@@ -41,29 +45,51 @@ class HomePage extends Component {
   async componentWillMount() {
     // Load employee data asynchronously
 
-    const response = await API.get('employees/ ' + this.props.empId + '/profile')
+    const response = await API.get('employees/2')
+    //const response = await API.get('employees/' + window.location.userId)
       .then((response) => {
         // Success
         console.log("Successful call to db")
-        let contactInfo = response.data.contactinfo.contactinfo;
 
-        let fname = contactInfo.fname;
-        let lname = contactInfo.lname;
-        let address = contactInfo.address;
-        let phone = contactInfo.phone;
+        let contactInfo = response.data.profile.profile;
+        let currentEmp = new employee(contactInfo.id, contactInfo.fname, contactInfo.lname, contactInfo.dep_id, contactInfo.position, contactInfo.manager, contactInfo.address, contactInfo.phone, contactInfo.rating, contactInfo.strikes, contactInfo.active);
 
         this.setState({
-          fname,
-          lname,
-          address,
-          phone,
+          currentEmp,
           isLoading: false
         })
+
+        // let id = contactInfo.id;
+        // let fname = contactInfo.fname;
+        // let lname = contactInfo.lname;
+        // let dep_id = contactInfo.deptId;
+        // let position = contactInfo.position;
+        // let manager = contactInfo.manager;
+        // let address = contactInfo.address;
+        // let phone = contactInfo.phone;
+        // let rating = contactInfo.rating;
+        // let strikes = contactInfo.strikes;
+        // let active = contactInfo.active;
+
+        // this.setState({
+        //   id,
+        //   fname,
+        //   lname,
+        //   dep_id,
+        //   position,
+        //   manager,
+        //   address,
+        //   phone,
+        //   rating,
+        //   strikes,
+        //   active,
+        //   isLoading: false
+        // })
 
       })
       .catch((error) => {
         // Error
-        
+
         if (error.response) {
           /*
            * The request was made and the server responded with a
@@ -108,14 +134,11 @@ class HomePage extends Component {
 
       return (
         <div>
-          <Employee fname={this.state.fname} lname={this.state.lname} address={this.state.address} phone={this.state.phone} isLoading={this.state.isLoading} updating={this.state.updating} updateEmployee={x => this.updateEmployee(x)} endUpdate={this.endUpdate} />
+          <Employee emp={this.state.currentEmp} titleName={this.state.currentEmp.fname} isLoading={this.state.isLoading} updating={this.state.updating} updateEmployee={x => this.updateEmployee(x)} endUpdate={this.endUpdate} />
         </div>
       );
-
     }
-
   }
-
 }
 
 export default HomePage;

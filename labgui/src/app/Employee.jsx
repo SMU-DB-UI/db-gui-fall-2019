@@ -1,35 +1,41 @@
 import React, { Component } from 'react';
 import { employee } from '../models/employee';
 
+const labels = ["First Name", "Last Name", "Address", "Phone"];
+const departments = ['Computer Science', 'Mechanical Engineering', 'Marketing', 'Human Resources', 'Sanitation'];
+
 class Employee extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            fname: this.props.fname,
-            lname: this.props.lname,
-            address: this.props.address,
-            phone: this.props.phone
+            fname: this.props.emp.fname,
+            lname: this.props.emp.lname,
+            address: this.props.emp.address,
+            phone: this.props.emp.phone
         }
+
+        // this.state = {
+        //     fname: this.props.fname,
+        //     lname: this.props.lname,
+        //     address: this.props.address,
+        //     phone: this.props.phone
+        // }
     }
 
     handleClick() {
 
         if (this.props.updating === false) {
             this.props.updateEmployee(this.state.fname, this.state.lname, this.state.address, this.state.phone);
-            this.setState({
-                updating: true
-            });
+
         } else {
-            this.props.endUpdate();
-            this.setState({
-                updating: false
-            });
+            this.props.endUpdate(this.state.fname, this.state.lname, this.state.address, this.state.phone);
         }
     }
 
     render() {
+        debugger;
 
         console.log("Employee Render Method");
 
@@ -37,44 +43,24 @@ class Employee extends Component {
 
         if (this.props.updating) {
 
+
             userInfo = <div>
-                <p>
-                    <strong>First Name: </strong>
-                    <input type="text"
-                        id="fname"
-                        name="First Name"
-                        className="no-margins"
-                        value={this.state.fname}
-                        onChange={e => this.setState({ fname: e.target.value })} />
-                </p>
-                <p>
-                    <strong>Last Name: </strong>
-                    <input type="text"
-                        id="lname"
-                        name="Last Name"
-                        className="no-margins"
-                        value={this.state.lname}
-                        onChange={e => this.setState({ lname: e.target.value })} />
-                </p>
-                <p>
-                    <strong>Address: </strong>
-                    <input type="text"
-                        id="address"
-                        name="Address"
-                        className="no-margins"
-                        value={this.state.address}
-                        onChange={e => this.setState({ address: e.target.value })} />
-                </p>
-                <p>
-                    <strong>Phone: </strong>
-                    <input type="text"
-                        id="phone"
-                        name="Phone Number"
-                        className="no-margins"
-                        value={this.state.phone}
-                        onChange={e => this.setState({ phone: e.target.value })} />
-                </p>
+
+                {Object.entries(this.state).map(([key, value], i) => (
+                    <p key={key}>
+                        <strong>{labels[i]}: </strong>
+                        <input type="text"
+                            id={key}
+                            name={labels[i]}
+                            className="no-margins"
+                            value={value}
+                            onChange={e => this.setState({ [key]: e.target.value })} />
+
+                    </p>
+                ))}
+
             </div>
+
         } else {
 
             userInfo = <div>
@@ -85,13 +71,12 @@ class Employee extends Component {
             </div>;
         }
 
-
         return (
 
             <div className="emp-details gray-border">
                 <div className="name-block horizontal auto-margins width-100 d-flex">
                     <h1>
-                        {this.props.fname}
+                        {this.props.titleName}
                     </h1>
 
                     <div className="auto-margins-right">
@@ -105,6 +90,11 @@ class Employee extends Component {
 
                 <div>
                     {userInfo}
+                    <p><strong>Department: </strong>{departments[(this.props.emp.dep_id)-1]}</p>
+                    <p><strong>Position: </strong>{this.props.emp.position}</p>
+                    <p><strong>Manager: </strong>{this.props.emp.manager}</p>
+                    <p><strong>Rating: </strong>{this.props.emp.rating}</p>
+                    <p><strong>Strikes: </strong>{this.props.emp.strikes}</p>
                 </div>
             </div>
 
