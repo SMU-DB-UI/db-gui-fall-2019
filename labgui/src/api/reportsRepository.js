@@ -37,7 +37,7 @@ export class ReportsRepository {
 
     getReportHistory(userId) {
             return axios.get(`${this.url}/employees/${userId}/profile/report-history`, this.session)
-            .then(x => console.log(x))
+            .then()
             .catch((error) => {
                 // Error
                 if (error.response) {
@@ -70,8 +70,9 @@ export class ReportsRepository {
     }
 
     getEmpInfo(repId) {
+      console.log("in getEmpInfo")
         return axios.get(`${this.url}/reports/${repId}/profiles`, this.session)
-        .then(x => console.log(x))
+        .then(x => {console.log("EmpInfo");console.log(x); return x.data})
         .catch((error) => {
             // Error
             if (error.response) {

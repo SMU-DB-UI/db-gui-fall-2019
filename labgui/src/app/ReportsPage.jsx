@@ -31,28 +31,58 @@ export class ReportsPage extends Component {
 
 
     setReportInfo() {
+        console.log("User id = " + window.location.userId)
         this.reportsRepo.getReportHistory(1)
         .then (x => {
-            this.setState({yourReports: x.data.yourReports, reportsOnYou: x.data.reportsOnYou});
-            this.state.yourReports.forEach(rep => {
-                let repInf = this.reportsRepo.getEmpInfo(rep.id)
-                rep.byId = repInf.by;
-                rep.forId = repInf.for;
-            });
-            this.state.reportsOnYou.forEach(rep => {
-                let repInf = this.reportsRepo.getEmpInfo(rep.id)
-                rep.byId = repInf.data.by;
-                rep.forId = repInf.data.for;
-            });
+            console.log(x);
+            let yourReps = [];
+            let repsOnYou = [];
+
+            x.data.reportHistory.forEach(rep => {
+                if (rep.for_emp_id == window.location.userId) {
+                    let ourRep = new Report(rep.id, rep.by_emp_id, rep.for_emp_id, rep.report, rep.creation_date, rep.status, rep.severity)
+                    repsOnYou.push(ourRep);
+                }
+                else if (rep.by_emp_id == window.location.userId) {
+                    let ourRep = new Report(rep.id, rep.by_emp_id, rep.for_emp_id, rep.report, rep.creation_date, rep.status, rep.severity)
+                    yourReps.push(ourRep);
+                }
+                else{
+                    // alert("Weird data in report history")
+                }
+            })
+            this.setState({yourReports: yourReps, reportsOnYou: repsOnYou});
+            // this.state.yourReports.forEach(rep => {
+            //     let repInf = this.reportsRepo.getEmpInfo(rep.id)
+            //     this.setState(prevState => {
+            //         prevState.yourReports.find(function(e) {
+            //             return e.id == rep.id;
+            //         }).byId = repInf.by
+            //         prevState.yourReports.find(function(e) {
+            //             return e.id == rep.id;
+            //         }).forId = repInf.for;
+            //     })
+            // });
+            // this.state.reportsOnYou.forEach(rep => {
+            //     let repInf = this.reportsRepo.getEmpInfo(rep.id)
+            //     this.setState(prevState => {
+            //         prevState.yourReports.find(function(e) {
+            //             return e.id == rep.id;
+            //         }).byId = repInf.by
+            //         prevState.yourReports.find(function(e) {
+            //             return e.id == rep.id;
+            //         }).forId = repInf.for;
+            //     })
+            // });
         })
     }
 
     componentDidMount() {
-        this.reportsRepo.login()
-        .then (x => {
-                this.reportsRepo.login();
-        })
-        // this.setReportInfo()
+        // this.reportsRepo.login()
+        // .then (x => {
+        //         this.reportsRepo.login();
+        // })
+        this.setReportInfo()
 
 
         console.log(this.state.yourReports)

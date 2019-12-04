@@ -8,11 +8,11 @@ export const ReportCard = (props) => {
             <h4 className='col-3 bg-none mt-3 mr-1'>
                 {/* <div className='w-100'></div> */}
                 <div className='badge badge-success'
-                    style={{ 'display': (props.report.status == 1) ? 'relative': 'none' }}>
+                    style={{ 'display': (props.report.status == "closed") ? 'relative': 'none' }}>
                     Closed
                 </div>
                 <div className='badge badge-danger'
-                    style={{ 'display': (props.report.status == 0) ? 'relative': 'none' }}>
+                    style={{ 'display': (props.report.status == "open") ? 'relative': 'none' }}>
                     Open
                 </div>
                 <div className=''>
@@ -34,7 +34,7 @@ export const ReportCard = (props) => {
                     <div>
                         <span className= 'float-left'>Report by: {props.report.byId}</span>
                         <span className = 'float-right'>Severity: 
-                            <span className={props.report.severity == 1 ? 'text-success'
+                            <span className={props.report.severity <= 1 ? 'text-success'
                                 : props.report.severity == 5 ? 'text-danger'
                                     :'text-warning'}>
                                 {props.report.severity}
