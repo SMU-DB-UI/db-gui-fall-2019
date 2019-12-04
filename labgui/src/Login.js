@@ -8,7 +8,7 @@ import MenuItem from 'material-ui/MenuItem';
 import axios from 'axios';
 import UploadPage from './UploadPage';
 
-var apiBaseUrl = "http://localhost:4000/api/";
+var apiBaseUrl = 'http://35.238.147.205:3000';
 
 class Login extends Component {
   constructor(props){
@@ -96,20 +96,19 @@ class Login extends Component {
   handleClick(event){
     var self = this;
     var payload={
-      "userid":this.state.username,
+      "username":this.state.username,
 	    "password":this.state.password,
-      "role":this.state.loginRole
     }
-    axios.post(apiBaseUrl+'login', payload)
+    axios.put(apiBaseUrl+'/login', payload)
    .then(function (response) {
      console.log(response);
-     if(response.data.code == 200){
+     if(response.status == 200){
        console.log("Login successfull");
        var uploadScreen=[];
        uploadScreen.push(<UploadPage appContext={self.props.appContext} role={self.state.loginRole}/>)
        self.props.appContext.setState({loginPage:[],uploadScreen:uploadScreen})
      }
-     else if(response.data.code == 204){
+     else if(response.status == 204){
        console.log("Username password do not match");
        alert(response.data.success)
      }

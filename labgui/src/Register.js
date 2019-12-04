@@ -20,7 +20,7 @@ class Register extends Component {
     console.log("nextProps",nextProps);
   }
   handleClick(event,role){
-    var apiBaseUrl = "http://localhost:4000/api/";
+    var apiBaseUrl = "35.238.147.205:3000";
     // console.log("values in register handler",role);
     var self = this;
     //To be done:check for empty values before hitting submit
