@@ -8,6 +8,7 @@ import {Route, BrowserRouter, Switch, Link, Redirect} from 'react-router-dom'
 import {Routes} from './Routes'
 import {Header} from './app/header'
 import { HardwareDesktopWindows } from 'material-ui/svg-icons';
+import fourZeroFour from './app/404';
 
 class App extends Component {
 
@@ -22,28 +23,60 @@ class App extends Component {
     this.setState({navigating: false})
   }
 
+  // getRoutes() {
+  //   if (window.location.auth == 0) {
+  //     return (
+  //       Routes().all.map(x => (
+  //         <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
+  //       ))
+  //     )
+  //   }
+  //   else if (window.location.auth == 1) {
+  //     return (
+  //       Routes().all.map(x => (
+  //         <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
+  //       ))
+  //     )
+  //   }
+  //   else if (window.location.userId == -1) {
+  //     return (
+  //       Routes().all.map(x => (
+  //         <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
+  //       ))
+  //     )
+  //   }
+  // }
+
   getRoutes() {
+
+    let allRoutes = []
+
     if (window.location.auth == 0) {
-      return (
+      allRoutes = (
         Routes().all.map(x => (
           <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
         ))
       )
     }
     else if (window.location.auth == 1) {
-      return (
+      allRoutes = (
         Routes().all.map(x => (
           <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
         ))
       )
     }
     else if (window.location.userId == -1) {
-      return (
+      allRoutes = (
         Routes().all.map(x => (
           <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
         ))
       )
     }
+
+    let notFound = <Route path="/" component={fourZeroFour} key={"404"}/>
+
+    allRoutes.push(notFound)
+    return allRoutes;
   }
 
   getNavLinks() {
