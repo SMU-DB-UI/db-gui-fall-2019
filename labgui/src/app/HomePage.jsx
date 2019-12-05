@@ -3,6 +3,8 @@ import Employee from './Employee';
 import API from "./api";
 import { employee } from "../models/employee"
 
+import { Redirect } from 'react-router-dom'
+
 class HomePage extends Component {
 
   constructor(props) {
@@ -66,6 +68,7 @@ class HomePage extends Component {
   }
 
   async componentWillMount() {
+    
     // Load employee data asynchronously
 
     //const response = await API.get('employees/2')
@@ -113,6 +116,10 @@ class HomePage extends Component {
   }
 
   render() {
+
+    if(window.location.userId === -1){
+      return <Redirect to='/'/>
+    }
 
     const loadingMessage = <span className="d-flex m-auto">Loading...</span>;
 
