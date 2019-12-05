@@ -57,7 +57,9 @@ export class AddEmpForm extends Component {
         let managers = [];
         this.empRepo.getManagers()
         .then(x => {
-            managers.push(x.id, x.fname +" "+ x.lname)
+            x.forEach(m => 
+                managers.push([m.id, m.fname +" "+ m.lname])
+                )
             this.setState({managers: managers})
         })
     }

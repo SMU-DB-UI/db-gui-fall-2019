@@ -14,8 +14,8 @@ export class EmpRepository {
     }
 
     getManagers() {
-        return axios.get(`${this.url}/employees/managers`, this.session)
-            .then (x => {return x.data.managers})
+        return axios.get(`${this.url}/managers`, this.session)
+            .then (x => {console.log("managers"); console.log(x.data); return x.data.managers})
             .catch (x => alert('Issue'));
     }
 
