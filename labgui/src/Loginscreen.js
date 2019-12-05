@@ -53,7 +53,7 @@ class Loginscreen extends Component {
     var loginmessage;
     if(this.state.isLogin){
       let loginscreen=[];
-      loginscreen.push(<Register parentContext={this} appContext={this.props.appContext} role={userRole}/>);
+      //loginscreen.push(<Register parentContext={this} appContext={this.props.appContext} role={userRole}/>);
       loginmessage = "Already registered. Go to Login";
       let loginButtons=[];
       loginButtons.push(

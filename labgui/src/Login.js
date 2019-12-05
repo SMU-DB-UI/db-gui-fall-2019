@@ -6,7 +6,9 @@ import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import axios from 'axios';
+import {Redirect} from 'react-router-dom';
 import UploadPage from './UploadPage';
+import App from './UploadPage';
 
 var apiBaseUrl = 'http://35.238.147.205:3000';
 
@@ -38,7 +40,8 @@ class Login extends Component {
       password:'',
       menuValue:1,
       loginComponent:localloginComponent,
-      loginRole:'employee'
+      loginRole:'employee',
+      isLoggedIn: false,
     }
   }
   componentWillMount(){
@@ -94,6 +97,7 @@ class Login extends Component {
   }
   }
   handleClick(event){
+    let currentComponent = this;
     var self = this;
     var payload={
       "username":this.state.username,
@@ -103,10 +107,13 @@ class Login extends Component {
    .then(function (response) {
      console.log(response);
      if(response.status == 200){
-       console.log("Login successfull");
-       var uploadScreen=[];
-       uploadScreen.push(<UploadPage appContext={self.props.appContext} role={self.state.loginRole}/>)
-       self.props.appContext.setState({loginPage:[],uploadScreen:uploadScreen})
+      if (response.data.message == "succeed") {
+        localStorage.setItem("token", JSON.stringify(response.data.user))
+        console.log("Login successfull");
+        window.location.userId = response.data.id;
+        axios.defaults.withCredentials = true;
+        currentComponent.setState({ isLoggedIn: true });
+        }
      }
      else if(response.status == 204){
        console.log("Username password do not match");
@@ -165,7 +172,10 @@ class Login extends Component {
                onChange = {(event,newValue) => this.setState({password:newValue})}
                />
              <br/>
-             <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
+             !this.state.redirect ? 
+             <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/> :
+             <Redirect to='/HomePage'/>
+          
          </div>
          </MuiThemeProvider>
       )
@@ -175,6 +185,9 @@ class Login extends Component {
                    loginRole:loginRole})
   }
   render() {
+    if (this.state.isLoggedIn) {
+      return <Redirect to="/HomePage" />;
+    }
     return (
       <div>
         <MuiThemeProvider>

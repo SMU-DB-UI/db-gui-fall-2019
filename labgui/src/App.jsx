@@ -14,6 +14,7 @@ class App extends Component {
     navigating: false,
     hrAuth: true,
     empAuth: false,
+    logedIn: false,
   }
 
   toggleNav() {
