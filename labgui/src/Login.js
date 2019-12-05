@@ -20,7 +20,7 @@ class Login extends Component {
       <MuiThemeProvider key={"theme"}>
         <div>
          <TextField
-           floatingLabelText="Employee Id"
+           floatingLabelText = "Username"
            onChange={(event,newValue) => this.setState({username:newValue})}
            />
          <br/>
@@ -77,7 +77,7 @@ class Login extends Component {
         <MuiThemeProvider>
           <div>
            <TextField
-             floatingLabelText="HR Id"
+             floatingLabelText="Username"
              onChange={(event,newValue) => this.setState({username:newValue})}
              />
            <br/>
@@ -143,7 +143,7 @@ class Login extends Component {
         <MuiThemeProvider>
           <div>
            <TextField
-             floatingLabelText="Employee Id"
+             floatingLabelText="Username"
              onChange = {(event,newValue) => this.setState({username:newValue})}
              />
            <br/>
@@ -166,7 +166,7 @@ class Login extends Component {
         <MuiThemeProvider>
           <div>
            <TextField
-             floatingLabelText="HR Id"
+             floatingLabelText="Username"
              onChange = {(event,newValue) => this.setState({username:newValue})}
              />
            <br/>
