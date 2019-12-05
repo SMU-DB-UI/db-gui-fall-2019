@@ -23,12 +23,46 @@ export class Header extends Component{
         return title;
     }
 
+    getLoginOut() {
+        if (window.location.pathname == '/')
+            return ''//<Link to='/' className='btn btn-success'>Login</Link>
+        else
+            return <button type='button' 
+                            className='btn btn-danger' 
+                            onClick={() => this.confirmLogout()}
+                            style={{'position':'relative'}}>Logout</button>
+    }
+
+    confirmLogout() {
+        if (window.confirm("Are you sure you want to log out?"))
+        {
+            this.setState({redirect:true});
+            this.props.stopNav();
+        }
+        else {}
+    }
+
+    logout()
+    {
+        if (this.state.redirect)
+        {
+            this.setState({redirect:false})
+            window.location.userId = -1;
+            window.location.auth = -1;
+            return <Redirect to='/'/>
+        }
+        else{}
+    }
+
     render () {
         return (
             <div>
-                <MuiThemeProvider>
-                    <AppBar iconElementLeft='' title={this.getTitle()} onLeftIconButtonClick={() => this.props.toggleNav()}>
+                {this.logout()}
+                <MuiThemeProvider className='relative'>
+                    <AppBar iconElementLeft='' title={"HR App / " + this.getTitle()} onLeftIconButtonClick={() => this.props.toggleNav()} 
+                        iconElementRight= {this.getLoginOut()}>
                     </AppBar>
+
                 </MuiThemeProvider>
             </div>
         );
