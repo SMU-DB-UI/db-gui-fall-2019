@@ -114,7 +114,7 @@ export class ReviewsRepository {
       "creation_date": rev.date
     }
     console.log(window.location.userId);
-    return axios.post(`${this.url}/employees/5/profile/performance_reviews`, payload, { headers: { "id": window.location.userId } })
+    return axios.post(`${this.url}/employees/${window.location.userId}/profile/performance_reviews`, payload, { headers: { "id": window.location.userId } })
       .then(x => console.log(x))
       .catch((error) => {
         // Error
