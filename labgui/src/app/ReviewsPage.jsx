@@ -152,7 +152,7 @@ export class ReviewsPage extends Component {
                         style={{'list-style': 'none'}, {'paddingLeft': 0}}>
                         {
                         this.state.yourReviews.map(review => 
-                            <ReviewCard review={review} key={review.id}/>
+                            <ReviewCard review={review} key={review.id} type='on'/>
                         )}
                     </ul>
                 </div>
@@ -173,10 +173,10 @@ export class ReviewsPage extends Component {
                 <div className='card mt-3 bg-info  text-white'>
                     <h2 className='card-header'>Reviews on you</h2>
                     <ul className = 'card-body'
-                        style={{'list-style': 'none'}, {'paddingLeft': 0}}>
+                        style={{'list-style': 'none'}, {'paddingLeft': 0} }>
                         {
                             this.state.reviewsOnYou.map(review => 
-                            <ReviewCard review={review} key={review.id}/>
+                            <ReviewCard review={review} key={review.id} type='by'/>
                         )}
                     </ul>
                 </div>

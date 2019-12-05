@@ -22,7 +22,7 @@ export class Header extends Component{
     }
 
     getLoginOut() {
-        if (window.location.pathname == '/')
+        if (window.location.auth == -1)
             return ''//<Link to='/' className='btn btn-success'>Login</Link>
         else
             return <button type='button' className='btn btn-danger' onClick={() => this.confirmLogout()}>Logout</button>
