@@ -32,7 +32,9 @@ export const ReportCard = (props) => {
                         Open
                     </span> */}
                     <div>
-                        <span className= 'float-left'>Report by: {props.report.byId}</span>
+                        <span className= 'float-left' style={{'display': props.type == 'by' ? 'inline' : 'none'}}>Report by: {props.report.byId}</span>
+                        <span className= 'float-left' style={{'display': props.type == 'on' ? 'inline' : 'none'}}>Report on: {props.report.forId}</span>
+
                         <span className = 'float-right'>Severity: 
                             <span className={props.report.severity <= 1 ? 'text-success'
                                 : props.report.severity == 5 ? 'text-danger'
