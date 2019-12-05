@@ -15,6 +15,7 @@ class App extends Component {
     hrAuth: true,
     empAuth: false,
     logedIn: false,
+
   }
 
   toggleNav() {
@@ -68,6 +69,7 @@ class App extends Component {
     // }
   }
   componentWillMount(){
+    window.location.userId=1;
     var reports = [];
     reports.push(<ReportsPage/>)
     var reviews = [];

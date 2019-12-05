@@ -7,5 +7,6 @@ export class Report {
         this.date = date;
         this.status = status;
         this.severity = severity;
+        this.reportInfo = {};
     }
 }
