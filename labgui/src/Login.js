@@ -118,8 +118,9 @@ class Login extends Component {
         }
      }
      else if(response.status == 204){
+       debugger;
        console.log("Username password do not match");
-       alert(response.data.success)
+       alert("Username and password do not match")
      }
      else{
        console.log("Username does not exists");
@@ -128,6 +129,7 @@ class Login extends Component {
    })
    .catch(function (error) {
      console.log(error);
+     alert("Incorrect username or password")
    });
   }
   handleMenuChange(value){
