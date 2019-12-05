@@ -9,11 +9,22 @@ var apiBaseUrl = 'http://35.238.147.205:3000';
 export class ReviewsPage extends Component {
 
     onSubmitReview(rev) {
-        this.setState(prevState => {
-            prevState.yourReviews.push(rev);
-            return prevState;
-        })
-        this.reviewsRepo.addReview(rev);
+
+        this.reviewsRepo.addReview(rev, rev.forId)
+        .then( 
+            this.setState(prevState => {
+                prevState.yourReviews.push(rev);
+                return prevState;
+            })
+        )
+        .catch(x => {
+            console.log("Error adding"); 
+            console.log(x); 
+            if (x.response.status == 400) {
+                alert("Error! You do not manage this user!");
+            }
+        } 
+        )
     }
     
 
