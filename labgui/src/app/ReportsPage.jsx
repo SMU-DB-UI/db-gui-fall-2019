@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { Report } from '../models/Report';
 import {ReportCard} from './ReportCard';
 import { ReportForm } from './ReportForm';
-import {ReportsHistory, ReportsRepository} from '../api/reportsRepository'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
+import { ReportsRepository} from '../api/reportsRepository'
+import { Redirect } from 'react-router-dom';
 
 export class ReportsPage extends Component {
 
@@ -101,6 +100,11 @@ export class ReportsPage extends Component {
     }
 
     render() {
+
+        if(window.location.userId === -1){
+            return <Redirect to='/'/>
+        }
+
         return (
             <>
             <div className='container'>

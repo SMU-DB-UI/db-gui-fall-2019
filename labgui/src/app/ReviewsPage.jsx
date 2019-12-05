@@ -3,9 +3,7 @@ import { Review } from '../models/PerfReview';
 import {ReviewCard} from './ReviewCard';
 import { ReviewForm } from './ReviewForm';
 import {ReviewsRepository} from '../api/reviewRepository'
-import axios from 'axios';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
+import { Redirect } from 'react-router-dom';
 
 var apiBaseUrl = 'http://35.238.147.205:3000';
 export class ReviewsPage extends Component {
@@ -141,6 +139,10 @@ export class ReviewsPage extends Component {
     }
 
     render() {
+        if(window.location.userId === -1){
+            return <Redirect to='/'/>
+          }
+
         return (
             <>
             <div className='container'>

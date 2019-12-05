@@ -4,6 +4,7 @@ import AppBar from 'material-ui/AppBar';
 import { Report } from '../models/Report';
 import { ReportCard } from './ReportCard';
 import { ReportsRepository } from '../api/reportsRepository';
+import { Redirect } from 'react-router-dom';
 
 class HrReports extends Component {
 
@@ -34,25 +35,28 @@ class HrReports extends Component {
     }
 
     setReportInfo() {
-        console.log("User id = " + window.location.userId)
-        this.reportsRepo.getManagerReports(window.location.userId)
-        .then (x => {
-            let reports = [];
-            x.forEach(rep => {
-                if (rep.status == 'closed')
-                    console.log("fetching closed")
-                let ourRep = new Report(rep.id, rep.by_emp_id, rep.for_emp_id, rep.report, rep.creation_date, rep.status, rep.severity)
-                reports.push(ourRep);      
-            })
-            for (let i = 0; i < reports.length; i++){
-                this.reportsRepo.getEmpInfo(reports[i].id)
-                .then(info => {
-                    reports[i].byId = info[0].fname +" "+ info[0].lname;
-                    reports[i].forId = info[1].fname +" "+ info[1].lname;
-                    this.setState({reports: reports});
-                })
-            }
-        });
+        if (window.location.userId !== -1) {
+
+            console.log("User id = " + window.location.userId)
+            this.reportsRepo.getManagerReports(window.location.userId)
+                .then(x => {
+                    let reports = [];
+                    x.forEach(rep => {
+                        if (rep.status == 'closed')
+                            console.log("fetching closed")
+                        let ourRep = new Report(rep.id, rep.by_emp_id, rep.for_emp_id, rep.report, rep.creation_date, rep.status, rep.severity)
+                        reports.push(ourRep);
+                    })
+                    for (let i = 0; i < reports.length; i++) {
+                        this.reportsRepo.getEmpInfo(reports[i].id)
+                            .then(info => {
+                                reports[i].byId = info[0].fname + " " + info[0].lname;
+                                reports[i].forId = info[1].fname + " " + info[1].lname;
+                                this.setState({ reports: reports });
+                            })
+                    }
+                });
+        }
     }
 
     componentDidMount() {
@@ -61,9 +65,8 @@ class HrReports extends Component {
 
     closeReport(reportId) {
         this.reportsRepo.closeReport(reportId)
-        .then( () =>
-            {this.setReportInfo();}
-        )
+            .then(() => { this.setReportInfo(); }
+            )
     }
 
     // getCloseReason(status, closeReason) {//Leaving this here because not sure if we'll bring back close reasons
@@ -122,6 +125,10 @@ class HrReports extends Component {
 
     render() {
 
+        if (window.location.userId === -1) {
+            return <Redirect to='/' />
+        }
+
         return (
 
             <div className='container'>
@@ -130,13 +137,13 @@ class HrReports extends Component {
                     <h2 className='card-header'>Employee Reports</h2>
                     <ul className='card-body'
                         style={{ 'list-style': 'none' }, { 'paddingLeft': 0 }}>
-                        {this.state.reports.map(report => 
-                        <div className="no-bullets" key={report.id} >
-                            <ReportCard report={report} 
-                                        key={report.id + report.byId} 
-                                        type='manager' 
-                                        closeReport={x => this.closeReport(x)}/>
-                        </div>)}
+                        {this.state.reports.map(report =>
+                            <div className="no-bullets" key={report.id} >
+                                <ReportCard report={report}
+                                    key={report.id + report.byId}
+                                    type='manager'
+                                    closeReport={x => this.closeReport(x)} />
+                            </div>)}
                     </ul>
                 </div>
             </div>
