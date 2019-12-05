@@ -70,8 +70,8 @@ class HomePage extends Component {
   async componentWillMount() {
     // Load employee data asynchronously
 
-    const response = await API.get('employees/2')
-    //const response = await API.get('employees/' + window.location.userId)
+    //const response = await API.get('employees/2')
+    const response = await API.get('employees/' + window.location.userId)
       .then((response) => {
         // Success
         console.log("Successful call to db")
