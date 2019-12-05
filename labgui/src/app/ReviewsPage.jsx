@@ -31,7 +31,8 @@ export class ReviewsPage extends Component {
     state = {
         yourReviews: [],
         reviewsOnYou: [],
-        reviewChoices: []
+        reviewChoices: [],
+        averageRating: 3
     }
 
     reviewsRepo = new ReviewsRepository()
@@ -53,6 +54,8 @@ export class ReviewsPage extends Component {
         this.reviewsRepo.getReviewHistory(1)
         .then (x => {
             this.setState({yourReviews: x.data.yourReviews, reportsOnYou: x.data.reviewsOnYou});
+            console.log(this.state.reviewsOnYou)
+            this.getAvgRating();
             this.state.yourReports.forEach(rev => {
                 let revInf = this.reviewsRepo.getEmpInfo(rev.id)
                 rev.byId = revInf.by;
@@ -63,6 +66,7 @@ export class ReviewsPage extends Component {
                 rev.byId = revInf.data.by;
                 rev.forId = revInf.data.for;
             });
+            // this.getAvgRating()
         })
     }
 
@@ -79,8 +83,17 @@ export class ReviewsPage extends Component {
         // // console.log(avg);
         // return avg = avg/counter;
         // //return avg = avg / counter;
-        
-        
+        let total = 0;
+        console.log("totalling")
+        for (let i = 0; i < this.state.reviewsOnYou.length; i++)
+        {
+            debugger;
+            total = total + parseInt(this.state.reviewsOnYou[i].rating);
+            console.log("total: " + total)
+        }
+        let average = total/this.state.reviewsOnYou.length;
+
+        this.setState({averageRating: average})        
     }
 
     getEmp()
@@ -123,7 +136,6 @@ export class ReviewsPage extends Component {
             }
         })
         this.setState({reviewsOnYou:revOnYou, yourReviews:yourRevs});
-    
     }
 
 
@@ -143,11 +155,12 @@ export class ReviewsPage extends Component {
         this.reviewsRepo.getYourReviewHistory(currentComponent)
         .then( () => {
         console.log("state after getYourReviewHistory")
-        console.log(this.state)})
-        this.getAvgRating();
+        console.log(this.state)}
+        )
         this.getEmp();
         this.getChoices();
     }
+
 
     render() {
         if(window.location.userId === -1){
@@ -163,7 +176,7 @@ export class ReviewsPage extends Component {
                         style={{'list-style': 'none'}, {'paddingLeft': 0}}>
                         {
                         this.state.yourReviews.map(review => 
-                            <ReviewCard review={review} key={review.id} type='on'/>
+                            <ReviewCard review={review} key={review.id + review.review} type='on'/>
                         )}
                         <h3 style={{'display': this.state.yourReviews.length <= 0 ? 'block' : 'none'}}>
                             <span className='text-white  badge badge-success' >No Reviews Found</span>
@@ -175,10 +188,10 @@ export class ReviewsPage extends Component {
                         <div>
                             <span>Your average rating: </span>
                             <span> 
-                                <span className={this.getAvgRating == 1 ? 'text-danger'
-                                    : this.getAvgRating == 5 ? 'text-success'
+                                <span className={this.state.averageRating == 1 ? 'text-danger'
+                                    : this.state.averageRating == 5 ? 'text-success'
                                         :'text-warning'}>
-                                    {this.getAvgRating}
+                                    {this.state.averageRating}
                                 </span>
                             </span>
                         </div>
