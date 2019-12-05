@@ -21,11 +21,24 @@ export class ReviewsPage extends Component {
 
     state = {
         yourReviews: [],
-        reviewsOnYou: []
+        reviewsOnYou: [],
+        reviewChoices: []
     }
 
     reviewsRepo = new ReviewsRepository()
 
+    getChoices() {
+        let choices = [];
+        this.reviewsRepo.getChoices()
+        .then(x => {
+            x.forEach(employee => {
+                if (employee.id != window.location.userId){
+                    choices.push([employee.id, employee.fname +" "+ employee.lname])
+                    this.setState({reviewChoices: choices})
+                }
+            })
+        })
+    }   
 
     setReviewInfo() {
         this.reviewsRepo.getReviewHistory(1)
@@ -106,7 +119,7 @@ export class ReviewsPage extends Component {
 
 
 
-    async componentDidMount() {
+        componentDidMount() {
         //emp_id, review, score, creation_date
 
         // this.reviewsRepo.login()
@@ -114,10 +127,17 @@ export class ReviewsPage extends Component {
         //         this.reviewsRepo.login();
         // })
         let currentComponent = this;
-        await this.reviewsRepo.getReviewHistory(currentComponent);
-        await this.reviewsRepo.getYourReviewHistory(currentComponent);
+        this.reviewsRepo.getReviewHistory(currentComponent)
+        .then(x => {console.log("getReviewHistory returns"); console.log(x)})
+        console.log("state after getReviewHistory")
+        console.log(this.state)
+        this.reviewsRepo.getYourReviewHistory(currentComponent)
+        .then( () => {
+        console.log("state after getYourReviewHistory")
+        console.log(this.state)})
         this.getAvgRating();
         this.getEmp();
+        this.getChoices();
     }
 
     render() {
@@ -160,7 +180,7 @@ export class ReviewsPage extends Component {
                 </div>
 
                 <h2>Submit a performance review</h2>
-                <ReviewForm userId={1} empIds={[1, 2]} submitReview={x => this.onSubmitReview(x)}/>
+                <ReviewForm userId={1} reviewChoices={this.state.reviewChoices} submitReview={x => this.onSubmitReview(x)}/>
             
             </div>
             </>
