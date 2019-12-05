@@ -13,7 +13,9 @@ export class AddEmpForm extends Component {
         addr: '',
         email: '',
         phn_num: '',
-        strikes: 0
+        strikes: 0,
+        managers: []
+
     }
 
     empRepo = new EmpRepository();
@@ -35,7 +37,7 @@ export class AddEmpForm extends Component {
             manager: this.state.manager,
             addr: this.state.addr,
             email: this.state.email,
-            phn_num: this.state.phn_num,
+            phn_num: this.state.phn_num
         }
 
         this.empRepo.addEmployee(empInfo);
@@ -48,6 +50,15 @@ export class AddEmpForm extends Component {
             addr: '',
             email: '',
             phn_num: '',
+        })
+    }
+
+    componentDidMount() {
+        let managers = [];
+        this.empRepo.getManagers()
+        .then(x => {
+            managers.push(x.id, x.fname +" "+ x.lname)
+            this.setState({managers: managers})
         })
     }
 
@@ -118,15 +129,20 @@ export class AddEmpForm extends Component {
                     </div>
 
                     <div className='form-group  col-3'>
-                        <label htmlFor='manager'>
-                            Manager
-                        </label>
-                        <input type='text'
-                                id='manager'
-                                name='managaer'
-                                className = 'form-control'
-                                value={this.state.manager}
-                                onChange={e => this.setState({manager: e.target.value})}/>
+                    <label htmlFor="manager">Manager</label>
+                        <select type="text"
+                            id="manager"
+                            name="manager"
+                            className="form-control"
+                            value={this.state.dep_id}
+                            onChange={ e => this.setState({manager: e.target.value})}>
+                                <option key='0' value='0'></option>
+                            {
+                                this.state.managers.map(m => 
+                                <option key={m[0]} value={m[0]}>{m[1]}</option>  
+                                )
+                            }
+                        </select>
                     </div>
                 </div>
 

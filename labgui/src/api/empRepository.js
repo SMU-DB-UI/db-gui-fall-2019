@@ -13,9 +13,16 @@ export class EmpRepository {
      
     }
 
+    getManagers() {
+        return axios.get(`${this.url}/employees/managers`, this.session)
+            .then (x => {return x.data.managers})
+            .catch (x => alert('Issue'));
+    }
+
     addEmployee(empInfo) {
-        axios.post(`${this.url}/employees`, empInfo, this.session)
-        .catch(x =>  alert('Something went wrong'));
+        return axios.post(`${this.url}/employees`, empInfo, this.session)
+            .then(x => console.log(x))
+            .catch(x =>  alert('Something went wrong'));
     }
 
 }
