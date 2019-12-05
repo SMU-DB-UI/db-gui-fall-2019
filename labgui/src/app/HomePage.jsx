@@ -30,16 +30,39 @@ class HomePage extends Component {
   }
 
   endUpdate = (fname, lname, address, phone) => {
-    debugger;
     console.log("End Update");
     let newEmp = this.state.currentEmp
 
-    newEmp.fname = fname
+    newEmp.fname = fname;
+    newEmp.lname = lname;
+    newEmp.address = address;
+    newEmp.phone = phone;
 
     this.setState(prevState => ({
       currentEmp: newEmp,
       updating: false
     }));
+  }
+
+  sendEmployeeUpdate = () => {
+
+    let requestBody = {
+      "fname": this.state.currentEmp.fname,
+      "lname": this.state.currentEmp.lname,
+      "address": this.state.currentEmp.address,
+      "phn_num": this.state.currentEmp.phone
+    }
+
+    debugger;
+
+    const response = API.put('/employees/2/profile', requestBody)
+    .then((response) => {
+
+      console.log("response")
+      debugger;
+
+    })
+
   }
 
   async componentWillMount() {
@@ -58,33 +81,6 @@ class HomePage extends Component {
           currentEmp,
           isLoading: false
         })
-
-        // let id = contactInfo.id;
-        // let fname = contactInfo.fname;
-        // let lname = contactInfo.lname;
-        // let dep_id = contactInfo.deptId;
-        // let position = contactInfo.position;
-        // let manager = contactInfo.manager;
-        // let address = contactInfo.address;
-        // let phone = contactInfo.phone;
-        // let rating = contactInfo.rating;
-        // let strikes = contactInfo.strikes;
-        // let active = contactInfo.active;
-
-        // this.setState({
-        //   id,
-        //   fname,
-        //   lname,
-        //   dep_id,
-        //   position,
-        //   manager,
-        //   address,
-        //   phone,
-        //   rating,
-        //   strikes,
-        //   active,
-        //   isLoading: false
-        // })
 
       })
       .catch((error) => {
@@ -135,6 +131,8 @@ class HomePage extends Component {
       return (
         <div>
           <Employee emp={this.state.currentEmp} titleName={this.state.currentEmp.fname} isLoading={this.state.isLoading} updating={this.state.updating} updateEmployee={x => this.updateEmployee(x)} endUpdate={this.endUpdate} />
+          <button type="button" className="btn btn-success mt-3" onClick={this.sendEmployeeUpdate}>Submit Changes</button>
+
         </div>
       );
     }
