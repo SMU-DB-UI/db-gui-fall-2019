@@ -12,8 +12,8 @@ class App extends Component {
 
   state = {
     navigating: false,
-    hrAuth: true,
-    empAuth: false,
+    hrAuth: false,
+    empAuth: true,
     logedIn: false,
 
   }
