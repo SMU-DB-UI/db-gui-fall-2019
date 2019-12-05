@@ -165,6 +165,9 @@ export class ReviewsPage extends Component {
                         this.state.yourReviews.map(review => 
                             <ReviewCard review={review} key={review.id} type='on'/>
                         )}
+                        <h3 style={{'display': this.state.yourReviews.length <= 0 ? 'block' : 'none'}}>
+                            <span className='text-white  badge badge-success' >No Reviews Found</span>
+                        </h3>
                     </ul>
                 </div>
                 <div className='card mt-3 bg-light  text-black'>
@@ -189,6 +192,9 @@ export class ReviewsPage extends Component {
                             this.state.reviewsOnYou.map(review => 
                             <ReviewCard review={review} key={review.id} type='by'/>
                         )}
+                        <h3 style={{'display': this.state.reviewsOnYou.length <= 0 ? 'block' : 'none'}}>
+                            <span className='text-white  badge badge-success' >No Reviews Found</span>
+                        </h3>
                     </ul>
                 </div>
 

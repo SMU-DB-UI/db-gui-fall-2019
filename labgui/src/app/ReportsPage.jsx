@@ -8,12 +8,6 @@ import { Redirect } from 'react-router-dom';
 export class ReportsPage extends Component {
 
     onSubmitReport(rep) {
-        // this.setState(prevState => {
-        //     rep.status = "open";
-        //     prevState.yourReports.push(rep);
-        //     return prevState;
-        // })
-
 
         let DBRep = {
             for_emp_id: rep.forId,
@@ -28,12 +22,10 @@ export class ReportsPage extends Component {
 
     state = {
         yourReports: [
-            new Report(1, 1, 2, "disgusting", 'Oct-15-2019', 1, 5),
-            new Report(2, 1, 2, "ok", 'Oct-15-2019', 1, 3),
-            new Report(3, 1, 2, "good", 'Oct-15-2019', 1, 1),
+            new Report('Loading...', 1, 2, "Loading...", 'Loading...', 1, 0)
         ],
         reportsOnYou: [
-            new Report(4, 2, 1, "awful", 'Oct-16-2019', 0, 5)
+            new Report('Loading...', 1, 2, "Loading...", 'Loading...', 1, 0)
         ],
         reportChoices: []
     }
@@ -116,6 +108,9 @@ export class ReportsPage extends Component {
                         this.state.yourReports.map(report => 
                             <ReportCard report={report} key={report.id} type='on'/>
                         )}
+                        <h3 style={{'display': this.state.yourReports.length <= 0 ? 'block' : 'none'}}>
+                            <span className='text-white  badge badge-success' >No Reports Found</span>
+                        </h3>
                     </ul>
                 </div>
 
@@ -127,6 +122,9 @@ export class ReportsPage extends Component {
                             this.state.reportsOnYou.map(report => 
                             <ReportCard report={report} key={report.id} type='by'/>
                         )}
+                        <h3 style={{'display': this.state.reportsOnYou.length <= 0 ? 'block' : 'none'}}>
+                            <span className='text-white  badge badge-success' >No Reports Found</span>
+                        </h3>
                     </ul>
                 </div>
 
