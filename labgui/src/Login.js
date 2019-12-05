@@ -118,7 +118,6 @@ class Login extends Component {
         }
      }
      else if(response.status == 204){
-       debugger;
        console.log("Username password do not match");
        alert("Username and password do not match");
      }

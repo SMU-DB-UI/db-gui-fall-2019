@@ -26,7 +26,9 @@ export class ReviewsRepository {
           if (response.data.message == "succeed") {
             console.log("Got perf reviews");
 
+
             response.data.reviews.forEach((item) => {
+              console.log("Here is getReviewHistory")
               console.log(item);
               var rev = new Review(item.id, item.by_emp_id, item.emp_id, item.review, item.score, item.creation_date);
               console.log(rev);

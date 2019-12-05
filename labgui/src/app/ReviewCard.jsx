@@ -16,10 +16,9 @@ class ReviewCard extends Component {
     }
 
     async getEmpName(){
-        debugger;
+        
         axios.get((apiBaseUrl + '/employees/' + this.state.id), )
             .then(res => {
-                debugger;
                 this.setState({
                     userName: res.data.profile.profile.fname
                 })
