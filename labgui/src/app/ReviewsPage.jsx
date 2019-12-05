@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Review } from '../models/PerfReview';
-import {ReviewCard} from './ReviewCard';
+import ReviewCard from './ReviewCard';
 import { ReviewForm } from './ReviewForm';
 import {ReviewsRepository} from '../api/reviewRepository'
 import { Redirect } from 'react-router-dom';
