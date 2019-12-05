@@ -18,6 +18,9 @@ class App extends Component {
   toggleNav() {
     this.setState({navigating: !this.state.navigating})
   }
+  stopNav() {
+    this.setState({navigating: false})
+  }
 
   getRoutes() {
     if (window.location.auth == 0) {
@@ -112,7 +115,7 @@ class App extends Component {
       <div className="App">
 
         <BrowserRouter>
-            <Header toggleNav={x => (this.toggleNav())}></Header>
+            <Header stopNav={x => (this.stopNav())} toggleNav={x => (this.toggleNav())}></Header>
               <div className='col-2 align-left float-left card text-left jumbotron jumbotron-fluid bg-info maxHeight' 
                   style={{'display': (this.state.navigating ? 'block' : 'none')}}>
                       {this.getNavLinks()}

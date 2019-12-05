@@ -31,7 +31,8 @@ export class Header extends Component{
     confirmLogout() {
         if (window.confirm("Are you sure you want to log out?"))
         {
-            this.setState({redirect:true})
+            this.setState({redirect:true});
+            this.props.stopNav();
         }
         else {}
     }
