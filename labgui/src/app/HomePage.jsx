@@ -42,6 +42,7 @@ class HomePage extends Component {
       currentEmp: newEmp,
       updating: false
     }));
+
   }
 
   sendEmployeeUpdate = () => {
