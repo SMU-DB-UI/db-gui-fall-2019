@@ -181,9 +181,12 @@ export class ReviewsPage extends Component {
                     </ul>
                 </div>
 
-                <h2>Submit a performance review</h2>
-                <ReviewForm userId={1} reviewChoices={this.state.reviewChoices} submitReview={x => this.onSubmitReview(x)}/>
-            
+                <div style={{'display': (parseInt(window.location.userId) <= 3 && parseInt(window.location.userId) >= 1) ? 'block' : 'none'}}>
+                    <h2>Submit a performance review</h2>
+                    <ReviewForm userId={window.location.userId} 
+                                reviewChoices={this.state.reviewChoices} 
+                                submitReview={x => this.onSubmitReview(x)}/>
+                </div>
             </div>
             </>
         );
