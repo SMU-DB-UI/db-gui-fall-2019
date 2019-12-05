@@ -63,6 +63,8 @@ class HomePage extends Component {
 
     })
 
+    alert("Changes Submitted");
+
   }
 
   async componentWillMount() {
