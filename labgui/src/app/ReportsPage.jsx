@@ -31,28 +31,78 @@ export class ReportsPage extends Component {
 
 
     setReportInfo() {
-        this.reportsRepo.getReportHistory(1)
+        console.log("User id = " + window.location.userId)
+        let newState = {};
+        this.reportsRepo.getReportHistory(window.location.userId)
         .then (x => {
-            this.setState({yourReports: x.data.yourReports, reportsOnYou: x.data.reportsOnYou});
-            this.state.yourReports.forEach(rep => {
-                let repInf = this.reportsRepo.getEmpInfo(rep.id)
-                rep.byId = repInf.by;
-                rep.forId = repInf.for;
-            });
-            this.state.reportsOnYou.forEach(rep => {
-                let repInf = this.reportsRepo.getEmpInfo(rep.id)
-                rep.byId = repInf.data.by;
-                rep.forId = repInf.data.for;
-            });
-        })
+            let yourReps = [];
+            let repsOnYou = [];
+            console.log("response to gethistory")
+            console.log(x)
+            x.data.reportHistory.forEach(rep => {
+                if (rep.for_emp_id == window.location.userId) {
+                    let ourRep = new Report(rep.id, rep.by_emp_id, rep.for_emp_id, rep.report, rep.creation_date, rep.status, rep.severity)
+                    repsOnYou.push(ourRep);
+                }
+                else if (rep.by_emp_id == window.location.userId) {
+                    let ourRep = new Report(rep.id, rep.by_emp_id, rep.for_emp_id, rep.report, rep.creation_date, rep.status, rep.severity)
+                    yourReps.push(ourRep);
+                }
+                else{
+                    // alert("Weird data in report history")
+                }
+            })
+
+            let promise = new Promise((res, rej) => {
+                for (let i = 0; i < yourReps.length; i++){
+                    this.reportsRepo.getEmpInfo(yourReps[i].id)
+                    .then(info => {
+                        yourReps[i].byId = info[0].fname +" "+ info[0].lname;
+                        yourReps[i].forId = info[1].fname +" "+ info[1].lname;
+                        this.setState({yourReports: yourReps, reportsOnYou: repsOnYou});
+                    })
+                }
+                for (let i =0; i < repsOnYou.length; i++){
+                    this.reportsRepo.getEmpInfo(repsOnYou[i].id)
+                    .then(info => {
+                        repsOnYou[i].byId = info[1].fname +" "+ info[1].lname;
+                        repsOnYou[i].forId = info[0].fname +" "+ info[0].lname;
+                        this.setState({yourReports: yourReps, reportsOnYou: repsOnYou});
+                    })
+                }
+            })
+            // promise.then(() => {
+            //     this.setState({yourReports: yourReps, reportsOnYou: repsOnYou});
+            //     debugger;
+            //     console.log("actual new state:")
+            //     console.log(this.state)
+            // })
+            // promise.catch( () => {
+            //     this.setState({yourReports: yourReps, reportsOnYou: repsOnYou});
+            //     debugger;
+            //     console.log("actual new state:")
+            //     console.log(this.state)
+            // })
+
+
+            
+
+            newState = this.state;
+        });
+        // this.setState(newState);
+                
+        // console.log("newState:")
+        // console.log(newState)
+        // console.log("actual actual new state:")
+        // console.log(this.state)
     }
 
     componentDidMount() {
-        this.reportsRepo.login()
-        .then (x => {
-                this.reportsRepo.login();
-        })
-        // this.setReportInfo()
+        // this.reportsRepo.login()
+        // .then (x => {
+        //         this.reportsRepo.login();
+        // })
+        this.setReportInfo()
 
 
         console.log(this.state.yourReports)
@@ -68,7 +118,7 @@ export class ReportsPage extends Component {
                         style={{'list-style': 'none'}, {'paddingLeft': 0}}>
                         {
                         this.state.yourReports.map(report => 
-                            <ReportCard report={report} key={report.id}/>
+                            <ReportCard report={report} key={report.id} type='on'/>
                         )}
                     </ul>
                 </div>
@@ -79,7 +129,7 @@ export class ReportsPage extends Component {
                         style={{'list-style': 'none'}, {'paddingLeft': 0}}>
                         {
                             this.state.reportsOnYou.map(report => 
-                            <ReportCard report={report} key={report.id}/>
+                            <ReportCard report={report} key={report.id} type='by'/>
                         )}
                     </ul>
                 </div>
