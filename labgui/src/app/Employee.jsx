@@ -35,7 +35,6 @@ class Employee extends Component {
     }
 
     render() {
-        debugger;
 
         console.log("Employee Render Method");
 

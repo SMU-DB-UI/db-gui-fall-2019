@@ -111,7 +111,8 @@ class Login extends Component {
         localStorage.setItem("token", JSON.stringify(response.data.user))
         console.log("Login successfull");
         window.location.userId = response.data.id;
-        axios.defaults.withCredentials = true;
+        //axios.defaults.withCredentials = true;
+        console.log(response.data.user);
         currentComponent.setState({ isLoggedIn: true });
         }
      }
@@ -172,10 +173,7 @@ class Login extends Component {
                onChange = {(event,newValue) => this.setState({password:newValue})}
                />
              <br/>
-             !this.state.redirect ? 
-             <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/> :
-             <Redirect to='/HomePage'/>
-          
+             <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>          
          </div>
          </MuiThemeProvider>
       )
