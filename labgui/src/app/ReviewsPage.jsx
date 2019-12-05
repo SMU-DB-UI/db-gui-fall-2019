@@ -3,9 +3,11 @@ import { Review } from '../models/PerfReview';
 import {ReviewCard} from './ReviewCard';
 import { ReviewForm } from './ReviewForm';
 import {ReviewsRepository} from '../api/reviewRepository'
+import axios from 'axios';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 
+var apiBaseUrl = 'http://35.238.147.205:3000';
 export class ReviewsPage extends Component {
 
     onSubmitReview(rev) {
@@ -15,19 +17,11 @@ export class ReviewsPage extends Component {
         })
         this.reviewsRepo.addReview(rev);
     }
+    
 
     state = {
-        yourReviews: [
-            new Review(1, 1, 2, "Develops successful administrative strategies such as [task] that led to [results]",5, 'Oct-15-2019'),
-            new Review(2, 1, 2, "Continuously examines administrative effectiveness and seeks better procedures such as [tasks]", 4,'Oct-15-2019'),
-            new Review(3, 1, 2, "Shows a sincere interest in employees and the solutions to their problems",3, 'Oct-15-2019'),
-            new Review(3, 1, 2, "Always submits work late.",1, 'Oct-15-2019'),
-
-        ],
-        reviewsOnYou: [
-            new Review(4, 2, 1, "Effectively communicates expectations",5, 'Oct-16-2019'),
-            new Review(4, 2, 1, "Effectively communicates expectations",2, 'Oct-16-2019')
-        ]
+        yourReviews: [],
+        reviewsOnYou: []
     }
 
     reviewsRepo = new ReviewsRepository()
@@ -51,26 +45,79 @@ export class ReviewsPage extends Component {
     }
 
     getAvgRating(){
-        let counter = 0;
-        let avg = 0;
-        this.state.reviewsOnYou.forEach(rev => {
-            avg = avg + rev.rating;
-            counter = counter + 1;
-        });
-        console.log("here")
-        console.log(avg);
-        return avg = avg / counter;
+        // let counter = 0;
+        // let avg = 0;
+        // console.log("hehhehehehehe");
+        // this.state.reviewsOnYou.forEach(rev => {
+        //     console.log(rev.rating);
+        //     avg = avg + rev.rating;
+        //     counter = counter + 1;
+        // });
+        // // console.log("here")
+        // // console.log(avg);
+        // return avg = avg/counter;
+        // //return avg = avg / counter;
+        
         
     }
 
-    componentDidMount() {
-        this.reviewsRepo.login()
-        .then (x => {
-                this.reviewsRepo.login();
+    getEmp()
+    {
+        var list = this.reviewsRepo.getEmpInfo();
+        console.log(list);
+        //let promise = new Promise((res, rej) => {
+        let people = null;
+        let revOnYou = this.state.reviewsOnYou;
+        let yourRevs = this.state.yourReviews;
+        list.then(res =>{
+            for(let i = 0; i < yourRevs.length; i++)
+            {
+                for(let j = 0; j < res.length; j++)
+                {
+                    if(yourRevs[i].byId === res[j].id)
+                    {
+                        let name = res[j].fname + ' ' + res[j].lname;
+                        
+                        yourRevs[i].byId = name;
+                        console.log(yourRevs[i].byId);
+                    }
+                }
+                //this.reviewsRepo.getEmpInfo(yourReviews[i].byId);
+    
+            }
+            for(let i = 0; i < revOnYou.length; i++)
+            {
+                for(let j = 0; j < res.length; j++)
+                {
+                    if(revOnYou[i].byId === res[j].id)
+                    {
+                        console.log("this");
+                        let name = res[j].fname + ' ' + res[j].lname;
+                        revOnYou[i].byId = name;
+                    }
+                }
+                //this.reviewsRepo.getEmpInfo(yourReviews[i].byId);
+    
+            }
         })
+        this.setState({reviewsOnYou:revOnYou, yourReviews:yourRevs});
+    
+    }
 
 
-        console.log(this.state.yourReviews)
+
+    async componentDidMount() {
+        //emp_id, review, score, creation_date
+
+        // this.reviewsRepo.login()
+        // .then (x => {
+        //         this.reviewsRepo.login();
+        // })
+        let currentComponent = this;
+        await this.reviewsRepo.getReviewHistory(currentComponent);
+        await this.reviewsRepo.getYourReviewHistory(currentComponent);
+        this.getAvgRating();
+        this.getEmp();
     }
 
     render() {
@@ -92,10 +139,10 @@ export class ReviewsPage extends Component {
                         <div>
                             <span>Your average rating: </span>
                             <span> 
-                                <span className={this.getAvgRating() == 1 ? 'text-danger'
-                                    : this.getAvgRating() == 5 ? 'text-success'
+                                <span className={this.getAvgRating == 1 ? 'text-danger'
+                                    : this.getAvgRating == 5 ? 'text-success'
                                         :'text-warning'}>
-                                    {this.getAvgRating()}
+                                    {this.getAvgRating}
                                 </span>
                             </span>
                         </div>

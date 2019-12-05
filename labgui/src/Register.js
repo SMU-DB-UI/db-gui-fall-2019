@@ -52,7 +52,6 @@ class Register extends Component {
       }
       else if(response.status == 210)
       {
-        console.log("heredfds");
         alert("This account already exists. Please try again.");
       }
        else{

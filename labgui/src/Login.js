@@ -118,7 +118,7 @@ class Login extends Component {
      }
      else if(response.status == 204){
        console.log("Username password do not match");
-       alert(response.data.success)
+       alert("Username password do not match");
      }
      else{
        console.log("Username does not exists");
@@ -129,6 +129,7 @@ class Login extends Component {
      console.log(error);
    });
   }
+
   handleMenuChange(value){
     console.log("menuvalue",value);
     var loginRole;
