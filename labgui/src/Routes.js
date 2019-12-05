@@ -10,13 +10,12 @@ import { AddEmpForm } from "./app/AddEmpForm"
 export const Routes = () => {
     return ({
         employee: [
-            ['/', Loginscreen, 'Login'],
             ['/HomePage', HomePage, 'Home'],
             ['/reports', ReportsPage, 'Reports'],
             ['/reviews', ReviewsPage, 'Performance Reviews']
         ],
         hr: [
-            ['/', Loginscreen, 'Login'],
+            // ['/', Loginscreen, 'Login'],
             ['/HomePage', HomePage, 'Home'],
             ['/HrReports', HrReports, 'Reports'],
             ['/reviews', ReviewsPage, 'Performance Reviews'],
@@ -30,6 +29,9 @@ export const Routes = () => {
             ['/reviews', ReviewsPage, 'Performance Reviews'],
             ['/addEmp', AddEmpForm, 'Add an Employee']
 
+        ],
+        public: [
+            ['/', Loginscreen, 'Login']
         ]
     })
 }

@@ -111,6 +111,7 @@ class Login extends Component {
         localStorage.setItem("token", JSON.stringify(response.data.user))
         console.log("Login successfull");
         window.location.userId = response.data.id;
+        window.location.auth = response.data.hr_manager;
         //axios.defaults.withCredentials = true;
         console.log(response.data.user);
         currentComponent.setState({ isLoggedIn: true });

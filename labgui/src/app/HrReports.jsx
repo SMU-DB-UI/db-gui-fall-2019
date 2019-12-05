@@ -131,12 +131,12 @@ class HrReports extends Component {
                     <ul className='card-body'
                         style={{ 'list-style': 'none' }, { 'paddingLeft': 0 }}>
                         {this.state.reports.map(report => 
-                        <li className="no-bullets" key={report.id} >
+                        <div className="no-bullets" key={report.id} >
                             <ReportCard report={report} 
                                         key={report.id + report.byId} 
                                         type='manager' 
                                         closeReport={x => this.closeReport(x)}/>
-                        </li>)}
+                        </div>)}
                     </ul>
                 </div>
             </div>
