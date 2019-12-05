@@ -85,6 +85,7 @@ class App extends Component {
     // }
   }
   componentWillMount(){
+    document.title = 'HR App'
     window.location.userId = -1;
     window.location.auth = -1;
     var reports = [];
