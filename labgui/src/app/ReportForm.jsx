@@ -48,9 +48,9 @@ export class ReportForm extends Component {
                                         onChange={e => this.setState({toId: e.target.value})}>
                                 <option></option>
                                 {
-                                    this.props.empIds.map(
+                                    this.props.reportChoices.map(
                                         x => 
-                                        <option value={x} key={x}>{x}</option>
+                                        <option value={x[0]} key={x[0]}>{x[1]}</option>
                                     )
                                 }               
                                 </select>
