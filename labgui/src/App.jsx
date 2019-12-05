@@ -25,21 +25,21 @@ class App extends Component {
   getRoutes() {
     if (window.location.auth == 0) {
       return (
-        Routes().employee.map(x => (
+        Routes().all.map(x => (
           <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
         ))
       )
     }
     else if (window.location.auth == 1) {
       return (
-        Routes().hr.map(x => (
+        Routes().all.map(x => (
           <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
         ))
       )
     }
     else if (window.location.userId == -1) {
       return (
-        Routes().public.map(x => (
+        Routes().all.map(x => (
           <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
         ))
       )
