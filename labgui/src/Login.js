@@ -111,14 +111,16 @@ class Login extends Component {
         localStorage.setItem("token", JSON.stringify(response.data.user))
         console.log("Login successfull");
         window.location.userId = response.data.id;
+        window.location.auth = response.data.hr_manager;
         //axios.defaults.withCredentials = true;
         console.log(response.data.user);
         currentComponent.setState({ isLoggedIn: true });
         }
      }
      else if(response.status == 204){
+       debugger;
        console.log("Username password do not match");
-       alert("Username password do not match");
+       alert("Username and password do not match");
      }
      else{
        console.log("Username does not exists");
@@ -127,6 +129,7 @@ class Login extends Component {
    })
    .catch(function (error) {
      console.log(error);
+     alert("Incorrect username or password")
    });
   }
 

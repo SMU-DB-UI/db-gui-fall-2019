@@ -9,11 +9,22 @@ import AppBar from 'material-ui/AppBar';
 export class ReportsPage extends Component {
 
     onSubmitReport(rep) {
-        this.setState(prevState => {
-            prevState.yourReports.push(rep);
-            return prevState;
+        // this.setState(prevState => {
+        //     rep.status = "open";
+        //     prevState.yourReports.push(rep);
+        //     return prevState;
+        // })
+
+
+        let DBRep = {
+            for_emp_id: rep.forId,
+            report_body: rep.reportText,
+            severity: rep.severity
+        }
+        this.reportsRepo.addReport(DBRep)
+        .then(() => {
+           this.setReportInfo();
         })
-        this.reportsRepo.addReport(rep);
     }
 
     state = {
@@ -24,7 +35,8 @@ export class ReportsPage extends Component {
         ],
         reportsOnYou: [
             new Report(4, 2, 1, "awful", 'Oct-16-2019', 0, 5)
-        ]
+        ],
+        reportChoices: []
     }
 
     reportsRepo = new ReportsRepository()
@@ -32,7 +44,6 @@ export class ReportsPage extends Component {
 
     setReportInfo() {
         console.log("User id = " + window.location.userId)
-        let newState = {};
         this.reportsRepo.getReportHistory(window.location.userId)
         .then (x => {
             let yourReps = [];
@@ -71,41 +82,22 @@ export class ReportsPage extends Component {
                     })
                 }
             })
-            // promise.then(() => {
-            //     this.setState({yourReports: yourReps, reportsOnYou: repsOnYou});
-            //     debugger;
-            //     console.log("actual new state:")
-            //     console.log(this.state)
-            // })
-            // promise.catch( () => {
-            //     this.setState({yourReports: yourReps, reportsOnYou: repsOnYou});
-            //     debugger;
-            //     console.log("actual new state:")
-            //     console.log(this.state)
-            // })
 
-
-            
-
-            newState = this.state;
         });
-        // this.setState(newState);
-                
-        // console.log("newState:")
-        // console.log(newState)
-        // console.log("actual actual new state:")
-        // console.log(this.state)
     }
 
     componentDidMount() {
-        // this.reportsRepo.login()
-        // .then (x => {
-        //         this.reportsRepo.login();
-        // })
         this.setReportInfo()
-
-
-        console.log(this.state.yourReports)
+        this.reportsRepo.getChoices()
+        .then(x => {
+            let pairs = [];
+            x.forEach(employee => {
+                if (employee.id != window.location.userId){
+                    pairs.push([employee.id, employee.fname +" "+ employee.lname])
+                }
+            })
+            this.setState({reportChoices: pairs});
+        });
     }
 
     render() {
@@ -135,8 +127,7 @@ export class ReportsPage extends Component {
                 </div>
 
                 <h2>Submit a report</h2>
-                <ReportForm userId={1} empIds={[1, 2]} submitReport={x => this.onSubmitReport(x)}/>
-            
+                <ReportForm userId={1} reportChoices={this.state.reportChoices} submitReport={x => this.onSubmitReport(x)}/>
             </div>
             </>
         );

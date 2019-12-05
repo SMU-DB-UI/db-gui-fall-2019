@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Employee from './Employee';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
 import API from "./api";
 import { employee } from "../models/employee"
+
+import { Redirect } from 'react-router-dom'
 
 class HomePage extends Component {
 
@@ -42,6 +42,7 @@ class HomePage extends Component {
       currentEmp: newEmp,
       updating: false
     }));
+
   }
 
   sendEmployeeUpdate = () => {
@@ -55,7 +56,7 @@ class HomePage extends Component {
 
     debugger;
 
-    const response = API.put('/employees/2/profile', requestBody)
+    const response = API.put('/employees/' + window.location.userId + '/profile', requestBody)
     .then((response) => {
 
       console.log("response")
@@ -63,13 +64,16 @@ class HomePage extends Component {
 
     })
 
+    alert("Changes Submitted");
+
   }
 
   async componentWillMount() {
+    
     // Load employee data asynchronously
 
-    const response = await API.get('employees/2')
-    //const response = await API.get('employees/' + window.location.userId)
+    //const response = await API.get('employees/2')
+    const response = await API.get('employees/' + window.location.userId)
       .then((response) => {
         // Success
         console.log("Successful call to db")
@@ -114,6 +118,10 @@ class HomePage extends Component {
 
   render() {
 
+    if(window.location.userId === -1){
+      return <Redirect to='/'/>
+    }
+
     const loadingMessage = <span className="d-flex m-auto">Loading...</span>;
 
     if (this.state.isLoading === true) {
@@ -132,7 +140,6 @@ class HomePage extends Component {
         <div>
           <Employee emp={this.state.currentEmp} titleName={this.state.currentEmp.fname} isLoading={this.state.isLoading} updating={this.state.updating} updateEmployee={x => this.updateEmployee(x)} endUpdate={this.endUpdate} />
           <button type="button" className="btn btn-success mt-3" onClick={this.sendEmployeeUpdate}>Submit Changes</button>
-
         </div>
       );
     }
