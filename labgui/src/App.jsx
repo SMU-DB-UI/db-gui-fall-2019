@@ -4,18 +4,15 @@ import LoginScreen from './Loginscreen';
 import {ReportsPage} from './app/ReportsPage'
 import {ReviewsPage} from './app/ReviewsPage'
 
-import {Route, BrowserRouter, Switch, Link} from 'react-router-dom'
+import {Route, BrowserRouter, Switch, Link, Redirect} from 'react-router-dom'
 import {Routes} from './Routes'
 import {Header} from './app/header'
+import { HardwareDesktopWindows } from 'material-ui/svg-icons';
 
 class App extends Component {
 
   state = {
     navigating: false,
-    hrAuth: false,
-    empAuth: true,
-    logedIn: false,
-
   }
 
   toggleNav() {
@@ -23,16 +20,23 @@ class App extends Component {
   }
 
   getRoutes() {
-    if (this.state.empAuth) {
+    if (window.location.auth == 0) {
       return (
         Routes().employee.map(x => (
           <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
         ))
       )
     }
-    else if (this.state.hrAuth) {
+    else if (window.location.auth == 1) {
       return (
         Routes().hr.map(x => (
+          <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
+        ))
+      )
+    }
+    else if (window.location.userId == -1) {
+      return (
+        Routes().public.map(x => (
           <Route exact path={x[0]} component={x[1]} key={x[0]}></Route>
         ))
       )
@@ -40,7 +44,7 @@ class App extends Component {
   }
 
   getNavLinks() {
-    if (this.state.empAuth) {
+    if (window.location.auth == 0) {
       return (
         Routes().employee.map(x => (
               <Link to={x[0]} className='text-light' onClick={() => this.toggleNav()} key={x[0]}>
@@ -48,8 +52,8 @@ class App extends Component {
               </Link>
         ))
       )
-  }
-  else if (this.state.hrAuth) {
+    }
+    else if (window.location.auth == 1) {
     return (
         Routes().hr.map(x => (
           <Link to={x[0]} className='text-light' onClick={() => this.toggleNav()} key={x[0]}>
@@ -57,7 +61,16 @@ class App extends Component {
           </Link>
         ))
       )
-  }
+    }
+    else if (window.location.userId == -1) {
+      return (
+          Routes().public.map(x => (
+            <Link to={x[0]} className='text-light' onClick={() => this.toggleNav()} key={x[0]}>
+                <h3 className='ml-3'>{x[2]}</h3>
+            </Link>
+          ))
+        )
+      }
   }
   constructor(props){
     super(props);
@@ -69,7 +82,8 @@ class App extends Component {
     // }
   }
   componentWillMount(){
-    window.location.userId=1;
+    window.location.userId = -1;
+    window.location.auth = -1;
     var reports = [];
     reports.push(<ReportsPage/>)
     var reviews = [];
@@ -85,23 +99,30 @@ class App extends Component {
     //               loginPage:loginPage
     //                 })
   }
+
+  forceToLogin() {
+    if (!this.state.logedin) {
+      return <Redirect to='/'/>
+    }
+    else{}
+  }
+
   render() {
     return (
       <div className="App">
+
         <BrowserRouter>
             <Header toggleNav={x => (this.toggleNav())}></Header>
-            <div className='col-2 align-left float-left card text-left jumbotron jumbotron-fluid bg-info maxHeight' 
-                style={{'display': (this.state.navigating ? 'block' : 'none')}}>
-                    {this.getNavLinks()}
-            </div>
-            <div className={(this.state.navigating ? 'col-10 float-right' : '')}>
-                <Switch>           
-                {this.getRoutes()}
-                </Switch>
-            </div>
-            {/* {this.state.loginPage}
-            {this.state.uploadScreen}
-            {this.state.reportsPage} */}
+              <div className='col-2 align-left float-left card text-left jumbotron jumbotron-fluid bg-info maxHeight' 
+                  style={{'display': (this.state.navigating ? 'block' : 'none')}}>
+                      {this.getNavLinks()}
+              </div>
+              <div className={(this.state.navigating ? 'col-10 float-right' : '')}>
+                  <Switch>           
+                  {this.getRoutes()}
+                  </Switch>
+              </div>
+              {/* {this.forceToLogin()} */}
         </BrowserRouter>
       </div>
     );

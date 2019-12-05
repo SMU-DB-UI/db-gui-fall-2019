@@ -11,8 +11,6 @@ export class Header extends Component{
     }
 
     getTitle() {
-        console.log("header location");
-        console.log(window.location);
         let curr = window.location.pathname;
         let title = 'Hr App';
         Routes().all.forEach(route => {
@@ -43,9 +41,9 @@ export class Header extends Component{
         if (this.state.redirect)
         {
             this.setState({redirect:false})
-            //TODO  add api stuff
+            window.location.userId = -1;
+            window.location.auth = -1;
             return <Redirect to='/'/>
-
         }
         else{}
     }
