@@ -142,7 +142,7 @@ export class AddEmpForm extends Component {
                                 id="manager"
                                 name="manager"
                                 className="form-control"
-                                value={this.state.dep_id}
+                                value={this.state.manager}
                                 onChange={e => this.setState({ manager: e.target.value })}>
                                 <option key='0' value='0'></option>
                                 {

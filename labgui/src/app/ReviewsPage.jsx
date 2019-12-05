@@ -9,18 +9,30 @@ var apiBaseUrl = 'http://35.238.147.205:3000';
 export class ReviewsPage extends Component {
 
     onSubmitReview(rev) {
-        this.setState(prevState => {
-            prevState.yourReviews.push(rev);
-            return prevState;
-        })
-        this.reviewsRepo.addReview(rev);
+
+        this.reviewsRepo.addReview(rev, rev.forId)
+        .then( 
+            this.setState(prevState => {
+                prevState.yourReviews.push(rev);
+                return prevState;
+            })
+        )
+        .catch(x => {
+            console.log("Error adding"); 
+            console.log(x); 
+            if (x.response.status == 400) {
+                alert("Error! You do not manage this user!");
+            }
+        } 
+        )
     }
     
 
     state = {
         yourReviews: [],
         reviewsOnYou: [],
-        reviewChoices: []
+        reviewChoices: [],
+        averageRating: 3
     }
 
     reviewsRepo = new ReviewsRepository()
@@ -42,6 +54,8 @@ export class ReviewsPage extends Component {
         this.reviewsRepo.getReviewHistory(1)
         .then (x => {
             this.setState({yourReviews: x.data.yourReviews, reportsOnYou: x.data.reviewsOnYou});
+            console.log(this.state.reviewsOnYou)
+            this.getAvgRating();
             this.state.yourReports.forEach(rev => {
                 let revInf = this.reviewsRepo.getEmpInfo(rev.id)
                 rev.byId = revInf.by;
@@ -52,6 +66,7 @@ export class ReviewsPage extends Component {
                 rev.byId = revInf.data.by;
                 rev.forId = revInf.data.for;
             });
+            // this.getAvgRating()
         })
     }
 
@@ -68,8 +83,17 @@ export class ReviewsPage extends Component {
         // // console.log(avg);
         // return avg = avg/counter;
         // //return avg = avg / counter;
-        
-        
+        let total = 0;
+        console.log("totalling")
+        for (let i = 0; i < this.state.reviewsOnYou.length; i++)
+        {
+            debugger;
+            total = total + parseInt(this.state.reviewsOnYou[i].rating);
+            console.log("total: " + total)
+        }
+        let average = total/this.state.reviewsOnYou.length;
+
+        this.setState({averageRating: average})        
     }
 
     getEmp()
@@ -112,7 +136,6 @@ export class ReviewsPage extends Component {
             }
         })
         this.setState({reviewsOnYou:revOnYou, yourReviews:yourRevs});
-    
     }
 
 
@@ -132,11 +155,12 @@ export class ReviewsPage extends Component {
         this.reviewsRepo.getYourReviewHistory(currentComponent)
         .then( () => {
         console.log("state after getYourReviewHistory")
-        console.log(this.state)})
-        this.getAvgRating();
+        console.log(this.state)}
+        )
         this.getEmp();
         this.getChoices();
     }
+
 
     render() {
         if(window.location.userId === -1){
@@ -152,8 +176,11 @@ export class ReviewsPage extends Component {
                         style={{'list-style': 'none'}, {'paddingLeft': 0}}>
                         {
                         this.state.yourReviews.map(review => 
-                            <ReviewCard review={review} key={review.id}/>
+                            <ReviewCard review={review} key={review.id + review.review} type='on'/>
                         )}
+                        <h3 style={{'display': this.state.yourReviews.length <= 0 ? 'block' : 'none'}}>
+                            <span className='text-white  badge badge-success' >No Reviews Found</span>
+                        </h3>
                     </ul>
                 </div>
                 <div className='card mt-3 bg-light  text-black'>
@@ -161,10 +188,10 @@ export class ReviewsPage extends Component {
                         <div>
                             <span>Your average rating: </span>
                             <span> 
-                                <span className={this.getAvgRating == 1 ? 'text-danger'
-                                    : this.getAvgRating == 5 ? 'text-success'
+                                <span className={this.state.averageRating == 1 ? 'text-danger'
+                                    : this.state.averageRating == 5 ? 'text-success'
                                         :'text-warning'}>
-                                    {this.getAvgRating}
+                                    {this.state.averageRating}
                                 </span>
                             </span>
                         </div>
@@ -173,17 +200,23 @@ export class ReviewsPage extends Component {
                 <div className='card mt-3 bg-info  text-white'>
                     <h2 className='card-header'>Reviews on you</h2>
                     <ul className = 'card-body'
-                        style={{'list-style': 'none'}, {'paddingLeft': 0}}>
+                        style={{'list-style': 'none'}, {'paddingLeft': 0} }>
                         {
                             this.state.reviewsOnYou.map(review => 
-                            <ReviewCard review={review} key={review.id}/>
+                            <ReviewCard review={review} key={review.id} type='by'/>
                         )}
+                        <h3 style={{'display': this.state.reviewsOnYou.length <= 0 ? 'block' : 'none'}}>
+                            <span className='text-white  badge badge-success' >No Reviews Found</span>
+                        </h3>
                     </ul>
                 </div>
 
-                <h2>Submit a performance review</h2>
-                <ReviewForm userId={1} reviewChoices={this.state.reviewChoices} submitReview={x => this.onSubmitReview(x)}/>
-            
+                <div style={{'display': (parseInt(window.location.userId) <= 3 && parseInt(window.location.userId) >= 1) ? 'block' : 'none'}}>
+                    <h2>Submit a performance review</h2>
+                    <ReviewForm userId={window.location.userId} 
+                                reviewChoices={this.state.reviewChoices} 
+                                submitReview={x => this.onSubmitReview(x)}/>
+                </div>
             </div>
             </>
         );

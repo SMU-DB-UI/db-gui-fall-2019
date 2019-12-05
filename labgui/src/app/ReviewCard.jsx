@@ -16,7 +16,10 @@ class ReviewCard extends Component {
     }
 
     async getEmpName(){
+<<<<<<< HEAD
         
+=======
+>>>>>>> c56e7c9b57d7bf3047ea7ab4983b5837c65791d9
         axios.get((apiBaseUrl + '/employees/' + this.state.id), )
             .then(res => {
                 this.setState({
@@ -48,7 +51,8 @@ class ReviewCard extends Component {
                         <div className='card-header'>
                             <h3>
                                 <div>
-                                    <span className='float-left'>Review by: {this.state.userName}</span>
+                                    <span className='float-left' style={{'display': this.props.type == 'by' ? 'inline' : 'none'}}>Review by: {this.state.userName}</span>
+                                    <span className='float-left' style={{'display': this.props.type == 'on' ? 'inline' : 'none'}}>Review on: {this.state.userName}</span>
                                     <span className='float-right'>Rating:
                             <span className={this.props.review.rating == 1 ? 'text-danger'
                                             : this.props.review.rating == 5 ? 'text-success'
