@@ -32,7 +32,7 @@ export class ReviewsPage extends Component {
         yourReviews: [],
         reviewsOnYou: [],
         reviewChoices: [],
-        averageRating: 3
+        averageRating: 0
     }
 
     reviewsRepo = new ReviewsRepository()
@@ -71,29 +71,29 @@ export class ReviewsPage extends Component {
     }
 
     getAvgRating(){
-        // let counter = 0;
-        // let avg = 0;
-        // console.log("hehhehehehehe");
-        // this.state.reviewsOnYou.forEach(rev => {
-        //     console.log(rev.rating);
-        //     avg = avg + rev.rating;
-        //     counter = counter + 1;
-        // });
-        // // console.log("here")
-        // // console.log(avg);
-        // return avg = avg/counter;
+        let counter = 0;
+        let avg = 0;
+        console.log("hehhehehehehe");
+        this.state.reviewsOnYou.forEach(rev => {
+            console.log(rev.rating);
+            avg = avg + rev.rating;
+            counter = counter + 1;
+        });
+        // console.log("here")
+        // console.log(avg);
+        avg = avg /counter;
+        this.setState({averageRating:avg});
         // //return avg = avg / counter;
-        let total = 0;
-        console.log("totalling")
-        for (let i = 0; i < this.state.reviewsOnYou.length; i++)
-        {
-            debugger;
-            total = total + parseInt(this.state.reviewsOnYou[i].rating);
-            console.log("total: " + total)
-        }
-        let average = total/this.state.reviewsOnYou.length;
+        // let total = 0;
+        // console.log("totalling")
+        //     for (let i = 0; i < this.state.reviewsOnYou.length; i++)
+        //     {
+        //         total = total + this.state.reviewsOnYou[i].rating;
+        //         console.log("total: " + total)
+        //     }
+        //     let average = total/this.state.reviewsOnYou.length;
 
-        this.setState({averageRating: average})        
+        //     this.setState({averageRating: average})        
     }
 
     getEmp()
@@ -154,7 +154,8 @@ export class ReviewsPage extends Component {
         console.log(this.state)
         this.reviewsRepo.getYourReviewHistory(currentComponent)
         .then( () => {
-        console.log("state after getYourReviewHistory")
+            this.getAvgRating();
+            console.log("state after getYourReviewHistory")
         console.log(this.state)}
         )
         this.getEmp();

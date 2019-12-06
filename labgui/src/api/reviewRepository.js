@@ -31,7 +31,8 @@ export class ReviewsRepository {
               console.log("Here is getReviewHistory")
               console.log(item);
               var rev = new Review(item.id, item.by_emp_id, item.emp_id, item.review, item.score, item.creation_date);
-              console.log(rev);
+              console.log("RATING::::::::::::");
+              console.log(rev.rating);
               currentComponent.setState(prevState => {
                 prevState.reviewsOnYou.push(rev);
                 return prevState;
