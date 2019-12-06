@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
 import Employee from './Employee';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import AppBar from 'material-ui/AppBar';
 import API from "./api";
 import { employee } from "../models/employee"
+
+import { Redirect } from 'react-router-dom'
 
 class HomePage extends Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {//Use this incase the db is down
-      fname: "Mark",
-      lname: "Fontenot",
-      address: "123 SMU Lane",
-      phone: "123-456-7890",
-      isLoading: false,
+    this.state ={
+      currentEmp: null,
+      isLoading: true,
       updating: false
     }
+
   }
 
   updateEmployee(fname, lname, address, phone) {
@@ -31,39 +29,67 @@ class HomePage extends Component {
     }));
   }
 
-  endUpdate = () => {
+  endUpdate = (fname, lname, address, phone) => {
     console.log("End Update");
+    let newEmp = this.state.currentEmp
+
+    newEmp.fname = fname;
+    newEmp.lname = lname;
+    newEmp.address = address;
+    newEmp.phone = phone;
+
     this.setState(prevState => ({
+      currentEmp: newEmp,
       updating: false
     }));
+
+  }
+
+  sendEmployeeUpdate = () => {
+
+    let requestBody = {
+      "fname": this.state.currentEmp.fname,
+      "lname": this.state.currentEmp.lname,
+      "address": this.state.currentEmp.address,
+      "phn_num": this.state.currentEmp.phone
+    }
+
+    debugger;
+
+    const response = API.put('/employees/' + window.location.userId + '/profile', requestBody)
+    .then((response) => {
+
+      console.log("response")
+      debugger;
+
+    })
+
+    alert("Changes Submitted");
+
   }
 
   async componentWillMount() {
+    
     // Load employee data asynchronously
 
-    const response = await API.get('employees/ ' + this.props.empId + '/profile')
+    //const response = await API.get('employees/2')
+    const response = await API.get('employees/' + window.location.userId)
       .then((response) => {
         // Success
         console.log("Successful call to db")
-        let contactInfo = response.data.contactinfo.contactinfo;
 
-        let fname = contactInfo.fname;
-        let lname = contactInfo.lname;
-        let address = contactInfo.address;
-        let phone = contactInfo.phone;
+        let contactInfo = response.data.profile.profile;
+        let currentEmp = new employee(contactInfo.id, contactInfo.fname, contactInfo.lname, contactInfo.dep_id, contactInfo.position, contactInfo.manager, contactInfo.address, contactInfo.phone, contactInfo.rating, contactInfo.strikes, contactInfo.active);
 
         this.setState({
-          fname,
-          lname,
-          address,
-          phone,
+          currentEmp,
           isLoading: false
         })
 
       })
       .catch((error) => {
         // Error
-        
+
         if (error.response) {
           /*
            * The request was made and the server responded with a
@@ -92,6 +118,10 @@ class HomePage extends Component {
 
   render() {
 
+    if(window.location.userId === -1){
+      return <Redirect to='/'/>
+    }
+
     const loadingMessage = <span className="d-flex m-auto">Loading...</span>;
 
     if (this.state.isLoading === true) {
@@ -108,14 +138,12 @@ class HomePage extends Component {
 
       return (
         <div>
-          <Employee fname={this.state.fname} lname={this.state.lname} address={this.state.address} phone={this.state.phone} isLoading={this.state.isLoading} updating={this.state.updating} updateEmployee={x => this.updateEmployee(x)} endUpdate={this.endUpdate} />
+          <Employee emp={this.state.currentEmp} titleName={this.state.currentEmp.fname} isLoading={this.state.isLoading} updating={this.state.updating} updateEmployee={x => this.updateEmployee(x)} endUpdate={this.endUpdate} />
+          <button type="button" className="btn btn-success mt-3" onClick={this.sendEmployeeUpdate}>Submit Changes</button>
         </div>
       );
-
     }
-
   }
-
 }
 
 export default HomePage;

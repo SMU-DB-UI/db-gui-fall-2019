@@ -3,7 +3,7 @@ import { thisExpression } from '@babel/types';
 
 
 export class ReportsRepository {
-    url = 'http://35.223.74.36:3000'
+    url = 'http://35.238.147.205:3000'
     session = {
         withCredentials: false,
         Headers: {
@@ -37,7 +37,7 @@ export class ReportsRepository {
 
     getReportHistory(userId) {
             return axios.get(`${this.url}/employees/${userId}/profile/report-history`, this.session)
-            .then(x => console.log(x))
+            .then(x => {console.log(x); return x;})
             .catch((error) => {
                 // Error
                 if (error.response) {
@@ -69,9 +69,37 @@ export class ReportsRepository {
         // });
     }
 
+    getManagerReports(managerId) {
+      return axios.get(`${this.url}/reports/manager/${managerId}`, this.session)
+        .then(x => {console.log("managerInfo");console.log(x); return x.data.reports})
+        .catch((error) => {
+            // Error
+            if (error.response) {
+              /*
+               * The request was made and the server responded with a
+               * status code that falls out of the range of 2xx
+               */
+              console.log(error.response.data);
+              console.log(error.response.status);
+              console.log(error.response.headers);
+            } else if (error.request) {
+              /*
+               * The request was made but no response was received, `error.request`
+               * is an instance of XMLHttpRequest in the browser and an instance
+               * of http.ClientRequest in Node.js
+               */
+              console.log(error.request);
+            } else {
+              // Something happened in setting up the request and triggered an Error
+              console.log('Error', error.message);
+            }
+            console.log(error.config);
+          });
+    }
+
     getEmpInfo(repId) {
         return axios.get(`${this.url}/reports/${repId}/profiles`, this.session)
-        .then(x => console.log(x))
+        .then(x => {return x.data.profiles})
         .catch((error) => {
             // Error
             if (error.response) {
@@ -98,8 +126,37 @@ export class ReportsRepository {
     }
 
     addReport(rep) {
-        return axios.post(`${this.url}/reports`, rep, this.session)
-        .then(x => console.log(x))
+        return axios.post(`${this.url}/employees/${window.location.userId}/profile/create-report`, rep, this.session)
+        .then(x => {console.log("post report");console.log(x)})
+        .catch((error) => {
+          console.log(error)
+            // Error
+            if (error.response) {
+              /*
+               * The request was made and the server responded with a
+               * status code that falls out of the range of 2xx
+               */
+              console.log(error.response.data);
+              console.log(error.response.status);
+              console.log(error.response.headers);
+            } else if (error.request) {
+              /*
+               * The request was made but no response was received, `error.request`
+               * is an instance of XMLHttpRequest in the browser and an instance
+               * of http.ClientRequest in Node.js
+               */
+              console.log(error.request);
+            } else {
+              // Something happened in setting up the request and triggered an Error
+              console.log('Error', error.message);
+            }
+            console.log(error.config);
+          });
+    }
+
+    getChoices() {
+      return axios.get(`${this.url}/employees`, this.session)
+        .then(x => {return x.data.employees})
         .catch((error) => {
             // Error
             if (error.response) {
@@ -123,6 +180,38 @@ export class ReportsRepository {
             }
             console.log(error.config);
           });
+    }
+
+    closeReport(reportId) {
+      return axios.put(`${this.url}/reports/${reportId}/close`, {reason:""}, this.session)
+      .then (x => {console.log("closed"); console.log(x)})
+      .catch((error) => {
+        // Error
+        if (error.response) {
+          /*
+           * The request was made and the server responded with a
+           * status code that falls out of the range of 2xx
+           */
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          /*
+           * The request was made but no response was received, `error.request`
+           * is an instance of XMLHttpRequest in the browser and an instance
+           * of http.ClientRequest in Node.js
+           */
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request and triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      });
+
+
+
+
     }
 
 

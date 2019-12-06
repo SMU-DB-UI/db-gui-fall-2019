@@ -17,14 +17,14 @@ class Loginscreen extends Component {
       <div key={"Login-Div"}>
       <MuiThemeProvider>
         <div>
-           <RaisedButton label={"Register an Employee"} primary={true} style={style} onClick={(event) => this.handleClick(event,'employee')}/>
+           <RaisedButton label={"Register"} primary={true} style={style} onClick={(event) => this.handleClick(event,'employee')}/>
        </div>
        </MuiThemeProvider>
-       <MuiThemeProvider>
+       {/* <MuiThemeProvider>
        <div>
           <RaisedButton label={"Register as HR"} primary={true} style={style} onClick={(event) => this.handleClick(event,'hr')}/>
       </div>
-      </MuiThemeProvider>
+      </MuiThemeProvider> */}
       </div>
     )
     this.state={
@@ -33,7 +33,7 @@ class Loginscreen extends Component {
       loginscreen:[],
       loginmessage:'',
       loginButtons:loginButtons,
-      employeebuttonLabel:'Register as an Employee',
+      employeebuttonLabel:'Register',
       hrbuttonLabel:'Register as HR',
       isLogin:true
     }
@@ -54,15 +54,15 @@ class Loginscreen extends Component {
     if(this.state.isLogin){
       let loginscreen=[];
       loginscreen.push(<Register parentContext={this} appContext={this.props.appContext} role={userRole}/>);
-      loginmessage = "Already registered. Go to Login";
+      //loginmessage = "Already registered. Go to Login";
       let loginButtons=[];
       loginButtons.push(
         <div key="login-button">
-        <MuiThemeProvider>
+        {/* <MuiThemeProvider>
           <div>
              <RaisedButton label={"Login"} primary={true} style={style} onClick={(event) => this.handleClick(event,userRole)}/>
          </div>
-         </MuiThemeProvider>
+         </MuiThemeProvider> */}
         </div>
       )
       this.setState({
@@ -78,13 +78,13 @@ class Loginscreen extends Component {
         <div>
         <MuiThemeProvider>
           <div>
-             <RaisedButton label={"Register as an Employee"} primary={true} style={style} onClick={(event) => this.handleClick(event,'employee')}/>
+             <RaisedButton label={"Register"} primary={true} style={style} onClick={(event) => this.handleClick(event,'employee')}/>
          </div>
          </MuiThemeProvider>
          <MuiThemeProvider>
-         <div>
+         {/* <div>
             <RaisedButton label={"Register as HR"} primary={true} style={style} onClick={(event) => this.handleClick(event,'hr')}/>
-        </div>
+        </div> */}
         </MuiThemeProvider>
         </div>
       )

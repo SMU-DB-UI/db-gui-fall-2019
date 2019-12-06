@@ -6,13 +6,16 @@ import TextField from 'material-ui/TextField';
 import axios from 'axios';
 import Login from './Login';
 
+
+var apiBaseUrl = "http://35.238.147.205:3000";
 class Register extends Component {
   constructor(props){
     super(props);
     this.state={
-      first_name:'',
-      last_name:'',
+      // first_name:'',
+      // last_name:'',
       email:'',
+      username:'',
       password:''
     }
   }
@@ -20,34 +23,39 @@ class Register extends Component {
     console.log("nextProps",nextProps);
   }
   handleClick(event,role){
-    var apiBaseUrl = "http://localhost:4000/api/";
     // console.log("values in register handler",role);
     var self = this;
     //To be done:check for empty values before hitting submit
-    if(this.state.first_name.length>0 && this.state.last_name.length>0 && this.state.email.length>0 && this.state.password.length>0){
+    if(this.state.email.length>0 && this.state.password.length>0){
       var payload={
-      "first_name": this.state.first_name,
-      "last_name":this.state.last_name,
-      "userid":this.state.email,
-      "password":this.state.password,
-      "role":role
+      // "first_name": this.state.first_name,
+      // "last_name":this.state.last_name,
+      "email":this.state.email,
+      "username":this.state.username,
+      "password":this.state.password
+      //"role":role
       }
       axios.post(apiBaseUrl+'/register', payload)
-     .then(function (response) {
-       console.log(response);
-       if(response.data.code === 200){
-        //  console.log("registration successfull");
-         var loginscreen=[];
-         loginscreen.push(<Login parentContext={this} appContext={self.props.appContext} role={role}/>);
-         var loginmessage = "Not Registered yet.Go to registration";
-         self.props.parentContext.setState({loginscreen:loginscreen,
-         loginmessage:loginmessage,
-         buttonLabel:"Register",
-         isLogin:true
-          });
-       }
+      .then(function (response) {
+        console.log(response.status);
+        if(response.status == 200){
+          if (response.data.message == "succeed") {
+          //  console.log("registration successfull");
+          var loginscreen=[];
+          console.log("here");
+          loginscreen.push(<Login parentContext={this} appContext={self.props.appContext} role={role}/>);
+          self.props.parentContext.setState({loginscreen:loginscreen,
+          buttonLabel:"Register",
+          isLogin:true
+            });
+        }
+      }
+      else if(response.status == 210)
+      {
+        alert("This account already exists. Please try again.");
+      }
        else{
-         console.log("some error ocurred",response.data.code);
+         console.log(response);
        }
      })
      .catch(function (error) {
@@ -74,30 +82,27 @@ class Register extends Component {
       <div>
         <MuiThemeProvider>
           <div>
-          <AppBar
-             title="Register"
-           />
-           <TextField
+           {/* <TextField
              hintText="Enter your First Name"
              floatingLabelText="First Name"
              onChange = {(event,newValue) => this.setState({first_name:newValue})}
              />
-           <br/>
+           <br/> */}
            <TextField
-             hintText="Enter your Last Name"
-             floatingLabelText="Last Name"
-             onChange = {(event,newValue) => this.setState({last_name:newValue})}
-             />
-           <br/>
-           <TextField
-             hintText={userhintText}
-             floatingLabelText={userLabel}
+             hintText="Enter Your Email"
+             floatingLabelText="Email"
              onChange = {(event,newValue) => this.setState({email:newValue})}
              />
            <br/>
            <TextField
+             hintText="Enter a Username"
+             floatingLabelText="Username"
+             onChange = {(event,newValue) => this.setState({username:newValue})}
+             />
+           <br/>
+           <TextField
              type = "password"
-             hintText="Enter your Password"
+             hintText="Enter a Password"
              floatingLabelText="Password"
              onChange = {(event,newValue) => this.setState({password:newValue})}
              />

@@ -6,9 +6,11 @@ import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import axios from 'axios';
+import {Redirect} from 'react-router-dom';
 import UploadPage from './UploadPage';
+import App from './UploadPage';
 
-var apiBaseUrl = "http://localhost:4000/api/";
+var apiBaseUrl = 'http://35.238.147.205:3000';
 
 class Login extends Component {
   constructor(props){
@@ -18,7 +20,7 @@ class Login extends Component {
       <MuiThemeProvider key={"theme"}>
         <div>
          <TextField
-           floatingLabelText="Employee Id"
+           floatingLabelText = "Username"
            onChange={(event,newValue) => this.setState({username:newValue})}
            />
          <br/>
@@ -38,7 +40,8 @@ class Login extends Component {
       password:'',
       menuValue:1,
       loginComponent:localloginComponent,
-      loginRole:'employee'
+      loginRole:'employee',
+      isLoggedIn: false,
     }
   }
   componentWillMount(){
@@ -74,7 +77,7 @@ class Login extends Component {
         <MuiThemeProvider>
           <div>
            <TextField
-             floatingLabelText="HR Id"
+             floatingLabelText="Username"
              onChange={(event,newValue) => this.setState({username:newValue})}
              />
            <br/>
@@ -94,24 +97,29 @@ class Login extends Component {
   }
   }
   handleClick(event){
+    let currentComponent = this;
     var self = this;
     var payload={
-      "userid":this.state.username,
+      "username":this.state.username,
 	    "password":this.state.password,
-      "role":this.state.loginRole
     }
-    axios.post(apiBaseUrl+'login', payload)
+    axios.put(apiBaseUrl+'/login', payload)
    .then(function (response) {
      console.log(response);
-     if(response.data.code == 200){
-       console.log("Login successfull");
-       var uploadScreen=[];
-       uploadScreen.push(<UploadPage appContext={self.props.appContext} role={self.state.loginRole}/>)
-       self.props.appContext.setState({loginPage:[],uploadScreen:uploadScreen})
+     if(response.status == 200){
+      if (response.data.message == "succeed") {
+        localStorage.setItem("token", JSON.stringify(response.data.user))
+        console.log("Login successfull");
+        window.location.userId = response.data.id;
+        window.location.auth = response.data.hr_manager;
+        //axios.defaults.withCredentials = true;
+        console.log(response.data.user);
+        currentComponent.setState({ isLoggedIn: true });
+        }
      }
-     else if(response.data.code == 204){
+     else if(response.status == 204){
        console.log("Username password do not match");
-       alert(response.data.success)
+       alert("Username and password do not match");
      }
      else{
        console.log("Username does not exists");
@@ -120,8 +128,10 @@ class Login extends Component {
    })
    .catch(function (error) {
      console.log(error);
+     alert("Incorrect username or password")
    });
   }
+
   handleMenuChange(value){
     console.log("menuvalue",value);
     var loginRole;
@@ -132,7 +142,7 @@ class Login extends Component {
         <MuiThemeProvider>
           <div>
            <TextField
-             floatingLabelText="Employee Id"
+             floatingLabelText="Username"
              onChange = {(event,newValue) => this.setState({username:newValue})}
              />
            <br/>
@@ -155,7 +165,7 @@ class Login extends Component {
         <MuiThemeProvider>
           <div>
            <TextField
-             floatingLabelText="HR Id"
+             floatingLabelText="Username"
              onChange = {(event,newValue) => this.setState({username:newValue})}
              />
            <br/>
@@ -166,7 +176,7 @@ class Login extends Component {
                onChange = {(event,newValue) => this.setState({password:newValue})}
                />
              <br/>
-             <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
+             <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>          
          </div>
          </MuiThemeProvider>
       )
@@ -176,6 +186,9 @@ class Login extends Component {
                    loginRole:loginRole})
   }
   render() {
+    if (this.state.isLoggedIn) {
+      return <Redirect to="/HomePage" />;
+    }
     return (
       <div>
         <MuiThemeProvider>

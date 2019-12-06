@@ -3,17 +3,21 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import { Report } from '../models/Report';
 import { ReportCard } from './ReportCard';
+import { ReportsRepository } from '../api/reportsRepository';
+import { Redirect } from 'react-router-dom';
 
 class HrReports extends Component {
+
+    reportsRepo = new ReportsRepository();
 
     constructor(props) {
         super(props);
         this.state = {
             reports: [
-                new Report(1, 1, 2, "disgusting", 'Oct-15-2019', 1, 5),
-                new Report(2, 1, 2, "ok", 'Oct-15-2019', 1, 3),
-                new Report(3, 1, 2, "good", 'Oct-15-2019', 1, 1),
-            ],
+                // new Report(1, 1, 2, "disgusting", 'Oct-15-2019', 1, 5),
+                // new Report(2, 1, 2, "ok", 'Oct-15-2019', 1, 3),
+                // new Report(3, 1, 2, "good", 'Oct-15-2019', 1, 1),
+            ]
         }
     }
 
@@ -28,6 +32,41 @@ class HrReports extends Component {
             return "red-text"
         }
         return "gray-text"
+    }
+
+    setReportInfo() {
+        if (window.location.userId !== -1) {
+
+            console.log("User id = " + window.location.userId)
+            this.reportsRepo.getManagerReports(window.location.userId)
+                .then(x => {
+                    let reports = [];
+                    x.forEach(rep => {
+                        if (rep.status == 'closed')
+                            console.log("fetching closed")
+                        let ourRep = new Report(rep.id, rep.by_emp_id, rep.for_emp_id, rep.report, rep.creation_date, rep.status, rep.severity)
+                        reports.push(ourRep);
+                    })
+                    for (let i = 0; i < reports.length; i++) {
+                        this.reportsRepo.getEmpInfo(reports[i].id)
+                            .then(info => {
+                                reports[i].byId = info[0].fname + " " + info[0].lname;
+                                reports[i].forId = info[1].fname + " " + info[1].lname;
+                                this.setState({ reports: reports });
+                            })
+                    }
+                });
+        }
+    }
+
+    componentDidMount() {
+        this.setReportInfo();
+    }
+
+    closeReport(reportId) {
+        this.reportsRepo.closeReport(reportId)
+            .then(() => { this.setReportInfo(); }
+            )
     }
 
     // getCloseReason(status, closeReason) {//Leaving this here because not sure if we'll bring back close reasons
@@ -86,25 +125,25 @@ class HrReports extends Component {
 
     render() {
 
+        if (window.location.userId === -1) {
+            return <Redirect to='/' />
+        }
+
         return (
 
-            <div>
-
-                <nav className='navbar-fluid' title='login'>
-                    <ol className="breadcrumb breadcrumb-light">
-                        <li className="breadcrumb-item">Your Reports</li>
-                    </ol>
-                </nav>
+            <div className='container'>
 
                 <div className='card mt-3 bg-info  text-white'>
+                    <h2 className='card-header'>Employee Reports</h2>
                     <ul className='card-body'
                         style={{ 'list-style': 'none' }, { 'paddingLeft': 0 }}>
-
-                        {this.state.reports.map(report => <li className="no-bullets" key={report.reportBy + report.reportFor} value={report.reports} >
-
-                            <ReportCard report={report} key={report.id} />
-
-                        </li>)}
+                        {this.state.reports.map(report =>
+                            <div className="no-bullets" key={report.id} >
+                                <ReportCard report={report}
+                                    key={report.id + report.byId}
+                                    type='manager'
+                                    closeReport={x => this.closeReport(x)} />
+                            </div>)}
                     </ul>
                 </div>
             </div>
