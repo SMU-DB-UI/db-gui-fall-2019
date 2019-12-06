@@ -34,7 +34,7 @@ async function getReports(connection){
   let rows;
   try {
     //gets all reports in the database
-    [rows] = await connection.query(`SELECT * FROM reports`);
+    [rows] = await connection.query(`SELECT * FROM reports ORDER BY STR_TO_DATE(creation_date, "%c/%d/%Y") DESC`);
   }
   catch (e) {
     logger.error(e);
@@ -118,7 +118,7 @@ async function getReportsManager(connection, manager){
   let rows;
   try {
     //gets all reports that are by or about any employee under a specific manager
-    [rows] = await connection.query(`SELECT * FROM reports WHERE by_emp_id OR for_emp_id IN (SELECT DISTINCT id FROM employees WHERE manager = ${manager})`);
+    [rows] = await connection.query(`SELECT * FROM reports WHERE by_emp_id OR for_emp_id IN (SELECT DISTINCT id FROM employees WHERE manager = ${manager}) ORDER BY STR_TO_DATE(creation_date, "%c/%d/%Y") DESC`);
   }
   catch (e) {
     logger.error(e);

@@ -21,12 +21,13 @@ router.get('/employees', async (req, res) => {
   if (message == 'fail') return;
 
   let response = await model.getEmployees(connection);
+  connection.release();
 
   res.json(response);
 });
   
 router.get('/employees/:empId', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
@@ -36,6 +37,7 @@ router.get('/employees/:empId', async (req, res) => {
   let userId = req.session.auth;
 
   let response = await model.getEmployee(connection, req.params.empId, is_HRM, userId);
+  connection.release();
   res.json(response);
 });
   
@@ -46,62 +48,71 @@ router.get('/employees/:empId/profile', async (req, res) => {
   if (message == 'fail') return;
 
   let response = await model.getContactInfo(connection, req.params.empId);
+  connection.release();
   res.json(response);
 });
   
 //Allows updating contact info of a given employee- must be logged in to do this
 router.put('/employees/:empId/profile', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
   
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.updateContactInfo(connection, req.params.empId, req.body);
+  connection.release();
   res.json(response);
 });
 
 //Adds an employee to the database- must be logged in to do so
 router.post('/employees', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.addEmployee(connection, req.body);
+  connection.release();
+
+  if (response.message != 'succeed')
+    res.status(400);
 
   res.json(response);
 });
 
 // Remove employee from database
 router.delete('/employees/:empId', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
   
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.removeEmployee(connection, req.params.empId);
+  connection.release();
   res.json(response);
 });
 
 // Updates the manager of an employee
 router.put('/employees/:empId/profile/manager', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
   
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.setManager(connection, req.params.empId, req.body.managerId);
+  connection.release();
   res.json(response);
 });
 
 // Gets the list of all reports an employee has been involved in
 router.get('/employees/:empId/profile/report-history', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
   
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
   
   let response = await model.reportHistory(connection, req.params.empId);
+  connection.release();
   res.json(response);
 });
 
@@ -113,51 +124,60 @@ router.post('/employees/:empId', async (req, res) => {
   if (message == 'fail') return;
 
   let response = await model.addStrike(connection, req.params.empId);
+  connection.release();
   res.json(response);
 });
 
 //Create a new report for an employee, by a manager
 router.post('/employees/:empId/profile/create-report', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
   let by_Employee = req.params.empId;
+  if (by_Employee == req.body.for_emp_id) {
+    res.status(911).json({message: 'can\'t submit report against self'});
+    return;
+  }
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.createReport(connection, req.body, by_Employee);
+  connection.release();
   res.json(response);
 });
 
 router.get('/results', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.searchEmployees(connection, req.query.search_query);
+  connection.release();
   
   res.json(response);
 });
 
 // Gets the employment history of an employee
 router.get('/employees/:empId/profile/employment-history', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.getEmploymentHistory(connection, req.params.empId);
+  connection.release();
   res.json(response);
 });
 
 // Sets an employee's position to be something else and adds a new record in
 // employment_history
 router.put('/employees/:empId/profile/change-position', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.changePosition(connection, req.params.empId, req.body.position);
+  connection.release();
   res.json(response);
 });
 
@@ -171,6 +191,19 @@ router.post('/employees/:empId/profile/make-confidential', async (req, res) => {
   logger.info(userID);
 
   let response = await model.makeConfidential(connection, userID, req.params.empId);
+  connection.release();
+  res.json(response);
+});
+
+router.get('/managers', async (req, res) => {
+  let {connection, message} = await conn.getConnection(res);
+  if (message == 'fail') return;
+
+  let response = await model.getManagers(connection);
+  connection.release();
+
+  if (response.message != 'succeed')
+    res.status(400);
   res.json(response);
 });
 

@@ -1,41 +1,61 @@
 var logger = require('../helpers/logger');
 
 
-async function postNewPerfRev(connection, empId, body) {
-    try {
-      await connection.query(`INSERT INTO perf_reviews (emp_id, review, score, creation_date, active) VALUES
-      (${empId}, '${body.review}', ${body.score}, ${body.creation_date}, 'true')`);
-    }
-    catch (e) {
-      logger.error(e);
-      return {message: 'fail'};
-    }
-    
-    return {message: 'succeed'};
+async function postNewPerfRev(connection, empId, body, manager_id) {
+  let rows;
+  try {
+    [rows] = await connection.query(`SELECT * FROM employees WHERE id = ?`, [parseInt(empId)]);
   }
+  catch (e) {
+    logger.error(e.stack);
+    return {message: 'db access error'};
+  }
+
+  if (rows[0].manager != manager_id) {
+    return {message: 'not the manager for this employee'};
+  }
+
+  logger.info('emp id: ' + empId);
+  logger.info('manager id: ' + manager_id);
+  logger.info('score: ' + body.score);
+  logger.info('body: ' + JSON.stringify(body))
+
+  try {
+    await connection.query(`INSERT INTO perf_reviews VALUES
+    (null, ${empId}, ${manager_id}, '${body.review}', ${body.score}, '${body.creation_date}', 'open')`);
+  }
+  catch (e) {
+    logger.error(e.stack);
+    return {message: 'fail'};
+  }
+  
+  return {message: 'succeed'};
+}
 
 async function seeAllPerfRevs(connection, empId, loggedInId) {
   try {
-    [rows] = await connection.query(`SELECT * FROM perf_reviews WHERE (emp_id = ${empId} AND active = 'true') ORDER BY creation_date`);
+    [rows] = await connection.query(`SELECT * FROM perf_reviews WHERE emp_id = ${empId} AND active = 'open' 
+      ORDER BY STR_TO_DATE(creation_date, "%c/%d/%Y") DESC`);
   }
   catch (e) {
-    logger.error(e);
+    logger.error(e.stack);
     return {message: 'fail'};
   }
   var revList = [];
   
+  logger.info(JSON.stringify(rows[0]));
+
   for (var i in rows) {
-    if (rows[i].emp_id == loggedInId) { 
     revList.push({
       id:             rows[i].id, 
-      emp_id:         rows[i].emp_id, 
+      emp_id:         rows[i].emp_id,
+      by_emp_id:      rows[i].manager_id,
       review:         rows[i].review,                   
       score:          rows[i].score, 
-      creation_date:  rows[i].creation_date,
-    })
-  }
+      creation_date:  rows[i].creation_date
+    });
   };
-  if (revList.length == 0) return {message: 'no performance reviews found for this profile, or you are not looking at your own profile'}
+  if (revList.length == 0) return {message: 'no performance reviews found for this profile'}
   else return {message: 'succeed', reviews: revList};
 }
 
@@ -72,7 +92,7 @@ async function seeAllPerfRevsManager(connection, managerID) {
     [rows] = await connection.query(`SELECT * FROM perf_reviews 
       INNER JOIN employees ON perf_reviews.emp_id = employees.id 
       WHERE employees.manager = 1
-      ORDER BY creation_date`)
+      ORDER BY creation_date`);
   }
   catch (e) {
     logger.error(e.stack);
@@ -93,11 +113,40 @@ async function seeAllPerfRevsManager(connection, managerID) {
 }
 return {message: 'succeed', reviews: revList};
 }
+
+async function checkAllPerfReviews(connection) {
+  try {
+    [rows] = await connection.query(`SELECT * FROM perf_reviews`);
+  }
+  catch (e) {
+    logger.error(e.stack);
+    return {message: 'fail'};
+  }
+
+  return {message: 'succeed', data: rows};
+
+}
+
+async function averageScore(connection, empId) {
+  let rows;
+  try {
+    [rows] = await connection.query(`SELECT AVG(score) as avg_score FROM perf_reviews WHERE emp_id = ${empId}`);
+  }
+  catch (e) {
+    logger.error(e.stack);
+    return {message: 'fail'};
+  }
+
+  return {message: 'succeed', average: rows[0].avg_score};
+}
+
 module.exports = {
     //functions that will be used
     postNewPerfRev,
     seeAllPerfRevs,
     deletePerfRev,
     seeAllPerfRevsManager,
-    getPerfScore
+    getPerfScore,
+    checkAllPerfReviews,
+    averageScore
   };

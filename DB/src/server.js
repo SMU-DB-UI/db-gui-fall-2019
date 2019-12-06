@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { log, ExpressAPILogMiddleware } = require('@rama41222/node-logger');
 const mysql = require('mysql2/promise');
+const path = require('path');
+const fs = require('fs');
 
 //set up some configs for express. 
 const config = {
@@ -51,4 +53,10 @@ app.use(account);
 app.use(perfreviews);
 app.use(department);
 
-app.use(redirectInvalid);
+app.get('/google01db65e86f161597.html', (req, res) => {
+  let htmlPath = path.join(__dirname, 'google01db65e86f161597.html');
+  let file = fs.readFileSync(htmlPath, 'utf8');
+  res.type('html').send(file);
+});
+
+// app.use(redirectInvalid);

@@ -14,22 +14,24 @@ function notLoggedIn(req, res) {
 }
 
 router.get('/departments/:deptId/performance', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+ // if (notLoggedIn(req, res)) return;
   
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.getDeptPerf(connection, req.params.deptId);
+  connection.release();
   res.json(response);
 });
 
 router.get('/departments/performance', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
   
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.getDeptPerf(connection, -1);
+  connection.release();
   res.json(response);
 });
 

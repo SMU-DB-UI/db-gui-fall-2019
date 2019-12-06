@@ -16,12 +16,13 @@ function notLoggedIn(req, res) {
 
 //Update a report to closed
 router.put('/reports/:repId/close', async (req, res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.closeReport(connection, req.params.repId, req.body.reason);
+  connection.release();
   res.json(response);
 });
   
@@ -45,17 +46,19 @@ router.get('/reports/:repId', async (req,res) => {
   });
   
   let response = await model.getReport(connection, req.params.repId);
+  connection.release();
   res.json(response);
 });
 
 //Get all reports in the database
 router.get('/reports', async (req,res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.getReports(connection);
+  connection.release();
   res.json(response);
 });
 
@@ -63,43 +66,47 @@ router.get('/reports', async (req,res) => {
 //Update the severity score of a specific report
 router.put('/reports/:repId/severity_score/:empId', async (req,res) => {
  
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.rateSeverity(connection, req.params.repId, req.body.score, req.params.empId);
+  connection.release();
   res.json(response);
 });
 
 router.get('/reports/:repId/comments', async (req,res) => {
-  if(notLoggedIn(req, res)) return;
+//  if(notLoggedIn(req, res)) return;
 
   let{connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.getComments(connection, req.params.repId);
+  connection.release();
   res.json(response);
 });
 
 //get the reports of all employees under a specific manager
 router.get('/reports/manager/:manager', async (req,res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.getReportsManager(connection, req.params.manager);
+  connection.release();
   res.json(response);
 });
 
 router.get('/reports/:repId/profiles', async (req,res) => {
-  if (notLoggedIn(req, res)) return;
+//  if (notLoggedIn(req, res)) return;
 
   let {connection, message} = await conn.getConnection(res);
   if (message == 'fail') return;
 
   let response = await model.getEmpProfile(connection, req.params.repId);
+  connection.release();
   res.json(response);
 });
 

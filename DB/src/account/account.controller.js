@@ -7,7 +7,7 @@ var logger = require('../helpers/logger');
 var router = express.Router();
 
 router.get('/', (req, res) => {
-  res.status(200).send('Go to localhost:3000/setupdb first.');
+  res.status(200).send('<h1>Welcome to the HR Database! (How did you get here?)</h1>');
 });
   
 router.post('/register', async (req, res) => {
@@ -15,12 +15,13 @@ router.post('/register', async (req, res) => {
   if (message == 'fail') return;
 
   let response = await model.register(connection, req.body);
+  connection.release();
   if (response.message == 'fail') {
     res.status(400).json({message: "Something went wrong"});
     return;
   }
   else if (response.message == 'account exists') {
-    res.json({message: 'This account already exists'});
+    res.status(210).json({message: 'This account already exists'});
   }
   else {
     res.json(response);
@@ -37,6 +38,7 @@ router.put('/login', async (req, res) => {
   if (message == 'fail') return;
 
   let response = await model.login(connection, req.body);
+  connection.release();
   console.log(response)
   if (response.message == 'succeed') {
     req.session.active = true;
