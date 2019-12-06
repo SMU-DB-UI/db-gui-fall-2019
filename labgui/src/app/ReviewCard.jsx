@@ -16,10 +16,6 @@ class ReviewCard extends Component {
     }
 
     async getEmpName(){
-<<<<<<< HEAD
-        
-=======
->>>>>>> c56e7c9b57d7bf3047ea7ab4983b5837c65791d9
         axios.get((apiBaseUrl + '/employees/' + this.state.id), )
             .then(res => {
                 this.setState({
